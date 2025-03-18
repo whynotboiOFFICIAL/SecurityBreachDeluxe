@@ -1,0 +1,27 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\animatronics\endo\bodyfrost_d"
+    "$bumpmap" "models\whynotboi\securitybreach\base\animatronics\endo\bodyfrost_n"
+
+    "$nodecal" "1"
+
+    "$phong" "1"
+
+    "$phongexponenttexture" "models\whynotboi\securitybreach\base\animatronics\endo\bodyfrost_s"
+
+    "$phongboost"    "1"
+    
+    "$phongfresnelranges"	"[0.5 1 1]"
+
+    "$phongdisablehalflambert"    "1"
+
+    "$emissiveblendenabled"   "1"
+    "$emissiveblendtexture"   "dev/null"
+    "$emissiveblendbasetexture"    "models\whynotboi\securitybreach\base\animatronics\endo\body_e"
+    "$emissiveblendflowtexture"   "dev/null"
+    "$emissiveblendstrength"  "1"
+    "$emissiveblendtint"  "[2 2 2]"
+    "$emissiveblendscrollvector"  "[0 0]"
+
+    "$nocull" "1"
+}

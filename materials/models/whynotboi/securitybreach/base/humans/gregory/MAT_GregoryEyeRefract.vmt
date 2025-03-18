@@ -1,0 +1,21 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\humans\gregory\eye_d"
+    "$bumpmap" "models\whynotboi\securitybreach\shared\shared_normal"
+
+    "$basetexturetransform" "center .5 .5 scale 3.5 3.5 rotate 0 translate 0 0"
+
+    "$nodecal" "1"
+
+    "$phong" "1"
+
+    "$phongexponent" "25"
+
+    "$phongboost"    "0.3"
+    
+    "$phongfresnelranges"	"[0.5 1 1]"
+
+    "$phongdisablehalflambert"    "1"
+
+    "$nocull" "1"
+}

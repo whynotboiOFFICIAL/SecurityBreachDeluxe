@@ -1,0 +1,21 @@
+"UnlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\animatronics\djmusicman\plastiglass3_d"
+    "$bumpmap" "models\whynotboi\securitybreach\shared\shared_normal"
+
+    "$translucent" "1"
+
+    "$nodecal" "1"
+
+    "$nocull" "1"
+    
+    "Proxies"
+    {
+        "TextureScroll"
+        {
+            "texturescrollvar" "$basetexturetransform"
+            "texturescrollrate" 0.3
+            "texturescrollangle" -90
+        }
+    }   
+}

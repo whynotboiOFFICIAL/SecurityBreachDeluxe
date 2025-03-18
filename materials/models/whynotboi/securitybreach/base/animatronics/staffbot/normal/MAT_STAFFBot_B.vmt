@@ -1,0 +1,26 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\animatronics\staffbot\normal\bodyb_d"
+    "$bumpmap" "models\whynotboi\securitybreach\base\animatronics\staffbot\normal\bodyb_n"
+
+    "$blendtintbybasealpha"    "1"
+
+    "$color2" "[0.4 0.4 0.4]"
+
+    "$nodecal" "1"
+
+    "$phong" "1"
+    "$phongalbedotint"	"1"
+
+    "$phongexponenttexture" "models\whynotboi\securitybreach\base\animatronics\staffbot\normal\bodyb_s"
+
+    "$phongboost"    "1"
+    
+    "$phongalbedoboost"    "25"
+
+    "$phongfresnelranges"	"[0.5 1 1]"
+
+    "$phongdisablehalflambert"    "1"
+
+    "$nocull" "1"
+}
