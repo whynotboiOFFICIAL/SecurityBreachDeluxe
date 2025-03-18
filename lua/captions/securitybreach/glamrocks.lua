@@ -36,7 +36,30 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCHICACAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00023.wav', '<clr:255, 177, 255>Gregory!')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00024.wav', '<clr:255, 177, 255>Lost boy over here!')
 
+    path = 'whynotboi/securitybreach/base/montgomerygator/vo/'
+    
     -- Monty Idle Voices
 
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00005.wav', '<clr:25, 255, 0>Hey kid! Come on out, we\'re only trying to help')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00006.wav', '<clr:25, 255, 0>I know you\'re here...')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00007.wav', '<clr:25, 255, 0>Give up')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00008.wav', '<clr:25, 255, 0>You can hide, but you can\'t hide!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00009.wav', '<clr:25, 255, 0>Let\'s rock')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00010.wav', '<clr:25, 255, 0>I will find you...')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00011.wav', '<clr:25, 255, 0>You really think we won\'t find you?')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00012.wav', '<clr:25, 255, 0>You can\'t hide forever!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00023.wav', '<clr:25, 255, 0>Don\'t be scared')
+
     -- Monty Spot Voices
+
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00013.wav', '<clr:25, 255, 0>Over here!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00014.wav', '<clr:25, 255, 0>There you are!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00015.wav', '<clr:25, 255, 0>Hey! Little guy!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00016.wav', '<clr:25, 255, 0>Where you going?')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00017.wav', '<clr:25, 255, 0>Party time!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00018.wav', '<clr:25, 255, 0>Ha ha ha ha ha ha!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00019.wav', '<clr:25, 255, 0>Game over kid!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00020.wav', '<clr:25, 255, 0>Rock and roll!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00021.wav', '<clr:25, 255, 0>Run run run!')
+    SBDELUXE:AddEnglishCaption(path .. 'MONTY_00022.wav', '<clr:25, 255, 0>You\'re in trouble now!')
 end)
