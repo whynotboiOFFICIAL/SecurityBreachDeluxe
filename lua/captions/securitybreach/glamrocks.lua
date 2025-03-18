@@ -1,12 +1,12 @@
 
--- Glamrock Chica
+-- Glamrocks
 
 hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCHICACAPTIONS', function()
     hook.Remove('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCHICACAPTIONS')
 
     local path = 'whynotboi/securitybreach/base/glamrockchica/vo/'
 
-    -- Idle Voices
+    -- Chica Idle Voices
     
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00005.wav', '<clr:255, 177, 255>Are you lost?')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00005b.wav', '<clr:255, 177, 255>I\'ll take you to your parents...')
@@ -27,7 +27,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCHICACAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00017.wav', '<clr:255, 177, 255>I am just trying to help')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00018.wav', '<clr:255, 177, 255>Who wants candy?')
 
-    -- Spot Voices
+    -- Chica Spot Voices
 
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00019.wav', '<clr:255, 177, 255>I found you!')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00020.wav', '<clr:255, 177, 255>There you are!')
@@ -35,4 +35,8 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCHICACAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00022.wav', '<clr:255, 177, 255>Stop!')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00023.wav', '<clr:255, 177, 255>Gregory!')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00024.wav', '<clr:255, 177, 255>Lost boy over here!')
+
+    -- Monty Idle Voices
+
+    -- Monty Spot Voices
 end)
