@@ -24,7 +24,7 @@ ENT.JumpAnimRate = 1
 
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
-ENT.VoicePath = 'whynotboi/securitybreach/base/glamrockchica/vo/'
+ENT.SFXPath = 'whynotboi/securitybreach/base/glamrockchica'
 
 -- Detection --
 ENT.EyeBone = 'Head_jnt'
