@@ -65,29 +65,10 @@ end
 
 SBDELUXE = {}
 
-function SBDELUXE:WavDuration(path)
-    local f = file.Open('sound/' .. path, 'rb', 'GAME')
-    if not f then return SoundDuration(path) end
-    
-    f:Seek(22) -- Skip to channels
-    
-    local channels = f:ReadShort()
-    local sampleRate = f:ReadLong() 
-
-    f:Seek(34) -- Skip to samples
-    
-    local bitsPerSample = f:ReadShort()
-    local samples = (f:Size() - 44) / (bitsPerSample / 8)
-    
-    f:Close()
-
-    return samples / sampleRate / channels
-end
-
 function SBDELUXE:AddEnglishCaption(soundName, text, isfx)
     sound.AddCaption({
         sound = soundName:lower(),
-        duration = SBDELUXE:WavDuration(soundName),
+        duration = SoundDuration(soundName:lower()),
         sfx = isfx,
         text = { english = text }
     })

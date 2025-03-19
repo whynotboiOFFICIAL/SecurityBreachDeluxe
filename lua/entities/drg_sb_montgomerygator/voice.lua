@@ -64,7 +64,7 @@ if SERVER then
         end
     end
 
-    function ENT:OnNewEnemy()
+    function ENT:OnSpotEnemy()
         self:DrG_Timer(0, function()
             self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
         end)
@@ -76,7 +76,7 @@ if SERVER then
         end)
     end
 
-    function ENT:OnLastEnemy()
+    function ENT:OnLoseEnemy()
         if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
             self.VoiceDisabled = false
         end
