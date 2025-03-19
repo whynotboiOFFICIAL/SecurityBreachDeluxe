@@ -120,6 +120,8 @@ if SERVER then
     -- Basic
 
     function ENT:GetSoundCount(path, name)
+        if not self.SFXPath then return end
+        
         local dir = 'sound/' .. self.SFXPath .. '/' .. path
         if not file.Exists(dir, 'GAME') then return 0 end
 
@@ -256,7 +258,7 @@ if SERVER then
 
                 local sound = path .. 'sfx_servo_large_0' .. math.random(1, self._ServoLargeCount)
 
-                self:EmitSound(sound .. '.wav', 75, 100, 0.3)
+                self:EmitSound(sound .. '.wav', 75, 100, 0.45)
 
                 table.insert(servos, sound)
             end
@@ -265,7 +267,7 @@ if SERVER then
 
             if servos then
                 for k, soundName in ipairs(servos) do
-                    self:EmitSound(soundName .. '_e.wav', 75, 100, 0.3)
+                    self:EmitSound(soundName .. '_e.wav', 75, 100, 0.45)
                     self:StopSound(soundName .. '.wav')
                 end
             end
