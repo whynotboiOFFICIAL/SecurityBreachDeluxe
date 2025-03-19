@@ -112,15 +112,15 @@ if CLIENT then
 
         local w3, h3 = ScreenScale(18), ScreenScale(38)
 
-        surface.DrawTexturedRect(batteryx + 25, h - h3 * 1.42, w3, h3)  
+        surface.DrawTexturedRect(batteryx + ScreenScale(8), h - h3 * 1.42, w3, h3)  
   
-        surface.DrawTexturedRect(batteryx + 80, h - h3 * 1.42, w3, h3)    
+        surface.DrawTexturedRect(batteryx + ScreenScale(26.8), h - h3 * 1.42, w3, h3)    
          
-        surface.DrawTexturedRect(batteryx + 135, h - h3 * 1.42, w3, h3)    
+        surface.DrawTexturedRect(batteryx + ScreenScale(45), h - h3 * 1.42, w3, h3)    
 
-        surface.DrawTexturedRect(batteryx + 190, h - h3 * 1.42, w3, h3) 
+        surface.DrawTexturedRect(batteryx + ScreenScale(63.5), h - h3 * 1.42, w3, h3) 
 
-        surface.DrawTexturedRect(batteryx + 245, h - h3 * 1.42, w3, h3) 
+        surface.DrawTexturedRect(batteryx + ScreenScale(81.8), h - h3 * 1.42, w3, h3) 
 
         if maxbatteries > 5 then
             surface.DrawTexturedRect(1455 - batterysub * 14.2, h - h3 * 1.43, w3, h3) 
@@ -136,23 +136,23 @@ if CLIENT then
 
         if energy < 1 then return end
         
-        surface.DrawTexturedRect(batteryx + 25, h - h3 * 1.42, w3, h3)  
+        surface.DrawTexturedRect(batteryx + ScreenScale(8.5), h - h3 * 1.42, w3, h3)  
   
         if energy < 20 then return end
         
-        surface.DrawTexturedRect(batteryx + 80, h - h3 * 1.42, w3, h3)    
+        surface.DrawTexturedRect(batteryx + ScreenScale(26.8), h - h3 * 1.42, w3, h3)    
          
         if energy < 40 then return end
         
-        surface.DrawTexturedRect(batteryx + 135, h - h3 * 1.42, w3, h3)    
+        surface.DrawTexturedRect(batteryx + ScreenScale(45), h - h3 * 1.42, w3, h3)    
 
         if energy < 60 then return end
         
-        surface.DrawTexturedRect(batteryx + 190, h - h3 * 1.42, w3, h3) 
+        surface.DrawTexturedRect(batteryx + ScreenScale(63.5), h - h3 * 1.42, w3, h3) 
 
         if energy < 80 then return end
         
-        surface.DrawTexturedRect(batteryx + 245, h - h3 * 1.42, w3, h3) 
+        surface.DrawTexturedRect(batteryx + ScreenScale(81.8), h - h3 * 1.42, w3, h3) 
 
         if energy < 120 then return end
         
