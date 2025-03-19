@@ -74,8 +74,9 @@ if CLIENT then
             surface.SetMaterial(eyesfreddy)
 
             local w1, h1 = ScreenScale(890), ScreenScale(290)
+            local w1 = ScrW() + 800
 
-            surface.DrawTexturedRect(-495, h - h1 - 460, w1, h1)
+            surface.DrawTexturedRect(-400, -125, w1, ScrH() / 1.25)
         end
 
         -- Battery --
@@ -91,8 +92,9 @@ if CLIENT then
         surface.SetMaterial(battery)
 
         local w2, h2 = ScreenScale(110), ScreenScale(50)
+        local batteryx = w / 2 - w2 / 2
 
-        surface.DrawTexturedRect(1060, h - h2 * 1.2, w2, h2)
+        surface.DrawTexturedRect(batteryx, h - h2 * 1.2, w2, h2)
         
         -- Battery Slot --
         
@@ -110,15 +112,15 @@ if CLIENT then
 
         local w3, h3 = ScreenScale(18), ScreenScale(38)
 
-        surface.DrawTexturedRect(1089 - batterysub, h - h3 * 1.43, w3, h3)  
+        surface.DrawTexturedRect(batteryx + 25, h - h3 * 1.42, w3, h3)  
   
-        surface.DrawTexturedRect(1165 - batterysub * 4, h - h3 * 1.43, w3, h3)    
+        surface.DrawTexturedRect(batteryx + 80, h - h3 * 1.42, w3, h3)    
          
-        surface.DrawTexturedRect(1239 - batterysub * 7, h - h3 * 1.43, w3, h3)    
+        surface.DrawTexturedRect(batteryx + 135, h - h3 * 1.42, w3, h3)    
 
-        surface.DrawTexturedRect(1315 - batterysub * 10, h - h3 * 1.43, w3, h3) 
+        surface.DrawTexturedRect(batteryx + 190, h - h3 * 1.42, w3, h3) 
 
-        surface.DrawTexturedRect(1390 - batterysub * 13, h - h3 * 1.43, w3, h3) 
+        surface.DrawTexturedRect(batteryx + 245, h - h3 * 1.42, w3, h3) 
 
         if maxbatteries > 5 then
             surface.DrawTexturedRect(1455 - batterysub * 14.2, h - h3 * 1.43, w3, h3) 
@@ -134,31 +136,31 @@ if CLIENT then
 
         if energy < 1 then return end
         
-        surface.DrawTexturedRect(1089 - batterysub, h - h3 * 1.43, w3, h3)  
+        surface.DrawTexturedRect(batteryx + 25, h - h3 * 1.42, w3, h3)  
   
         if energy < 20 then return end
         
-        surface.DrawTexturedRect(1165 - batterysub * 4, h - h3 * 1.43, w3, h3)    
+        surface.DrawTexturedRect(batteryx + 80, h - h3 * 1.42, w3, h3)    
          
         if energy < 40 then return end
         
-        surface.DrawTexturedRect(1239 - batterysub * 7, h - h3 * 1.43, w3, h3)    
+        surface.DrawTexturedRect(batteryx + 135, h - h3 * 1.42, w3, h3)    
 
         if energy < 60 then return end
         
-        surface.DrawTexturedRect(1315 - batterysub * 10, h - h3 * 1.43, w3, h3) 
+        surface.DrawTexturedRect(batteryx + 190, h - h3 * 1.42, w3, h3) 
 
         if energy < 80 then return end
         
-        surface.DrawTexturedRect(1390 - batterysub * 13, h - h3 * 1.43, w3, h3) 
+        surface.DrawTexturedRect(batteryx + 245, h - h3 * 1.42, w3, h3) 
 
         if energy < 120 then return end
         
-        surface.DrawTexturedRect(1455 - batterysub * 14.2, h - h3 * 1.43, w3, h3) 
+        surface.DrawTexturedRect(1455 - batterysub * 14.2, h - h3 * 1.42, w3, h3) 
 
         if energy < 140 then return end
         
-        surface.DrawTexturedRect(1510 - batterysub * 14.2, h - h3 * 1.43, w3, h3) 
+        surface.DrawTexturedRect(1510 - batterysub * 14.2, h - h3 * 1.42, w3, h3) 
     end
 end
 

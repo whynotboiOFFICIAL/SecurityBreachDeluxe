@@ -90,19 +90,29 @@ if SERVER then
 
         self:ClearPatrols()
 
-        if plyPos:Distance(pos) > 80 then
+        local plyDist = plyPos:Distance(pos)
+
+        if plyDist > 60 then
             self.WalkAnimation = 'walk'
-            self.IsBlocking = false
+
+            if plyPos:Distance(self.SpawnPosition) > 80 then
+                self.IsBlocking = false
+            end
 
             self:AddPatrolPos(plyPos)
-            self:SetDefaultRelationship(D_HT)
 
             return
         else
-            self:SetDefaultRelationship(D_LI)
-
-            self.WalkAnimation = 'walkblocking'
-            self.IsBlocking = true
+            if self.IsBlocking then
+                self.WalkAnimation = 'walkblocking'
+            elseif not self.Holding then
+                self:EnterCinematic(ply)
+    
+                self.Holding = true
+                self.WalkAnimation = 'walkcarry'
+                self.RunAnimation = 'walkcarry'
+                self.IdleAnimation = 'walkcarry'
+            end
         end
 
         self:FaceInstant(Entity(1))
@@ -122,7 +132,7 @@ if SERVER then
             local farPos = walkPos + forward * 150;
             local farDist = pos:DistToSqr(farPos)
 
-            if farDist > 3000 then
+            if farDist > 3000 then -- use nav mesh to mitigate getting stuck
                 self:AddPatrolPos(farPos)
             else
                 self.loco:Approach(walkPos, 1)
@@ -145,19 +155,13 @@ if SERVER then
     end
 
     function ENT:OnMeleeAttack(ply)
-        if not self.IsBlocking and ply == self.Target then
-            self:EnterCinematic(self.Target)
-
-            self.Holding = true
-            self.WalkAnimation = 'walkcarry'
-            self.RunAnimation = 'walkcarry'
-            self.IdleAnimation = 'walkcarry'
-        end
     end
 
     function ENT:OnReachedPatrol()
         if self.Holding then
             self.Holding = false
+            self.IsBlocking = true
+
             self.Target:SetPos(self:GetPos() + self:GetForward() * 40)
 
             self:ExitCinematic(self.Target)
