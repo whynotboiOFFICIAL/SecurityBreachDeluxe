@@ -92,10 +92,6 @@ ENT.PossessionBinds = {
 }
 
 if CLIENT then
-  
-    print('uno')
-
-
     function ENT:PossessorView()
         local pos, ang = self.BaseTable.PossessorView(self)
 
@@ -108,8 +104,6 @@ if CLIENT then
 
         return pos, ang
     end
-
-    print('dos')
 end
 
 if SERVER then
@@ -125,7 +119,30 @@ if SERVER then
 
     -- Basic
 
+    function ENT:GetSoundCount(path, name)
+        local dir = 'sound/' .. self.SFXPath .. '/' .. path
+        if not file.Exists(dir, 'GAME') then return 0 end
+
+        local files = file.Find(dir .. '/*.wav', 'GAME')
+        if not files[1] then return 0 end
+
+        local count = 0
+
+        for k, fileName in ipairs(files) do
+            local index = string.match(fileName, '_(%d+).wav')
+            
+            if not index or (name and not string.find(fileName, name)) then 
+                continue 
+            end
+
+            count = count + 1
+        end
+
+        return count
+    end
+
     function ENT:_BaseInitialize()
+        self._ServoLargeCount = self:GetSoundCount('servo/large', 'servo_large')
     end
 
     function ENT:CustomThink()
@@ -190,17 +207,24 @@ if SERVER then
             self:StopVoices()
         end
 
+        local servos = self._ServoSounds
+
+        if servos then
+            for k, soundName in ipairs(servos) do
+                self:StopSound(soundName .. '.wav')
+            end
+        end
+
         self:CancelJumpscare()
     end
 
     -- Voice 
 
     function ENT:PlayVoiceLine(vo, anim)
-        local path = self.VoicePath
-
+        local path = self.SFXPath
         if path == nil then return end
 
-        self:EmitSound(path .. vo .. '.wav')
+        self:EmitSound(path .. '/vo/' .. vo .. '.wav')
 
         if not anim then return end
 
@@ -208,16 +232,47 @@ if SERVER then
     end
 
     function ENT:StopVoiceLine(vo)
-        local path = self.VoicePath
-
+        local path = self.SFXPath
         if path == nil then return end
 
-        self:StopSound(path .. vo .. '.wav')
+        self:StopSound(path .. '/vo/' .. vo .. '.wav')
     end
 
     -- EventFrames
 
     function ENT:HandleAnimEvent(a,b,c,d,e)
+        if e == 'servostart_l' then
+            local path = self.SFXPath
+
+            if path then
+                path = path .. '/servo/large/'
+                
+                local servos = self._ServoSounds
+
+                if not servos then
+                    servos = {}
+                    self._ServoSounds = servos
+                end
+
+                local sound = path .. 'sfx_servo_large_0' .. math.random(1, self._ServoLargeCount)
+
+                self:EmitSound(sound .. '.wav', 75, 100, 0.3)
+
+                table.insert(servos, sound)
+            end
+        elseif e == 'servoend' then
+            local servos = self._ServoSounds
+
+            if servos then
+                for k, soundName in ipairs(servos) do
+                    self:EmitSound(soundName .. '_e.wav', 75, 100, 0.3)
+                    self:StopSound(soundName .. '.wav')
+                end
+            end
+
+            self._ServoSounds = nil
+        end
+
         if e == 'step' and self.StepSFX then
             self:StepSFX() 
             self:MatStepSFX()
