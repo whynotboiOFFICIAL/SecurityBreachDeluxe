@@ -354,6 +354,33 @@ if SERVER then
             self:OnLoseEnemy(ent)
         end
     end
+
+    function ENT:EnterCinematic(ent)
+        ent:Freeze(true)
+        ent:AddFlags(FL_NOTARGET)
+        ent:DrawViewModel(false)
+        ent:SetActiveWeapon(nil)
+    
+        net.Start('SECURITYBREACHFINALLYCINEMATIC')
+        net.WriteEntity(self)
+        net.WriteBool(true)
+        net.Send(ent)
+    
+        self.CinTarget = ent
+    end
+    
+    function ENT:ExitCinematic(ent)
+        net.Start('SECURITYBREACHFINALLYCINEMATIC')
+        net.WriteEntity(self)
+        net.WriteBool(false)
+        net.Send(ent)
+    
+        ent:RemoveFlags(FL_NOTARGET)
+        ent:Freeze(false)
+        ent:DrawViewModel(true)
+    
+        self.CinTarget = nil
+    end
 else
     ENT.Tension = 1
 
