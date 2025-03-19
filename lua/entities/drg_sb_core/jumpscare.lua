@@ -80,7 +80,7 @@ function ENT:CancelJumpscare()
     ent:RemoveFlags(FL_NOTARGET)
 
     if ent:IsPlayer() then
-        net.Start('PLAYTIMEVIEWCAMNEW')
+        net.Start('SECURITYBREACHFINALLYJUMPSCARE')
         net.WriteEntity(self)
         net.WriteBool(false)
         net.Send(ent)
