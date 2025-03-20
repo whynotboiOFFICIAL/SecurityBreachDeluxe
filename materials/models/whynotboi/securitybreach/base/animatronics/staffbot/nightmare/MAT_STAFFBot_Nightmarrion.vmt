@@ -24,12 +24,5 @@
 
     "$nocull" "1"
     
-    "$emissiveblendenabled"   "1"
-    "$emissiveblendtexture"   "dev/null"
-    "$emissiveblendbasetexture"    "models\whynotboi\securitybreach\base\animatronics\staffbot\nightmare\body2_e"
-    "$emissiveblendflowtexture"   "dev/null"
-    "$emissiveblendstrength"  "1"
-    "$emissiveblendtint"  "[1 1 1]"
-    "$emissiveblendscrollvector"  "[0 0]"
 
 }

@@ -23,9 +23,9 @@
     "$phongdisablehalflambert"    "1"
 
     "$emissiveblendenabled"   "1"
-    "$emissiveblendtexture"   "dev/null"
+    "$emissiveblendtexture"   "models\whynotboi\securitybreach\shared\white"
     "$emissiveblendbasetexture"    "models\whynotboi\securitybreach\base\animatronics\daycareattendant\moon\body_e"
-    "$emissiveblendflowtexture"   "dev/null"
+    "$emissiveblendflowtexture"   "models\whynotboi\securitybreach\shared\white"
     "$emissiveblendstrength"  "0"
     "$emissiveblendtint"  "[1 1 1]"
     "$emissiveblendscrollvector"  "[0 0]"

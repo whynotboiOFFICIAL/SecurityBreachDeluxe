@@ -25,9 +25,9 @@
     "$nocull" "1"
     
     "$emissiveblendenabled"   "1"
-    "$emissiveblendtexture"   "dev/null"
+    "$emissiveblendtexture"   "models\whynotboi\securitybreach\shared\white"
     "$emissiveblendbasetexture"    "models\whynotboi\securitybreach\base\animatronics\staffbot\alien\bodyalt_e"
-    "$emissiveblendflowtexture"   "dev/null"
+    "$emissiveblendflowtexture"   "models\whynotboi\securitybreach\shared\white"
     "$emissiveblendstrength"  "1"
     "$emissiveblendtint"  "[2 2 2]"
     "$emissiveblendscrollvector"  "[0 0]"
