@@ -187,6 +187,10 @@ if SERVER then
             self:StopVoices()
         end
 
+        if self.CinTarget then
+            self:ExitCinematic(self.CinTarget)
+        end
+
         local servos = self._ServoSounds
 
         if servos then
