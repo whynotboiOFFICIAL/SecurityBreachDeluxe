@@ -25,6 +25,7 @@ ENT.JumpAnimRate = 1
 ENT.UseWalkframes = true
 
 -- Sounds --
+ENT.DisableMat = true
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/daycareattendant'
 
@@ -43,6 +44,16 @@ ENT.DefaultRelationship = D_LI
 include('binds.lua')
 
 if SERVER then
+    ENT.AnimEventSounds = {
+        ['mvmt_large'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/sun/mech/mvmtlarge/sfx_sunman_mech_mvmt_large_',
+            count = 6,
+            volume = 0.45,
+            channel = CHAN_STATIC
+        }
+    }
+
     -- Basic --
 
     function ENT:JumpscareEntity()
@@ -57,6 +68,8 @@ if SERVER then
         end)
 
         self.SpawnPosition = self:GetPos()
+
+        self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
     end
 
     function ENT:OnReachedPatrol()
@@ -146,6 +159,7 @@ if SERVER then
     end
     
     function ENT:Removed()
+        self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
     end
 
     function ENT:OnIdle()
@@ -176,6 +190,10 @@ if SERVER then
     end
 
     -- Sounds --
+
+    function ENT:StepSFX()
+        self:EmitSound('whynotboi/securitybreach/base/sun/footsteps/fly_sunMan_walk_0' .. math.random(6) .. '.wav')
+    end
 else
     ENT.Tension = 0
 end

@@ -73,7 +73,10 @@
     end
 
     function ENT:MatStepSFX()
+        if self.DisableMat then return end
+        
         local material = self:MaterialCheck()
+
         if not material then return end
 
         local path = footsteps5walk[material] or footsteps6walk[material]
