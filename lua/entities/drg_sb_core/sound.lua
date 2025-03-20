@@ -82,7 +82,13 @@ if SERVER then
 
         local volume = tab.volume or 0.45
         local channel = tab.channel or CHAN_STATIC
-        local soundPath = tab.path .. '0' .. math.random(tab.count) .. '.wav'
+        local soundPath = tab.path
+
+        if not tab.count or tab.count < 2 then
+            soundPath = soundPath .. '.wav'
+        else
+            soundPath = soundPath .. '0' .. math.random(1, tab.count) .. '.wav'
+        end
 
         self:EmitSound(soundPath, 75, 100, volume, channel)
 
