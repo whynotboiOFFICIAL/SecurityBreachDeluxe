@@ -87,7 +87,11 @@ if SERVER then
         if not tab.count or tab.count < 2 then
             soundPath = soundPath .. '.wav'
         else
-            soundPath = soundPath .. '0' .. math.random(1, tab.count) .. '.wav'
+            if tab.count > 9 then
+                soundPath = soundPath .. math.random(1, tab.count) .. '.wav'
+            else
+                soundPath = soundPath .. '0' .. math.random(1, tab.count) .. '.wav'
+            end
         end
 
         self:EmitSound(soundPath, 75, 100, volume, channel)
