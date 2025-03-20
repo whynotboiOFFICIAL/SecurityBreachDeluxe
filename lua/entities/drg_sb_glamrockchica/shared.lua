@@ -40,6 +40,44 @@ include('binds.lua')
 include('voice.lua')
 
 if SERVER then
+    ENT.AnimEventSounds = {
+        ['servo_l'] = {
+            hasEnding = true,
+            path = 'whynotboi/securitybreach/base/glamrockchica/servo/sfx_chica_servo_',
+            count = 6,
+            volume = 0.45,
+            channel = CHAN_STATIC
+        },
+        ['servo_s'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/glamrockchica/servo/short/sfx_chica_servo_short_',
+            count = 14,
+            volume = 1,
+            channel = CHAN_STATIC
+        },
+        ['headtwitch'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/glamrockchica/servo/headtwitch/sfx_chica_servo_head_twitch_',
+            count = 14,
+            volume = 1,
+            channel = CHAN_STATIC
+        },        
+        ['rummage'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/glamrockchica/garbage/rummage/sfx_chica_garbage_rummage_',
+            count = 6,
+            volume = 1,
+            channel = CHAN_STATIC
+        },        
+        ['garbageeat'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/glamrockchica/garbage/eat/sfx_chica_garbage_eat_',
+            count = 6,
+            volume = 1,
+            channel = CHAN_STATIC
+        }
+    }
+
     -- Basic --
 
     function ENT:CustomInitialize()
