@@ -23,6 +23,71 @@ if SERVER then
         return count
     end
 
+    function ENT:_GetSoundCache(name)
+        local rootC = self._AnimSoundCache
+
+        if not rootC then
+            rootC = {}
+            self._AnimSoundCache = rootC
+        end
+
+        local cache = rootC[name]
+
+        if not cache then
+            cache = {}
+            rootC[name] = cache
+        end
+
+        return cache
+    end
+
+    function ENT:_GetAnimSoundDictionary(name)
+        local soundDictionary = self.AnimEventSounds
+        if not soundDictionary then return end
+
+        return soundDictionary[name]
+    end
+
+    function ENT:StopAnimSounds(name, playEndingSound)
+        local tab = self:_GetAnimSoundDictionary(name)
+        if not tab then return end
+
+        local cache = self:_GetSoundCache(name)
+        if cache[1] == nil then return end
+
+        local path = tab.path
+        local volume = tab.volume or 0.45
+        local channel = tab.channel or CHAN_STATIC
+
+        for k, path in ipairs(cache) do
+            self:StopSound(path)
+
+            if playEndingSound and tab.hasEnding then
+                local endSoundPath = string.sub(path, 1, #path - 4) .. '_e.wav'
+
+                self:EmitSound(endSoundPath, 75, 100, volume, channel)
+            end
+        end
+
+        table.Empty(cache)
+    end
+
+    function ENT:HandleAnimSound(name, isEnd)
+        if isEnd then
+            return self:StopAnimSounds(name, true)
+        end
+
+        local tab = self:_GetAnimSoundDictionary(name)
+        if not tab then return end
+
+        local volume = tab.volume or 0.45
+        local channel = tab.channel or CHAN_STATIC
+        local soundPath = tab.path .. '0' .. math.random(tab.count) .. '.wav'
+
+        self:EmitSound(soundPath, 75, 100, volume, channel)
+
+        table.insert(self:_GetSoundCache(name), soundPath)
+    end
     
     -- Voice 
 
@@ -47,33 +112,9 @@ else
     ENT.Tension = 1
 
     local spotted = {}
-    local tensions = {}
-
-    local function createTension(index)
-        local name = 'whynotboi/securitybreach/base/music/tension/tension' .. index
-        local world = game.GetWorld()
-
-        local tension1 = CreateSound(world, name .. '_int1_lp.wav')
-        local tension2 = CreateSound(world, name .. '_int2_lp.wav')
-        local tension3 = CreateSound(world, name .. '_int3_lp.wav')
-
-        tension1:SetSoundLevel(0)
-        tension2:SetSoundLevel(0)
-        tension3:SetSoundLevel(0)
-
-        return {
-            tension1,
-            tension2,
-            tension3
-        }
-    end
 
     function ENT:OnEnemySpotted(ent)
         if ent ~= LocalPlayer() then return end
-
-        tensions[1] = tensions[1] or createTension(1)
-        tensions[2] = tensions[2] or createTension(2)
-        tensions[3] = tensions[3] or createTension(3)
 
         spotted[self] = true
 
@@ -101,69 +142,4 @@ else
 
         return selectedEnt
     end
-
-    local function setTensionVolume(tension, index, volume)
-        volume = math.max(0.016, volume)
-
-        local sound = tension[index]
-
-        if not sound:IsPlaying() then
-            sound:Play()
-        end
-
-        sound:ChangeVolume(volume)
-    end
-
-    local function stopTension(tension)
-        tension = tensions[tension]
-        if not tension then return end
-
-        tension[1]:Stop()
-        tension[2]:Stop()
-        tension[3]:Stop()
-    end
-
-    local lastTension
-    
-    local tension1Dist = 800
-    local tension2Dist = 400
-    local tension3Dist = 100
-
-    timer.Create('fnaf_sb_tension_controller', 0.05, 0, function()
-        local closetEnt = getClosestSpotted()
-
-        if not closetEnt then 
-            if lastTension then
-                stopTension(lastTension)
-            end
-
-            lastTension = nil
-
-            return 
-        end
-
-        local currentTension = closetEnt.Tension
-
-        if currentTension ~= lastTension then
-            if lastTension then
-                stopTension(lastTension)
-            end
-
-            lastTension = currentTension
-        end
-
-        if currentTension < 1 then return end
-
-        local dist = LocalPlayer():GetPos():Distance(closetEnt:GetPos())
-
-        local sum1 = math.min(1, tension1Dist / dist)
-        local sum2 = math.min(1, tension2Dist / dist)
-        local sum3 = math.min(1, tension3Dist / dist)
-
-        local tension = tensions[currentTension]
-
-        setTensionVolume(tension, 1, sum1)
-        setTensionVolume(tension, 2, sum2)
-        setTensionVolume(tension, 3, sum3)
-    end)
 end

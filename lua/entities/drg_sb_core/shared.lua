@@ -122,7 +122,6 @@ if SERVER then
     -- Basic
 
     function ENT:_BaseInitialize()
-        self._ServoLargeCount = self:GetSoundCount('servo/large', 'servo_large')
     end
 
     function ENT:CustomThink()
@@ -191,11 +190,11 @@ if SERVER then
             self:ExitCinematic(self.CinTarget)
         end
 
-        local servos = self._ServoSounds
+        local soundDictionary = self.AnimEventSounds
 
-        if servos then
-            for k, soundName in ipairs(servos) do
-                self:StopSound(soundName .. '.wav')
+        if soundDictionary then
+            for name in pairs(soundDictionary) do
+                self:StopAnimSounds(name, false)
             end
         end
 
@@ -205,36 +204,23 @@ if SERVER then
     -- EventFrames
 
     function ENT:HandleAnimEvent(a,b,c,d,e)
-        if e == 'servostart_l' then
-            local path = self.SFXPath
+        if string.sub(e, 1, 4) == 'sfx_' then
+            local name = string.sub(e, 5)
+            local isEnd, endPos = string.find(name, 'end_')
 
-            if path then
-                path = path .. '/servo/large/'
-                
-                local servos = self._ServoSounds
-
-                if not servos then
-                    servos = {}
-                    self._ServoSounds = servos
-                end
-
-                local sound = path .. 'sfx_servo_large_0' .. math.random(1, self._ServoLargeCount)
-
-                self:EmitSound(sound .. '.wav', 75, 100, 0.45)
-
-                table.insert(servos, sound)
-            end
-        elseif e == 'servoend' then
-            local servos = self._ServoSounds
-
-            if servos then
-                for k, soundName in ipairs(servos) do
-                    self:EmitSound(soundName .. '_e.wav', 75, 100, 0.45)
-                    self:StopSound(soundName .. '.wav')
-                end
+            if isEnd then
+                name = string.sub(name, endPos + 1)
             end
 
-            self._ServoSounds = nil
+            self:HandleAnimSound(name, isEnd and true or false)
+        elseif e == 'stopsounds' then
+            local soundDictionary = self.AnimEventSounds
+
+            if soundDictionary then
+                for name in pairs(soundDictionary) do
+                    self:StopAnimSounds(name, true)
+                end
+            end
         end
 
         if e == 'step' and self.StepSFX then
