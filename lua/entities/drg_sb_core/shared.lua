@@ -12,7 +12,7 @@ ENT.UseWalkframes = true
 -- AI --
 ENT.Omniscient = false
 ENT.SpotDuration = 30
-ENT.RangeAttackRange = 500
+ENT.RangeAttackRange = 1000
 ENT.MeleeAttackRange = 60
 ENT.ReachEnemyRange = 60
 ENT.AvoidEnemyRange = 0
@@ -133,6 +133,31 @@ if SERVER then
             self:VoiceThink()
         end
 
+        if self.LockAim then
+            local ent = self:GetEnemy()
+
+            if IsValid(ent) then
+                self:FaceInstant(ent)
+            else
+                self.LockAim = false
+            end
+        end
+
+        if self.Pouncing and not self.PounceTick then
+            self.PounceTick = true
+
+            for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
+                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) then continue end
+                self:CallInCoroutine(function(self,delay)
+                    self:JumpscareEntity(v)
+                end)
+            end
+
+            self:DrG_Timer(0.1, function()
+                self.PounceTick = false
+            end)
+        end
+
         if self:IsMoving() and self.Moving then
             if self.CurrentFoot == 1 then
                 if self:IsRunning() then
@@ -153,6 +178,17 @@ if SERVER then
             self.Moving = false
             self.IdleAnimation = self.ToStopAnim
         end
+    end
+    
+    local ai_ignoreplayers = GetConVar('ai_ignoreplayers')
+    local ai_disabled = GetConVar('ai_disabled')
+
+    function ENT:GetAIDisabled()
+        return ai_disabled:GetBool()
+    end
+
+    function ENT:GetIgnorePlayers()
+        return ai_ignoreplayers:GetBool()
     end
 
     function ENT:timerName(name)

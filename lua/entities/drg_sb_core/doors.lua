@@ -1,6 +1,6 @@
 function ENT:DoorCode(door)
     if self.DoorDelay then return end
-    for k,v in ipairs(ents.FindInSphere(self:LocalToWorld(Vector(0,0,0)), 60)) do
+    for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
         if not IsValid(v) then continue end
         local classname = v:GetClass()
         

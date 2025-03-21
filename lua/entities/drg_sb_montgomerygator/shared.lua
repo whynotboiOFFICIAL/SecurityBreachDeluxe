@@ -8,6 +8,7 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/montgomerygator
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
+ENT.CanPounce = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
