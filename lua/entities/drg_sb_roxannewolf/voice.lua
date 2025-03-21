@@ -28,10 +28,30 @@ local spotvox = {
     'ROXY_00020'
 }
 
-local stunvox = {
-    'MONTY_00002_01',
-    'MONTY_00002_02',
-    'MONTY_00002_03'
+ENT.PounceAnticVox = {
+    'ROXY_00042_01',
+    'ROXY_00042_02',
+    'ROXY_00042_03',
+    'ROXY_00042_04',
+    'ROXY_00042_05',
+    'ROXY_00042_06',
+    'ROXY_00042_07',
+    'ROXY_00042_08',
+    'ROXY_00042_09',
+    'ROXY_00042_10',
+    'ROXY_00042_11',
+    'ROXY_00042_12',
+    'ROXY_00042_13'
+}
+
+ENT.PounceJumpVox = {
+    'ROXY_00043_01',
+    'ROXY_00043_02',
+    'ROXY_00043_03',
+    'ROXY_00043_04',
+    'ROXY_00043_05',
+    'ROXY_00043_06',
+    'ROXY_00043_07'
 }
 
 if SERVER then
@@ -60,12 +80,6 @@ if SERVER then
 
         for i = 1, #spotvox do
             self:StopVoiceLine(spotvox[i])
-        end
-        
-        if mode == 2 then return end
-
-        for i = 1, #stunvox do
-            self:StopVoiceLine(stunvox[i])
         end
     end
 
