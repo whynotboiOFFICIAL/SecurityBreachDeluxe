@@ -27,6 +27,19 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/roxannewolf'
 
+ENT.PounceJumpSounds = {
+    '/leap/fly_roxy_leap_01.wav',
+    '/leap/fly_roxy_leap_02.wav',
+    '/leap/fly_roxy_leap_03.wav',
+    '/leap/fly_roxy_leap_04.wav'
+}
+
+ENT.PounceLandSounds = {
+    '/land/fly_roxy_land_01.wav',
+    '/land/fly_roxy_land_02.wav',
+    '/land/fly_roxy_land_03.wav'
+}
+
 -- Detection --
 ENT.EyeBone = 'Head_jnt'
 ENT.EyeOffset = Vector(0, 0, 0)

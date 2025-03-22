@@ -12,7 +12,7 @@ ENT.UseWalkframes = true
 -- AI --
 ENT.Omniscient = false
 ENT.SpotDuration = 30
-ENT.RangeAttackRange = 1000
+ENT.RangeAttackRange = 600
 ENT.MeleeAttackRange = 60
 ENT.ReachEnemyRange = 60
 ENT.AvoidEnemyRange = 0

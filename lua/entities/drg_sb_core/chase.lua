@@ -9,11 +9,11 @@ function ENT:OnRangeAttack(ent)
 
     if math.random(100) > 50 then
         self:PounceStart()
+    else
+        self:DrG_Timer(5, function()
+            self.RangeTick = false
+        end)
     end
-
-    self:DrG_Timer(5, function()
-        self.RangeTick = false
-    end)
 end
 
 function ENT:OnLandOnGround()
@@ -21,13 +21,24 @@ function ENT:OnLandOnGround()
         self.Pouncing = false
 
         self:CallInCoroutine(function(self,delay)
+            if self.PounceLandSounds then
+                local snd = self.PounceLandSounds[math.random(#self.PounceLandSounds)]
+        
+                self:EmitSound(self.SFXPath .. snd)
+            end
+
+            if self.PounceLandVox then
+                self:StopVoices()
+                self:PlayVoiceLine(self.PounceLandVox[math.random(#self.PounceLandVox)])
+            end
+
             self:PlaySequenceAndMove('pounceland')
         end)
 
         self.PounceStarted = false
-
         self.Moving = false
-    
+        self.Stunned = true
+
         self.JumpAnimation = 'idle'
         self.IdleAnimation = 'pouncestunloop'
 
@@ -36,25 +47,51 @@ function ENT:OnLandOnGround()
                 self:PlaySequenceAndMove('pouncestuntoidle')
                 self.IdleAnimation = 'idle'
 
+                self.DisableControls = false
+                self.Stunned = false
+                self.VoiceDisabled = false
+
                 self:SetAIDisabled(false)
                 self:SetMaxYawRate(250)
+                
+                self:DrG_Timer(5, function()
+                    self.RangeTick = false
+                end)
             end)
         end)
     end
 end
 
 function ENT:PounceStart()
-    self:EmitSound('whynotboi/securitybreach/base/bot/leap/fly_bot_leap_prep_0' .. math.random(3) .. '.wav')
+    self:EmitSound('whynotboi/securitybreach/base/bot/leap/fly_bot_leap_prep_0' .. math.random(3) .. '.wav', 75, 100, 0.5)
 
     self:SetAIDisabled(true)
 
     self.PounceStarted = true
-
     self.LockAim = true
+    self.VoiceDisabled = true
 
     self.JumpAnimation = 'pouncejumploop'
 
+    if self.PounceAnticVox then
+        self:StopVoices()
+        self:PlayVoiceLine(self.PounceAnticVox[math.random(#self.PounceAnticVox)])
+    end
+
     self:PlaySequenceAndMove('pounceantic')
+
+    self.DisableControls = true
+    
+    if self.PounceJumpVox then
+        self:StopVoices()
+        self:PlayVoiceLine(self.PounceJumpVox[math.random(#self.PounceJumpVox)])
+    end
+
+    if self.PounceJumpSounds then
+        local snd = self.PounceJumpSounds[math.random(#self.PounceJumpSounds)]
+
+        self:EmitSound(self.SFXPath .. snd)
+    end
 
     self.LockAim = false
 

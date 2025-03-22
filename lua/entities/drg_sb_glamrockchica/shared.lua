@@ -42,10 +42,10 @@ include('voice.lua')
 if SERVER then
     ENT.AnimEventSounds = {
         ['servo_l'] = {
-            hasEnding = false,
+            hasEnding = true,
             path = 'whynotboi/securitybreach/base/glamrockchica/servo/sfx_chica_servo_',
             count = 6,
-            volume = 1,
+            volume = 0.7,
             channel = CHAN_STATIC
         },
         ['servo_s'] = {

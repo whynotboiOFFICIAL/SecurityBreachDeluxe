@@ -1,7 +1,10 @@
 ENT.PossessionBinds = {
     [IN_JUMP] = {{
-        coroutine = false,
+        coroutine = true,
         onkeydown = function(self)
+            if self.PounceStarted or self.DisableControls then return end
+
+            self:PounceStart()
         end
     }},
     

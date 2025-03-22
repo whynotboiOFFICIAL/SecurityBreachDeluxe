@@ -1,5 +1,5 @@
 function ENT:Turn(pos, subs)
-    if self:IsDown() or self.Lured then return end
+    if self:IsDown() or self.DisableControls then return end
 
     local direction = self:CalcPosDirection(pos, subs)
     if direction == 'W' then
@@ -14,7 +14,7 @@ function ENT:Turn(pos, subs)
 end
 
 function ENT:PossessionControls(forward, backward, right, left)
-    if self:IsDown() or self.Lured then return end
+    if self:IsDown() or self.DisableControls then return end
     
     local direction = self:GetPos()
 
