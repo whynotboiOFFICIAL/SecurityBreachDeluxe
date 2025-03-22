@@ -14,9 +14,9 @@ ENT.SpawnHealth = 1000
 
 -- Animations --
 ENT.WalkAnimation = 'walk'
-ENT.WalkAnimRate = 124.90
+ENT.WalkAnimRate = 1
 ENT.RunAnimation = 'walk'
-ENT.RunAnimRate = 124.90
+ENT.RunAnimRate = 1
 ENT.IdleAnimation = 'idle'
 ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
@@ -41,9 +41,9 @@ ENT.HearingCoefficient = 1
 
 ENT.DefaultRelationship = D_LI
 
-include('binds.lua')
-
 if SERVER then
+    include('binds.lua')
+
     ENT.AnimEventSounds = {
         ['mvmt_large'] = {
             hasEnding = false,
@@ -55,6 +55,21 @@ if SERVER then
     }
 
     -- Basic --
+
+    function ENT:SetAttendantType(typeNum)
+        self.AttendantType = typeNum
+
+        self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
+
+        if typeNum == 0 then -- Sun
+            self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
+            self:SetDefaultRelationship(D_LI)
+        else -- Moon
+            self:SetDefaultRelationship(D_HT)
+        end
+
+        self:CallOnClient('SetAttendantType', typeNum)
+    end
 
     function ENT:JumpscareEntity()
     end
@@ -69,14 +84,21 @@ if SERVER then
 
         self.SpawnPosition = self:GetPos()
 
-        self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
+        self:SetAttendantType(1)
     end
 
     function ENT:OnReachedPatrol()
 	end
 
-    function ENT:CustomThink()
+    function ENT:SunThink()
+        local aiDisabled = self:GetAIDisabled() or self:GetIgnorePlayers()
+
         if self.Holding then
+            if aiDisabled then
+                self:OnReachedPatrol()
+                return
+            end
+
             self.SpawnPosition.z = self:GetPos().z
 
             self:ClearPatrols()
@@ -84,6 +106,8 @@ if SERVER then
 
             return
         end
+
+        if aiDisabled then return end
 
         local ply = self.Target
         if not ply then return end
@@ -98,6 +122,12 @@ if SERVER then
 
         if not ply:IsValid() then return end
 
+        local ang = ply:EyeAngles()
+
+        ang.x = 0
+
+        local forward = ang:Forward()
+
         local plyPos = ply:GetPos()
         local pos = self:GetPos()
 
@@ -105,14 +135,14 @@ if SERVER then
 
         local plyDist = plyPos:Distance(pos)
 
-        if plyDist > 60 then
+        if plyPos:Distance(self.SpawnPosition) > 180 then
+            self.IsBlocking = false
+        end
+
+        if plyDist > 100 then
             self.WalkAnimation = 'walk'
 
-            if plyPos:Distance(self.SpawnPosition) > 80 then
-                self.IsBlocking = false
-            end
-
-            self:AddPatrolPos(plyPos)
+            self:AddPatrolPos(plyPos + forward * 5)
 
             return
         else
@@ -128,31 +158,65 @@ if SERVER then
             end
         end
 
+        if not self.IsBlocking then return end
+
         self:FaceInstant(Entity(1))
 
-        local ang = ply:EyeAngles()
+        local radians = self:GetRadians(self.Target)
+        local currentRadian = self.CurrentRadians
+        
+        currentRadian = math.Approach(currentRadian, radians, FrameTime() * 3)
 
-        ang.x = 0
+        self.CurrentRadians = currentRadian
 
-        local forward = ang:Forward()
-        local walkPos = plyPos + forward * 45;
-        local dist = pos:DistToSqr(walkPos)
-        local nside = (walkPos - plyPos):Dot(self:GetRight())
+        local x = 75 * math.sin(currentRadian)
+        local y = 75 * math.cos(currentRadian)
+        local z = 0
+
+        local walkPos = self.Target:GetPos() + Vector(x, y)
+
+        local secondPos = (plyPos + forward * 75)
+        local dist = pos:DistToSqr(secondPos)
+        local nside = (secondPos - plyPos):Dot(self:GetRight())
 
         self:SetPoseParameter("move_y", nside > 1 and 1 or -1)
 
-        if dist > 3000 then
-            local farPos = walkPos + forward * 150;
+        --[[if dist > 3000 then
+            local farPos = walkPos + forward * 150
             local farDist = pos:DistToSqr(farPos)
 
             if farDist > 3000 then -- use nav mesh to mitigate getting stuck
+                self:SetCollisionGroup(10)
                 self:AddPatrolPos(farPos)
             else
+                self:SetCollisionGroup(0)
                 self.loco:Approach(walkPos, 1)
-            end
-        elseif dist > 300 then
+            end]]
+
+        if dist > 800 then
             self.loco:Approach(walkPos, 1)
         end
+    end
+
+    function ENT:MoonThink()
+    end
+
+    function ENT:CustomThink()
+        if self.AttendantType == 0 then
+            self:SunThink()
+        else
+            self:MoonThink()
+        end
+    end
+
+    function ENT:GetRadians(ent)
+        local ang = -ent:EyeAngles()
+        ang:Normalize()
+        
+        local x = (ang.y + 90)
+        local radians = (x * (math.pi / 180.0))
+
+        return radians
     end
 
     function ENT:OnDeath()
@@ -163,29 +227,41 @@ if SERVER then
     end
 
     function ENT:OnIdle()
+        if self.AttendantType ~= 0 then
+            self:AddPatrolPos(self:RandomPos(1500))
+        end
     end
 
     function ENT:OnNewEnemy()
+        if self.OnSpotEnemy then
+            self:OnSpotEnemy(ent)
+        end
     end
 
     function ENT:OnMeleeAttack(ply)
     end
 
     function ENT:OnReachedPatrol()
-        if self.Holding then
-            self.Holding = false
-            self.IsBlocking = true
+        if self.AttendantType == 0 then
+            if self.Holding then
+                self.Holding = false
+                self.IsBlocking = true
 
-            self.Target:SetPos(self:GetPos() + self:GetForward() * 40)
+                self.Target:SetPos(self:GetPos() + self:GetForward() * 80)
 
-            self:ExitCinematic(self.Target)
+                self:ExitCinematic(self.Target)
 
-            local angle = (self:GetPos() - self.Target:GetPos()):Angle()
-            self.Target:SetEyeAngles(Angle(0, angle.y, 0))
+                local angle = (self:GetPos() - self.Target:GetPos()):Angle()
 
-            self.WalkAnimation = 'walk'
-            self.RunAnimation = 'walk'
-            self.IdleAnimation = 'idle'
+                self.Target:SetEyeAngles(Angle(0, angle.y, 0))
+                self.CurrentRadians = self:GetRadians(self.Target)
+
+                self.WalkAnimation = 'walk'
+                self.RunAnimation = 'walk'
+                self.IdleAnimation = 'idle'
+            end
+        else
+            self:Wait(math.random(3, 7))
         end
     end
 
@@ -195,6 +271,16 @@ if SERVER then
         self:EmitSound('whynotboi/securitybreach/base/sun/footsteps/fly_sunMan_walk_0' .. math.random(6) .. '.wav')
     end
 else
+    function ENT:SetAttendantType(typeNum)
+        self.AttendantType = typeNum
+
+        if typeNum == 0 then -- Sun
+            self.Tension = 0
+        else -- Moon
+            self.Tension = 3
+        end
+    end
+
     ENT.Tension = 0
 end
 
