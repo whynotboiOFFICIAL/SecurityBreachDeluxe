@@ -62,7 +62,7 @@ if SERVER then
 
         local timer = math.random(15, 30)
 
-        if math.random(1,10) > 0 then
+        if math.random(1,10) > 5 then
             self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
         end
 

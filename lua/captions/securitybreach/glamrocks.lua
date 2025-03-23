@@ -94,4 +94,24 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
 
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00019.wav', '<clr:200, 0, 255>I found him!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00020.wav', '<clr:200, 0, 255>Over here!')
+    
+    -- Moon Idle Voices
+
+    path = 'whynotboi/securitybreach/base/moon/vo/'
+    
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00002.wav', '<clr:0, 21, 255>Hidey hide! Hide away...')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00003.wav', '<clr:0, 21, 255>It\'s past your bedtime.')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00004.wav', '<clr:0, 21, 255>Bad children must be found.')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00005.wav', '<clr:0, 21, 255>Bad children must be punished.')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_01.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_02.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_03.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_04.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_05.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_06.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_07.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_08.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00007.wav', '<clr:0, 21, 255>Knock knock.')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00008.wav', '<clr:0, 21, 255>Good night...')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00010.wav', '<clr:0, 21, 255>Rrrrggh... Clean up! Clean up!')
 end)

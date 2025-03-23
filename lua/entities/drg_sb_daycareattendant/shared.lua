@@ -4,7 +4,7 @@ ENT.Base = 'drg_sb_core' -- DO NOT TOUCH (obviously)
 -- Misc --
 ENT.PrintName = 'Daycare Attendant'
 ENT.Category = 'Security Breach'
-ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/daycareattendant/sun.mdl'}
+ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/daycareattendant/daycareattendant.mdl'}
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
@@ -27,7 +27,7 @@ ENT.UseWalkframes = true
 -- Sounds --
 ENT.DisableMat = true
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
-ENT.SFXPath = 'whynotboi/securitybreach/base/daycareattendant'
+ENT.SFXPath = 'whynotboi/securitybreach/base/sun'
 
 -- Detection --
 ENT.EyeBone = 'Head_jnt'
@@ -41,6 +41,8 @@ ENT.HearingCoefficient = 1
 
 ENT.DefaultRelationship = D_LI
 
+include('voice.lua')
+
 if SERVER then
     include('binds.lua')
 
@@ -51,6 +53,27 @@ if SERVER then
             count = 6,
             volume = 0.45,
             channel = CHAN_STATIC
+        },
+        ['mvmt_small'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/moon/mech/mvmtsmall/sfx_moonman_mech_mvmt_small_',
+            count = 8,
+            volume = 0.45,
+            channel = CHAN_STATIC
+        },
+        ['springwronk'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/moon/mech/springwronk/sfx_moonman_mech_spring_wronk_',
+            count = 6,
+            volume = 0.45,
+            channel = CHAN_STATIC
+        },
+        ['headspin'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/moon/mech/headspin/sfx_moonman_mech_head_spin_',
+            count = 5,
+            volume = 1,
+            channel = CHAN_STATIC
         }
     }
 
@@ -60,12 +83,26 @@ if SERVER then
         self.AttendantType = typeNum
 
         self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
+        self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav')
+        self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_general_lp.wav')
 
         if typeNum == 0 then -- Sun
-            self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
+            self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav', 75, 100, 0.45)
             self:SetDefaultRelationship(D_LI)
+            self:SetSkin(0)
+            self:SetBodygroup(1, 0)
         else -- Moon
+            self:EmitSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav', 75, 100, 0.45)
+            self:EmitSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_general_lp.wav', 75, 100, 0.45)
             self:SetDefaultRelationship(D_HT)
+            self:SetSkin(1)
+            self:SetBodygroup(1, 1)
+
+            self.SFXPath = 'whynotboi/securitybreach/base/moon'
+            
+            self.IdleAnimation = 'moonidle1'
+            self.WalkAnimation = 'moonwalk'
+            self.RunAnimation = 'moonwalk'
         end
 
         self:CallOnClient('SetAttendantType', typeNum)
@@ -199,6 +236,9 @@ if SERVER then
     end
 
     function ENT:MoonThink()
+        if self.VoiceThink then
+            self:VoiceThink()
+        end
     end
 
     function ENT:CustomThink()
@@ -224,6 +264,8 @@ if SERVER then
     
     function ENT:Removed()
         self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
+        self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav')
+        self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_general_lp.wav')
     end
 
     function ENT:OnIdle()
@@ -268,7 +310,12 @@ if SERVER then
     -- Sounds --
 
     function ENT:StepSFX()
-        self:EmitSound('whynotboi/securitybreach/base/sun/footsteps/fly_sunMan_walk_0' .. math.random(6) .. '.wav')
+        if self.AttendantType == 1 then
+            self:EmitSound('whynotboi/securitybreach/base/moon/footsteps/walk/fly_moonMan_walk_0' .. math.random(8) .. '.wav')
+            self:EmitSound('whynotboi/securitybreach/base/moon/footsteps/bells/sfx_moonman_step_bells_0' .. math.random(8) .. '.wav')
+        else
+            self:EmitSound('whynotboi/securitybreach/base/sun/footsteps/fly_sunMan_walk_0' .. math.random(6) .. '.wav')
+        end
     end
 else
     function ENT:SetAttendantType(typeNum)
