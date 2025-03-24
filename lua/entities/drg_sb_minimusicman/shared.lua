@@ -73,6 +73,7 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:EmitSound('whynotboi/securitybreach/base/minimusicman/music.wav',75, 100, 0.4)
     end
 
     function ENT:AddCustomThink()
@@ -82,11 +83,15 @@ if SERVER then
     end
     
     function ENT:Removed()
+        self:StopSound('whynotboi/securitybreach/base/minimusicman/music.wav')
     end
 
     -- Sounds --
 
     function ENT:OnNewEnemy()
+    end
+
+    function ENT:OnLastEnemy()
     end
 
     function ENT:StepSFX()
