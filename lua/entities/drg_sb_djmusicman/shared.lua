@@ -96,7 +96,7 @@ if SERVER then
             channel = CHAN_STATIC
         }
     }
-
+    
     -- Basic --
 
     function ENT:CustomInitialize()
@@ -111,6 +111,10 @@ if SERVER then
         self.Track = 1
 
         self.SleepPos = self:GetPos()
+
+        self:SetSkin(0)
+
+        self:SetNWInt('eyeframe', 0)
     end
 
     function ENT:AddCustomThink()
@@ -128,6 +132,18 @@ if SERVER then
                 self.SleepTick = false
             end)
         end
+
+        if not self.Sleeping and not self.EyeOccupied and not self.EyeTick then
+            self.EyeTick = true
+
+            if math.random(100) > 50 then
+                self:SetSkin(math.random(4, 10))
+            end
+
+            self:DrG_Timer(5, function()
+                self.EyeTick = false
+            end)
+        end
     end
 
     function ENT:SleepEnter(nomus)
@@ -142,6 +158,8 @@ if SERVER then
 
         self:SetAIDisabled(true)
 
+        self:SetSkin(0)
+        
         if not nomus then
             self:SwitchTrack(1)
         end
@@ -289,7 +307,16 @@ if SERVER then
     end
 
 else
-
+	matproxy.Add( {
+		name = 'SBDELUXEDJMMEYEFRAME',
+	
+		init = function( self, mat, values )
+			self.ResultTO = values.resultvar
+		end,
+		bind = function( self, mat, ent )
+            mat:SetInt( self.ResultTO, ent:GetNWInt('eyeframe') )
+	   end 
+	} )
 end
 
 -- DO NOT TOUCH --
