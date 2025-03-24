@@ -122,6 +122,45 @@ if SERVER then
     -- Basic
 
     function ENT:_BaseInitialize()
+        self.Width = self:BoundingRadius() * 0.1
+    end
+
+    function ENT:IsBeingLookedAt()
+        local players = player.GetHumans()
+        local isBeingLookedAt = false
+    
+        for i = 1, #players do
+            local ply = players[i]
+    
+            if self:GetPossessor() ~= ply then
+                local tr = util.TraceLine{
+                    start = self:GetPos(),
+                    endpos = ply:WorldSpaceCenter(),
+                    mask = 1,
+                    filter = function(self)
+                        return not self:IsNextBot() and not self:IsNPC()
+                    end
+                }
+                
+                if tr.Fraction < 1 or tr.Fraction > 0.1 then
+                    local viewEntity = ply:GetViewEntity()
+    
+                    if viewEntity:IsValid() then
+                        local fov = ply:GetFOV()
+                        local disp = (self:GetPos() - viewEntity:GetPos())
+                        local dist = disp:Length()
+                        local maxcos = math.abs(math.cos(math.acos(dist / math.sqrt(dist * dist + self.Width * self.Width)) + fov * (math.pi / 180)))
+                        
+                        if disp:GetNormalized():Dot(ply:EyeAngles():Forward()) > maxcos then
+                            isBeingLookedAt = true
+                            break
+                        end
+                    end
+                end
+            end
+        end
+    
+        return isBeingLookedAt
     end
 
     function ENT:CustomThink()

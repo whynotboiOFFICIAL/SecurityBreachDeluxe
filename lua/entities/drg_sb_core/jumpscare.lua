@@ -8,6 +8,7 @@ function ENT:JumpscareEntity(entity)
     entity:SetPos(self:GetPos() + self:GetForward() * 35)
 
     self.Moving = false
+    self.ForceCycle = false
     
     self.CurrentVictim = entity
     entity:AddFlags(FL_NOTARGET)

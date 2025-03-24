@@ -73,7 +73,7 @@
     end
 
     function ENT:MatStepSFX()
-        if self.DisableMat then return end
+        if self.DisableMat or self.IsFrozen then return end
         
         local material = self:MaterialCheck()
 
