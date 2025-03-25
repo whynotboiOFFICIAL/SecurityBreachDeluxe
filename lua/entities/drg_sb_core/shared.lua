@@ -303,6 +303,10 @@ if SERVER then
             self:MatStepSFX()
         end
 
+        if self.CustomAnimEvents then
+            self:CustomAnimEvents(e)
+        end
+
         if e == 'onlleg' then
             self.CurrentFoot = 1
 

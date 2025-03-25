@@ -157,7 +157,7 @@ if SERVER then
         
         local enemy = self:GetEnemy()
 
-        if IsValid(enemy) and enemy:IsPlayer() and enemy:Alive()  then
+        if IsValid(enemy) and enemy:IsPlayer() and enemy:Health() > 0  then
             if not self:IsBeingLookedAt() or not self:Visible(enemy) then
                 self:UnFrozen()
             else
@@ -195,6 +195,14 @@ if SERVER then
     function ENT:StepSFX()
         if self.IsFrozen then return end
 
+        local shake = 0.6
+
+        if self:IsRunning() then
+            shake = 0.7
+        end
+
+        util.ScreenShake( self:GetPos(), shake, 1, 1, 500 )
+        
         self:EmitSound('whynotboi/securitybreach/base/endo/footsteps/walk/fly_endo_walk_0'.. math.random(1,8) .. '.wav')
     end
 

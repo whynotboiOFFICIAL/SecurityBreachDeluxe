@@ -8,6 +8,7 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/glamrockfreddy/
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 85)
 ENT.BloodColor = DONT_BLEED
+ENT.CanBeSummoned = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
