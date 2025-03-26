@@ -60,7 +60,8 @@ if SERVER then
 
     -- Basic --
 
-    function ENT:CustomInitialize()
+    function ENT:_BaseInitialize()
+        self.WheelAngle = 0
     end
 
     function ENT:RandomizePatrolPaths()
@@ -83,6 +84,7 @@ if SERVER then
         if self.AddCustomThink then
             self:AddCustomThink()
         end
+
         
         if self:IsMoving() and self:IsOnGround() then
             if not self.Wheels then
@@ -90,6 +92,10 @@ if SERVER then
 
                 self.Wheels = true
             end
+
+            self.WheelAngle = self.WheelAngle + 10
+
+            self:ManipulateBoneAngles(28, Angle(0, 0, self.WheelAngle))
         else
             if self.Wheels then
                 self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_01.wav')
