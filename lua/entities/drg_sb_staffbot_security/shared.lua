@@ -37,13 +37,11 @@ if SERVER then
         local hat = ents.Create('prop_dynamic')
         
         hat:SetModel('models/whynotboi/securitybreach/base/animatronics/staffbot/props/securityhat.mdl')
-        hat:SetModelScale(1.4)
+        hat:SetModelScale(1)
         hat:SetParent(self)
         hat:SetSolid(SOLID_NONE)
 
-        hat:Fire('SetParentAttachmentMaintainOffset','Head')
-        hat:SetLocalPos(Vector(9, -1.85, 76.5))
-        hat:SetLocalAngles(Angle(0, 0, 0))
+        hat:Fire('SetParentAttachment','Head')
 
         hat:Spawn()
     end
@@ -56,9 +54,7 @@ if SERVER then
         flashlight:SetParent(self)
         flashlight:SetSolid(SOLID_NONE)
 
-        flashlight:Fire('SetParentAttachmentMaintainOffset','Prop')
-        flashlight:SetLocalPos(Vector(13, -15, 69))
-        flashlight:SetLocalAngles(Angle(40, 0, -120))
+        flashlight:Fire('SetParentAttachment','Prop')
 
         flashlight:Spawn()
     end

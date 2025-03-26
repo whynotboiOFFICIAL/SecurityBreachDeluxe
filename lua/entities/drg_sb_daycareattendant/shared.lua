@@ -121,7 +121,7 @@ if SERVER then
 
         self.SpawnPosition = self:GetPos()
 
-        self:SetAttendantType(1)
+        self:SetAttendantType(0)
     end
 
     function ENT:OnReachedPatrol()
