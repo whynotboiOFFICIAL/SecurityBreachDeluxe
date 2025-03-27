@@ -17,6 +17,8 @@ ENT.RunAnimation = 'idlestay'
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/staffbot/jumpscare/sfx_mapbot_jumpscare.wav'
 
+include('binds.lua')
+
 if SERVER then
 
     local voices = {

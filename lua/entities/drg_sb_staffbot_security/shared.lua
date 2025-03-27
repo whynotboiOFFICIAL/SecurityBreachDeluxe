@@ -6,6 +6,7 @@ ENT.PrintName = 'S.T.A.F.F. Bot (Security)'
 ENT.Category = 'Security Breach'
 ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/security/securitybot.mdl'}
 
+include('binds.lua')
 if SERVER then
 
     local voices = {
@@ -135,7 +136,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if self.Stunned or GetConVar('ai_disabled'):GetBool() then return end
+        if self.Stunned or GetConVar('ai_disabled'):GetBool() or self:IsPossessed() then return end
 
         if not self.CatchTick then          
             local size = 140
@@ -146,7 +147,7 @@ if SERVER then
             self.CatchTick = true
 
             for k, v in ipairs( ents.FindInCone( startPos, dir, size, angle ) ) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or v:Health() < 1 then continue end
+                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or v:Health() < 1 then continue end
 
                 self:CallInCoroutine(function(self,delay)
                     self:JumpscareEntity(v)

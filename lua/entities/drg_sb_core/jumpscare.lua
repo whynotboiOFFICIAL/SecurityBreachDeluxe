@@ -6,8 +6,7 @@ function ENT:JumpscareEntity(entity)
     end
     
     entity:SetPos(self:GetPos() + self:GetForward() * 35)
-
-    self.Moving = false
+    
     self.ForceCycle = false
     
     self.CurrentVictim = entity
@@ -54,6 +53,8 @@ function ENT:JumpscareEntity(entity)
         entity:TakeDamage(1e9, self)
     end
 
+    self.Moving = false
+    
     if self.VoiceDisabled then
         self.VoiceDisabled = false
     end
