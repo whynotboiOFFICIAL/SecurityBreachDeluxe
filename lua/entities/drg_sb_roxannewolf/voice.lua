@@ -7,7 +7,6 @@ local idlevox = {
     'ROXY_00014',
     'ROXY_00016',
     'ROXY_00017',
-    'ROXY_00018',
     'ROXY_00022',
     'ROXY_00029',
     'ROXY_00030',
@@ -24,6 +23,7 @@ local idlevox = {
 }
 
 local spotvox = {
+    'ROXY_00018',
     'ROXY_00019',
     'ROXY_00020'
 }

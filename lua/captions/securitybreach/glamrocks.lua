@@ -75,7 +75,6 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00014.wav', '<clr:200, 0, 255>You can\'t hide forever')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00016.wav', '<clr:200, 0, 255>You can\'t outrun me!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00017.wav', '<clr:200, 0, 255>You think you\'re better than me?!')
-    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00018.wav', '<clr:200, 0, 255>I\'m the best!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00022.wav', '<clr:200, 0, 255>Want an autograph?')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00029.wav', '<clr:200, 0, 255>Are you lost?')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00030.wav', '<clr:200, 0, 255>I can help.')
@@ -91,7 +90,8 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00045.wav', '<clr:200, 0, 255>Keep searching! He can\'t hide forever.')
 
     -- Roxy Spot Voices
-
+    
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00018.wav', '<clr:200, 0, 255>I\'m the best!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00019.wav', '<clr:200, 0, 255>I found him!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00020.wav', '<clr:200, 0, 255>Over here!')
     

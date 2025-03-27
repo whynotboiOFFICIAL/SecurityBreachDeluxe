@@ -60,7 +60,7 @@ if SERVER then
             hasEnding = true,
             path = 'whynotboi/securitybreach/base/roxannewolf/servo/large/sfx_roxy_servo_large_',
             count = 3,
-            volume = 0.45,
+            volume = 0.2,
             channel = CHAN_STATIC
         },
         ['servo_s'] = {
