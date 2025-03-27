@@ -1,5 +1,5 @@
 
--- Glamrocks
+-- StaffBots
 
 hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     hook.Remove('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS')
@@ -85,5 +85,20 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00015_f.wav', '<clr:204, 204, 204>Backup requested.')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00016_f.wav', '<clr:204, 204, 204>Lost child found.')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00017_f.wav', '<clr:204, 204, 204>Target located.')
+        
+    local path = 'whynotboi/securitybreach/base/staffbot/vo/map/'
+
+    -- Map Bot Male
     
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001_m.wav', '<clr:204, 204, 204>Hi, please take this map.')
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001alt_m.wav', '<clr:204, 204, 204>Hello, please take this map')
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00002_m.wav', '<clr:204, 204, 204>Take a map.')
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00004_m.wav', '<clr:204, 204, 204>Thank you, please enjoy.')
+    
+    -- Map Bot Female
+    
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001_f.wav', '<clr:204, 204, 204>Hi, please take this map.')
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001alt_f.wav', '<clr:204, 204, 204>Hello, please take this map')
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00002_f.wav', '<clr:204, 204, 204>Take a map.')
+    SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00004_f.wav', '<clr:204, 204, 204>Thank you, please enjoy.')
 end)
