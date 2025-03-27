@@ -10,6 +10,10 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/comedi
 ENT.WalkSpeed = 0
 ENT.RunSpeed = 0
 
+-- Possession --
+ENT.PossessionEnabled = false
+ENT.PossessionPrompt = false
+
 include('binds.lua')
 
 if SERVER then
@@ -36,24 +40,48 @@ if SERVER then
         'COMEDYBOT_00019'
     }
 
+    local delays = {
+        [1] = 3,
+        [2] = 3,
+        [3] = 2,
+        [4] = 4,
+        [5] = 4,
+        [6] = 4,
+        [7] = 2,
+        [8] = 2,
+        [9] = 4,
+        [10] = 3,
+        [11] = 3,
+        [12] = 3,
+        [13] = 3,
+        [14] = 0.6,
+        [15] = 3,
+        [16] = 3,
+        [17] = 2,
+        [18] = 3,
+        [19] = 5,
+    }
     -- Basic --
 
     function ENT:CustomInitialize()
-        self.Gender = math.random(2)
+        local g = math.random(2)
+
+        self.Gender = 'm'
+
+        if g == 2 then
+            self.Gender = 'f'
+        end
     end
 
     function ENT:BeginSequence()
         self.CurrentLine = 1
 
-        local gender = 'm'
-
-        if self.Gender == 2 then
-            gender = 'f'
-        end
+        local gender = self.Gender
 
         for i = 1, #voices do
-            self:PlayVoiceLine(voices[self.CurrentLine], gender)
-            self.CurrentLine = self.CurrentLine + 1
+            self:CallInCoroutine(function(self,delay)
+                self:PlayVoiceLine(voices[self.CurrentLine], gender)
+            end)
         end
     end
 
@@ -62,9 +90,19 @@ if SERVER then
 
         if path == nil then return end
 
-        self:EmitSound(path .. '/vo/comedy/' .. vo .. '_' .. g ..'.wav')
+        local snd = path .. '/vo/comedy/' .. vo .. '_' .. g ..'.wav'
 
-        self:PlaySequenceAndMove(vo)
+        self:EmitSound(snd)
+
+        local dur = SoundDuration(snd)
+        local seq = self:LookupSequence(vo)
+        
+        self:RemoveAllGestures()
+        self:AddGestureSequence(seq, false)
+
+        self:Wait(dur)
+        self:Wait(delays[self.CurrentLine])
+        self.CurrentLine = self.CurrentLine + 1
     end
 
     function ENT:StopVoiceLine(vo, g)
@@ -76,12 +114,8 @@ if SERVER then
     end
 
     function ENT:StopVoices()
-        local gender = 'm'
-
-        if self.Gender == 2 then
-            gender = 'f'
-        end
-
+        local gender = self.Gender
+        
         for i = 1, #voices do
             self:StopVoiceLine(voices[i], gender)
         end
@@ -94,7 +128,7 @@ if SERVER then
     end
 
     function ENT:OnIdle()
-        if math.random(1, 100) > 50 then
+        if math.random(1, 100) > 60 then
             self:BeginSequence()
         end
 

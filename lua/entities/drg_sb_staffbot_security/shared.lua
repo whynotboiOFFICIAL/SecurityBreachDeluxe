@@ -8,6 +8,16 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/securi
 
 if SERVER then
 
+    local voices = {
+        'sentrybot_00011',
+        'sentrybot_00012',
+        'sentrybot_00013',
+        'sentrybot_00014',
+        'sentrybot_00015',
+        'sentrybot_00016',
+        'sentrybot_00017'
+    }
+
     -- Basic --
 
     function ENT:CustomInitialize()
@@ -18,6 +28,14 @@ if SERVER then
         self:SpawnLight()
 
         self:RandomizePatrolPaths()
+        
+        local g = math.random(2)
+
+        self.Gender = 'm'
+
+        if g == 2 then
+            self.Gender = 'f'
+        end
     end
 
     function ENT:CustomAnimEvents(e)
@@ -31,6 +49,36 @@ if SERVER then
 
     function ENT:OnDispossessed() 
         self:RandomizePatrolPaths()
+    end
+
+    function ENT:PlayVoiceLine(vo)
+        local path = self.SFXPath
+
+        if path == nil then return end
+
+        local g = self.Gender
+
+        local snd = path .. '/vo/sentry/' .. vo .. '_' .. g ..'.wav'
+
+        self:EmitSound(snd)
+    end
+
+    function ENT:StopVoiceLine(vo)
+        local path = self.SFXPath
+
+        if path == nil then return end
+
+        local g = self.Gender
+        
+        self:StopSound(path .. '/vo/sentry/' .. vo .. '_' .. g ..'.wav')
+    end
+
+    function ENT:StopVoices()
+        local gender = self.Gender
+        
+        for i = 1, #voices do
+            self:StopVoiceLine(voices[i], gender)
+        end
     end
 
     function ENT:SpawnHat()
@@ -185,6 +233,10 @@ if SERVER then
         if not IsValid(ent) then return end
         
         self:EmitSound('whynotboi/securitybreach/base/staffbot/alert/sfx_staffBot_security_alert_0' .. math.random(3) .. '.wav')
+
+        self:DrG_Timer(0.5, function()
+            self:PlayVoiceLine(voices[math.random(#voices)])
+        end)
 
         for k, v in ipairs( ents.GetAll() ) do
             if v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC') and v.CanBeSummoned then

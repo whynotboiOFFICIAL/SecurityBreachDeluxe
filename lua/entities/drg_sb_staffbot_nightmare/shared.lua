@@ -17,6 +17,14 @@ if SERVER then
         self:RandomizePatrolPaths()
 
         self:SetSkin(math.random(0, 1))
+                
+        local g = math.random(2)
+
+        self.Gender = 'm'
+
+        if g == 2 then
+            self.Gender = 'f'
+        end
     end
 end
 

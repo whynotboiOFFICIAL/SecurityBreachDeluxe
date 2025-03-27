@@ -7,6 +7,7 @@ ENT.Category = 'Security Breach'
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
+ENT.WheelsID = 28
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -55,6 +56,13 @@ if SERVER then
             count = 4,
             volume = 0.25,
             channel = CHAN_STATIC
+        },
+        ['mopswipe'] = {
+            hasEnding = true,
+            path = 'whynotboi/securitybreach/base/staffbot/mopswipe/sfx_staffBot_mop_swipe_',
+            count = 4,
+            volume = 0.45,
+            channel = CHAN_STATIC
         }
     }
 
@@ -85,7 +93,6 @@ if SERVER then
             self:AddCustomThink()
         end
 
-        
         if self:IsMoving() and self:IsOnGround() then
             if not self.Wheels then
                 self:EmitSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_0' .. math.random(3) .. '.wav')
@@ -95,7 +102,7 @@ if SERVER then
 
             self.WheelAngle = self.WheelAngle + 10
 
-            self:ManipulateBoneAngles(28, Angle(0, 0, self.WheelAngle))
+            self:ManipulateBoneAngles(self.WheelsID, Angle(0, 0, self.WheelAngle))
         else
             if self.Wheels then
                 self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_01.wav')
