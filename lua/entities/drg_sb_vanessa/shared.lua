@@ -7,7 +7,7 @@ ENT.Category = 'Security Breach'
 ENT.Models = {'models/whynotboi/securitybreach/base/humans/vanessa/vanessa.mdl'}
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(8, 8, 68)
-ENT.BloodColor = DONT_BLEED
+ENT.BloodColor = BLOOD_COLOR_RED
 
 -- Stats --
 ENT.SpawnHealth = 100
