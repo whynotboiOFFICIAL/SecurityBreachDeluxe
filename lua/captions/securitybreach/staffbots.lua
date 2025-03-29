@@ -4,7 +4,13 @@
 hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     hook.Remove('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS')
 
-    local path = 'whynotboi/securitybreach/base/staffbot/vo/comedy/'
+    -- Base Staff Bot
+    
+    local path = 'whynotboi/securitybreach/base/staffbot/vo/'
+
+    SBDELUXE:AddEnglishCaption(path .. 'NoTampering.wav', '<clr:204, 104, 104>Warning. Tampering with Fazbear automated staff will result in suspension of your membership')
+
+    path = 'whynotboi/securitybreach/base/staffbot/vo/comedy/'
 
     -- Comedian Bot Male
     

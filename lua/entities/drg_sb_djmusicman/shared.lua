@@ -8,6 +8,8 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/djmusicman/djmu
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(100, 100, 220)
 ENT.BloodColor = DONT_BLEED
+ENT.CanBeStunned = true
+ENT.CustomStunSFX = true
 
 -- Stats --
 ENT.SpawnHealth = 2000
@@ -133,7 +135,7 @@ if SERVER then
             end)
         end
 
-        if not self.Sleeping and not self.EyeOccupied and not self.EyeTick then
+        if not self.Sleeping and not self.EyeOccupied and not self.EyeTick and not self.Stunned then
             self.EyeTick = true
 
             if math.random(100) > 50 then
@@ -144,6 +146,30 @@ if SERVER then
                 self.EyeTick = false
             end)
         end
+    end
+
+    function ENT:OnStunned()
+        if self.Sleeping then 
+            self:SleepExit()
+        end
+
+        self:SetSkin(1)
+
+        self:DrG_Timer(2.5, function()
+            self:SetSkin(2)  
+        end)
+
+        self:DrG_Timer(4, function()
+            self:SetSkin(3)  
+        end)
+
+        self:DrG_Timer(5.5, function()
+            self:SetSkin(0)  
+        end)
+        
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stun') 
+        end)
     end
 
     function ENT:SleepEnter(nomus)

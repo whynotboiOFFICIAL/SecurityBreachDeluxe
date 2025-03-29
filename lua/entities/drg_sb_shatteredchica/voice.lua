@@ -41,6 +41,26 @@ if SERVER then
         end)
     end
 
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        self:PlayVoiceLine(vox[math.random(#vox)], true)
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        self.IdleAnimation = 'idle'
+    end
+    
     function ENT:StopVoices(mode)
         for i = 1, #vox do
             self:StopVoiceLine(vox[i])

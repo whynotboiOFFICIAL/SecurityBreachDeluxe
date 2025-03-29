@@ -11,6 +11,7 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.PounceNerf = 1.3
 ENT.CanBeSummoned = true
+ENT.CanBeStunned = true
 
 -- Stats --
 ENT.SpawnHealth = 600

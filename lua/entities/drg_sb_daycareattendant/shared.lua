@@ -8,6 +8,7 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/daycareattendan
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
+ENT.CanBeStunned = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -81,6 +82,7 @@ if SERVER then
 
     function ENT:SetAttendantType(typeNum)
         self.AttendantType = typeNum
+        self.SunAnger = 5
 
         self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
         self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav')
@@ -108,7 +110,22 @@ if SERVER then
         self:CallOnClient('SetAttendantType', typeNum)
     end
 
-    function ENT:JumpscareEntity()
+    function ENT:JumpscareEntity(ent)
+        if (self.AttendantType == 0 and self.SunAnger > 5) or self.AttendantType == 1 then
+            self.BaseClass.JumpscareEntity(self, ent)
+        end
+    end
+
+    function ENT:Jumpscare()
+        if self.JumpscareSound then
+            self:EmitSound(self.JumpscareSound)
+        end
+    
+        self:RemoveAllGestures()
+    
+        self:PlaySequenceAndMove('moonjumpscare')
+
+        self.SunAnger = 0
     end
 
     function ENT:CustomInitialize()
@@ -191,12 +208,22 @@ if SERVER then
             if self.IsBlocking then
                 self.WalkAnimation = 'walkblocking'
             elseif not self.Holding then
-                self:EnterCinematic(ply)
-    
-                self.Holding = true
-                self.WalkAnimation = 'walkcarry'
-                self.RunAnimation = 'walkcarry'
-                self.IdleAnimation = 'walkcarry'
+                if self.SunAnger > 5 then
+                    self:CallInCoroutine(function(self,delay)
+                        self:JumpscareEntity(ply)
+                    end)
+                else
+                    self:EnterCinematic(ply)
+        
+                    self.Holding = true
+                    self.WalkAnimation = 'walkcarry'
+                    self.RunAnimation = 'walkcarry'
+                    self.IdleAnimation = 'walkcarry'
+
+                    if self.SunAnger > 0 and not self.SunWarned then
+                        self:SunAngerResponse()
+                    end
+                end
             end
         end
 
@@ -301,6 +328,8 @@ if SERVER then
     end
 
     function ENT:CustomThink()
+        if self.Stunned then return end
+
         if self.AttendantType == 0 then
             self:SunThink()
         else
@@ -351,6 +380,9 @@ if SERVER then
     end
 
     function ENT:OnMeleeAttack(ply)
+        if self.AttendantType == 1 then
+            self:JumpscareEntity(ply)
+        end
     end
 
     function ENT:OnReachedPatrol()

@@ -3,7 +3,7 @@ function ENT:OnChaseEnemy()
 end
 
 function ENT:OnRangeAttack(ent)
-    if not self.CanPounce or self.RangeTick or self.PounceStarted then return end
+    if not self.CanPounce or self.RangeTick or self.PounceStarted or self.Stunned or self.StunDelay then return end
 
     self.RangeTick = true
 

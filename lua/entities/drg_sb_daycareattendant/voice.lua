@@ -15,6 +15,29 @@ local idlevox = {
     'MOON_00008'
 }
 
+local sunstunvox = {
+    'SUN_HW2_00039a',
+    'SUN_HW2_00085',
+    'SUN_HW2_00091',
+    'SUN_HW2_00092'
+}
+
+local sunangervox = {
+    'SUN_HW2_00040',
+    'SUN_HW2_00070',
+    'SUN_HW2_00042',
+    'SUN_HW2_00088',
+    'SUN_HW2_00043',
+    'SUN_HW2_00040',
+    'SUN_HW2_00044',
+    'SUN_HW2_00046'
+}
+
+local moonstunvox = {
+    'MOON_pain_yell',
+    'MOON_pain_yell_02'
+}
+
 if SERVER then
     function ENT:VoiceThink()
         if self.VoiceTick or self.VoiceDisabled then return end
@@ -32,9 +55,55 @@ if SERVER then
         end)
     end
 
+    function ENT:OnStunned()
+        if self.AttendantType == 0 then
+            self:PlayVoiceLine(sunstunvox[math.random(#sunstunvox)], false)
+
+            if self.SunWarned then
+                self.SunWarned = false
+            end
+
+            self.SunAnger = self.SunAnger + 1
+        else
+            self:PlayVoiceLine(moonstunvox[math.random(#moonstunvox)], false)
+        end
+
+        self.IdleAnimation = 'idlesad'
+    end
+
+    function ENT:OnStunExit()
+
+        if self.AttendantType == 0 then
+            self.IdleAnimation = 'idle'
+        else
+            self.IdleAnimation = 'moonidle1'
+        end
+
+        if self.AttendantType == 0 and self.SunAnger > 5 then
+            self:PlayVoiceLine(sunangervox[math.random(7,8)], false)
+        end
+    end
+    
+    function ENT:SunAngerResponse()
+        self.SunWarned = true
+
+        if self.SunAnger < 6 then
+            self:PlayVoiceLine(sunangervox[self.SunAnger], false)
+        end
+    end
+
     function ENT:StopVoices(mode)
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
+        end
+        for i = 1, #sunstunvox do
+            self:StopVoiceLine(sunstunvox[i])
+        end
+        for i = 1, #sunangervox do
+            self:StopVoiceLine(sunangervox[i])
+        end
+        for i = 1, #moonstunvox do
+            self:StopVoiceLine(moonstunvox[i])
         end
     end
 end

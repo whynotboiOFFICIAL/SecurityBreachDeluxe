@@ -6,6 +6,7 @@ ENT.PrintName = 'S.T.A.F.F. Bot (Map)'
 ENT.Category = 'Security Breach'
 ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/map/mapbot.mdl'}
 ENT.WheelsID = 44
+ENT.CanBeStunned = true
 
 -- Relationships --
 ENT.DefaultRelationship = D_HT

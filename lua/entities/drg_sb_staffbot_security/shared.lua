@@ -5,6 +5,7 @@ ENT.Base = 'drg_sb_staffbot' -- DO NOT TOUCH (obviously)
 ENT.PrintName = 'S.T.A.F.F. Bot (Security)'
 ENT.Category = 'Security Breach'
 ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/security/securitybot.mdl'}
+ENT.CanBeStunned = true
 
 include('binds.lua')
 if SERVER then

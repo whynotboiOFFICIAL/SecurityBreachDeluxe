@@ -64,6 +64,25 @@ if SERVER then
         end)
     end
 
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlayVoiceLine(stunvox[math.random(#stunvox)], true)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        self.IdleAnimation = 'idle'
+    end
+
     function ENT:StopVoices(mode)
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
@@ -87,6 +106,8 @@ if SERVER then
     end
 
     function ENT:OnSpotEnemy()
+        if self.Stunned then return end
+        
         self:DrG_Timer(0, function()
             self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
         end)
@@ -99,6 +120,8 @@ if SERVER then
     end
 
     function ENT:OnLoseEnemy()
+        if self.Stunned then return end
+
         if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
             self.VoiceDisabled = false
         end

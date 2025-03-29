@@ -9,6 +9,7 @@ ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 85)
 ENT.BloodColor = DONT_BLEED
 ENT.CanBeSummoned = true
+ENT.CanBeStunned = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -28,6 +29,7 @@ ENT.DefaultRelationship = D_LI
 
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/glamrockfreddy/jumpscare/sfx_jumpscare_pas_freddy.wav'
+ENT.SFXPath = 'whynotboi/securitybreach/base/glamrockfreddy/'
 
 -- Detection --
 ENT.EyeBone = 'Head_jnt'
@@ -40,6 +42,7 @@ ENT.MaxLuminosity = 1
 ENT.HearingCoefficient = 1
 
 include('binds.lua')
+include('voice.lua')
 
 if SERVER then
     include('chest.lua')

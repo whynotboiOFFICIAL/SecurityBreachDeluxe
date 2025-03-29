@@ -8,6 +8,8 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/endo/glamrocken
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
+ENT.CanBeStunned = true
+ENT.CustomStunSFX = true
 
 -- Stats --
 ENT.SpawnHealth = 200
@@ -70,6 +72,8 @@ if SERVER then
     end
 
     function ENT:WakeUp()
+        if self.Stunned then return end
+
         self.CueFreeze = true
 
         self.Sleeping = false
@@ -98,6 +102,13 @@ if SERVER then
             self.WalkAnimation = 'walk' .. self.Type
             self.RunAnimation = 'run' .. self.Type
         end)
+    end
+
+    function ENT:OnStunned()
+        self.IsFrozen = false
+        self.ForceCycle = false
+
+        self:SleepMode()
     end
 
     function ENT:Frozen()
@@ -145,7 +156,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if IsValid(self.CurrentVictim) then return end
+        if IsValid(self.CurrentVictim) or self.Stunned then return end
 
         if self.ForceCycle then
             self:SetCycle(self.Cycle)

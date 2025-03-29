@@ -28,7 +28,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00010.wav', '<clr:255, 255, 255>Over here!')
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00011.wav', '<clr:255, 255, 255>I found him!')
     
-    local path = 'whynotboi/securitybreach/base/vanny/vo/'
+    path = 'whynotboi/securitybreach/base/vanny/vo/'
 
     -- Vanny Voices
 

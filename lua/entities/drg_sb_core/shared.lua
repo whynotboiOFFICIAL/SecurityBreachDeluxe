@@ -219,6 +219,51 @@ if SERVER then
         end
     end
     
+    function ENT:DoStunned()
+        if self.Stunned or self.StunDelay or self.PounceStarted then return end
+        
+        self.Moving = false
+
+        if self.OnStunned then
+            self:OnStunned()
+        end
+
+        self.DisableControls = true
+        self.VoiceDisabled = true
+        self.Stunned = true
+
+        self:SetAIDisabled(true)
+        
+        if not self.CustomStunSFX then
+            self:EmitSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. math.random(4) .. '.wav', 75, 100, 0.5)
+        end
+
+        self:DrG_Timer(10, function()
+            for i = 1, 4 do
+                self:StopSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. i .. '.wav')
+            end
+
+            if self.OnStunExit then
+                self:OnStunExit()
+            end
+
+            self.DisableControls = false
+            self.Stunned = false
+
+            if not self:HasEnemy() then
+                self.VoiceDisabled = false
+            end
+
+            self:SetAIDisabled(false)
+
+            self.StunDelay = true
+
+            self:DrG_Timer(1, function()
+                self.StunDelay = false
+            end)
+        end)
+    end
+
     local ai_ignoreplayers = GetConVar('ai_ignoreplayers')
     local ai_disabled = GetConVar('ai_disabled')
 
@@ -263,6 +308,10 @@ if SERVER then
 
         if self.CinTarget then
             self:ExitCinematic(self.CinTarget)
+        end
+
+        for i = 1, 4 do
+            self:StopSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. i .. '.wav')
         end
 
         local soundDictionary = self.AnimEventSounds

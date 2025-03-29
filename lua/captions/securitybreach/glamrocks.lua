@@ -4,7 +4,16 @@
 hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     hook.Remove('SetupCloseCaptions', 'SBDELUXE_GLAMROCKSCAPTIONS')
 
-    local path = 'whynotboi/securitybreach/base/glamrockchica/vo/'
+    local path = 'whynotboi/securitybreach/base/glamrockfreddy/vo/'
+
+    -- Freddy Stun Voices
+    
+    SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00199.wav', '<clr:217, 119, 0>Gregory?! What are you doing?!')
+    SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00200.wav', '<clr:217, 119, 0>I cannot see!')
+    SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00201.wav', '<clr:217, 119, 0>Why though?!')
+    SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00202.wav', '<clr:217, 119, 0>I am your friend!')
+
+    path = 'whynotboi/securitybreach/base/glamrockchica/vo/'
 
     -- Chica Idle Voices
     
@@ -108,9 +117,25 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00047.wav', '<clr:200, 0, 255>I am... still beautiful.')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00048.wav', '<clr:200, 0, 255>I just need a little work done.')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00049.wav', '<clr:200, 0, 255>My hair is ruined.')
-    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00050.wav', '<clr:200, 0, 255>*Crying*')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00050.wav', '<sfx><clr:200, 0, 255>*Crying*<sfx>')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00050a.wav', '<clr:200, 0, 255>I\'m not a loser.')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00051.wav', '<clr:200, 0, 255>Why!... Why!...')
+
+    path = 'whynotboi/securitybreach/base/sun/vo/'
+    
+    -- Sun Sun Voices
+
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00040.wav', '<clr:255, 183, 0>Ha ha ha ha, very funny.')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00042.wav', '<clr:255, 183, 0>Ooooh that was only funny the first few times.')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00043.wav', '<clr:255, 183, 0>Do it again, and you\'re taking a nap.')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00044.wav', '<clr:255, 183, 0>Bad kid! Bad kid! I\'m putting you in timeout!')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00046.wav', '<clr:255, 183, 0>Bad!')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00067.wav', '<clr:255, 183, 0>Get good.')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00070.wav', '<clr:255, 183, 0>So bad. Whew. I should turn off the lights myself...')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00085.wav', '<clr:255, 183, 0>Leave me alone!')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00088.wav', '<clr:255, 183, 0>Don\'t do that again!')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00091.wav', '<clr:255, 183, 0>Hey! Keep those darts to yourself!')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00092.wav', '<clr:255, 183, 0>Gah! What\'re you- doing?!')
 
     -- Moon Idle Voices
 
@@ -120,14 +145,14 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'MOON_00003.wav', '<clr:0, 21, 255>It\'s past your bedtime.')
     SBDELUXE:AddEnglishCaption(path .. 'MOON_00004.wav', '<clr:0, 21, 255>Bad children must be found.')
     SBDELUXE:AddEnglishCaption(path .. 'MOON_00005.wav', '<clr:0, 21, 255>Bad children must be punished.')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_01.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_02.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_03.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_04.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_05.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_06.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_07.wav', '<clr:0, 21, 255>*Laughing*')
-    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_08.wav', '<clr:0, 21, 255>*Laughing*')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_01.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_02.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_03.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_04.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_05.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_06.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_07.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'MOON_00006_08.wav', '<sfx><clr:0, 21, 255>*Laughing*<sfx>')
     SBDELUXE:AddEnglishCaption(path .. 'MOON_00007.wav', '<clr:0, 21, 255>Knock knock.')
     SBDELUXE:AddEnglishCaption(path .. 'MOON_00008.wav', '<clr:0, 21, 255>Good night...')
     SBDELUXE:AddEnglishCaption(path .. 'MOON_00010.wav', '<clr:0, 21, 255>Rrrrggh... Clean up! Clean up!')

@@ -87,7 +87,50 @@ if SERVER then
 
         table.insert( self.PatrolPaths, pos )
     end
-    
+
+    function ENT:DoStunned()
+        if self.Stunned or self.StunDelay or self.PounceStarted then return end
+        
+        self.Moving = false
+
+        if self.StopVoices then 
+            self:StopVoices()
+        end
+        
+        self:EmitSound('whynotboi/securitybreach/base/staffbot/vo/NoTampering.wav')
+
+        if self.OnStunned then
+            self:OnStunned()
+        end
+
+        self.DisableControls = true
+        self.VoiceDisabled = true
+        self.Stunned = true
+
+        self:SetAIDisabled(true)
+
+        self:DrG_Timer(10, function()
+            if self.OnStunExit then
+                self:OnStunExit()
+            end
+
+            self.DisableControls = false
+            self.Stunned = false
+
+            if not self:HasEnemy() then
+                self.VoiceDisabled = false
+            end
+
+            self:SetAIDisabled(false)
+
+            self.StunDelay = true
+
+            self:DrG_Timer(1, function()
+                self.StunDelay = false
+            end)
+        end)
+    end
+
     function ENT:CustomThink()
         if self.AddCustomThink then
             self:AddCustomThink()
@@ -134,6 +177,7 @@ if SERVER then
     end
     
     function ENT:Removed()
+        self:StopSound('whynotboi/securitybreach/base/staffbot/vo/NoTampering.wav')
         self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_01.wav')
         self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_02.wav')
         self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_03.wav')

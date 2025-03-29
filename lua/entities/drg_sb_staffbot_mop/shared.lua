@@ -6,6 +6,7 @@ ENT.PrintName = 'S.T.A.F.F. Bot (Cleaner)'
 ENT.Category = 'Security Breach'
 ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/mop/mopbot.mdl'}
 ENT.WheelsID = 31
+ENT.CanBeStunned = true
 
 include('binds.lua')
 

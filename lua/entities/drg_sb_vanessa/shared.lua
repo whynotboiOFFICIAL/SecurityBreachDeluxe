@@ -8,6 +8,8 @@ ENT.Models = {'models/whynotboi/securitybreach/base/humans/vanessa/vanessa.mdl'}
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(8, 8, 68)
 ENT.BloodColor = BLOOD_COLOR_RED
+ENT.CanBeStunned = true
+ENT.CustomStunSFX = true
 
 -- Stats --
 ENT.SpawnHealth = 100
@@ -77,7 +79,7 @@ if SERVER then
     end
 
     function ENT:OnRangeAttack(enemy)
-        if self.RangeTick then return end
+        if self.RangeTick or self.Stunned then return end
         
         self.RangeTick = true
 
