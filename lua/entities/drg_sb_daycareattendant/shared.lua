@@ -245,39 +245,28 @@ if SERVER then
             self:VoiceThink()
         end
 
-        if IsValid(self.HookRope) then
-            local tbl = self.HookRope:GetTable()
-            local pos1 = self:LocalToWorld(tbl.LPos1)
-            local pos2 = self:LocalToWorld(tbl.LPos2)
-
-            self.HookRope.length = (pos1 - pos2):Length()
-        end
-
         if self.Swimming then
             if self:IsPossessed() then
                 local ply = self:GetPossessor()
-
-                local hasmoved = false
+                local currentVelocity = vector_origin
 
                 if ply:KeyDown(IN_FORWARD) or ply:KeyDown(IN_MOVELEFT) or ply:KeyDown(IN_MOVERIGHT) or ply:KeyDown(IN_BACK)  then
-                    self:SetVelocity(self:GetForward() * 100)
+                    currentVelocity = currentVelocity + self:GetForward() * 100
 
                     hasmoved = true
                 end
 
                 if ply:KeyDown(IN_JUMP) then
-                    self:SetVelocity(vector_up * 100)
+                    currentVelocity = currentVelocity + vector_up * 100
                     hasmoved = true
                 end
 
                 if ply:KeyDown(IN_DUCK) then
-                    self:SetVelocity(vector_up * -100)
+                    currentVelocity = currentVelocity + vector_up * -100
                     hasmoved = true
                 end
 
-                if not hasmoved then
-                    self:SetVelocity(vector_origin)
-                end
+                self:SetVelocity(currentVelocity)
             end
         end
     end
@@ -292,14 +281,22 @@ if SERVER then
 
             local oldhookpos = Vector(hookpos)
 
-            hookpos.z = hookpos.z / 2
+            hookpos.z = hookpos.z - (hookpos.z - self:GetPos().z) / 2
 
             self:SetPos(hookpos)
 
             self.loco:SetVelocity(vector_origin)
             self.loco:SetGravity(0)
             
-            self.HookRope = constraint.Elastic(self, game.GetWorld(), 0, 0, self:WorldToLocal(self:GetBonePosition(3)), oldhookpos, 59, 59, 0, nil, 2)
+            constraint.Elastic(
+                self, 
+                game.GetWorld(), 
+                0, 0, 
+                self:WorldToLocal(self:GetBonePosition(3)), 
+                oldhookpos, 
+                59, 59, 0, 
+                nil, 2
+            )
         end
     end
 
