@@ -12,8 +12,11 @@ ENT.PossessionBinds = {
     }},
 
     [IN_ATTACK2] = {{
-        coroutine = false,
+        coroutine = true,
         onkeydown = function(self)
+            if self.Swimming then return end
+            
+            self:StartHook()
         end
     }},
 
@@ -64,9 +67,15 @@ end
 
 if SERVER then
     function ENT:OnPossessed()
+        if self.AttendantType == 1 then
+            self.RunAnimation = 'moonrun'
+        end
     end
 
     function ENT:OnDispossessed()
+        if self.AttendantType == 1 then
+            self.RunAnimation = 'moonwalk'
+        end
     end
 end
 

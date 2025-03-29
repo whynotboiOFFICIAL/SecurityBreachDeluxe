@@ -42,9 +42,9 @@ ENT.HearingCoefficient = 1
 ENT.DefaultRelationship = D_LI
 
 include('voice.lua')
+include('binds.lua')
 
 if SERVER then
-    include('binds.lua')
 
     ENT.AnimEventSounds = {
         ['mvmt_large'] = {
@@ -244,6 +244,63 @@ if SERVER then
         if self.VoiceThink then
             self:VoiceThink()
         end
+
+        if IsValid(self.HookRope) then
+            local tbl = self.HookRope:GetTable()
+            local pos1 = self:LocalToWorld(tbl.LPos1)
+            local pos2 = self:LocalToWorld(tbl.LPos2)
+
+            self.HookRope.length = (pos1 - pos2):Length()
+        end
+
+        if self.Swimming then
+            if self:IsPossessed() then
+                local ply = self:GetPossessor()
+
+                local hasmoved = false
+
+                if ply:KeyDown(IN_FORWARD) or ply:KeyDown(IN_MOVELEFT) or ply:KeyDown(IN_MOVERIGHT) or ply:KeyDown(IN_BACK)  then
+                    self:SetVelocity(self:GetForward() * 100)
+
+                    hasmoved = true
+                end
+
+                if ply:KeyDown(IN_JUMP) then
+                    self:SetVelocity(vector_up * 100)
+                    hasmoved = true
+                end
+
+                if ply:KeyDown(IN_DUCK) then
+                    self:SetVelocity(vector_up * -100)
+                    hasmoved = true
+                end
+
+                if not hasmoved then
+                    self:SetVelocity(vector_origin)
+                end
+            end
+        end
+    end
+
+    function ENT:StartHook()
+        local hookpos = self:HookTrace()
+
+        if hookpos then
+            self.JumpAnimation = 'moonswimloop'
+
+            self.Swimming = true
+
+            local oldhookpos = Vector(hookpos)
+
+            hookpos.z = hookpos.z / 2
+
+            self:SetPos(hookpos)
+
+            self.loco:SetVelocity(vector_origin)
+            self.loco:SetGravity(0)
+            
+            self.HookRope = constraint.Elastic(self, game.GetWorld(), 0, 0, self:WorldToLocal(self:GetBonePosition(3)), oldhookpos, 59, 59, 0, nil, 2)
+        end
     end
 
     function ENT:CustomThink()
@@ -251,6 +308,17 @@ if SERVER then
             self:SunThink()
         else
             self:MoonThink()
+        end
+    end
+
+    function ENT:HookTrace()
+        local startpS = self:WorldSpaceCenter()
+        local endpos = Vector(0, 0, 1e9)
+        local tr = util.QuickTrace(startpS, endpos, self)
+        --debugoverlay.Line( startpS, startpS + endpos, 1, Color( 255, 255, 255 ), false )
+        
+        if tr.Hit and not tr.HitSky then
+            return tr.HitPos
         end
     end
 
