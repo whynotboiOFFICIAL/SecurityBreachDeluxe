@@ -67,7 +67,7 @@ if SERVER then
     end
     
     function ENT:AddCustomThink()
-        if self.Stunned or GetConVar('ai_disabled'):GetBool()then return end
+        if self.Stunned or GetConVar('ai_disabled'):GetBool() then return end
 
         if IsValid(self.LockEntity) then
             self:FaceInstant(self.LockEntity)

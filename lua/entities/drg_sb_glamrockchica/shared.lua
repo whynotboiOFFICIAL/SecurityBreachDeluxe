@@ -56,6 +56,13 @@ if SERVER then
             volume = 1,
             channel = CHAN_STATIC
         },
+        ['servo_g'] = {
+            hasEnding = true,
+            path = 'whynotboi/securitybreach/base/glamrockchica/servo/grind/sfx_chica_servo_head_grind_',
+            count = 4,
+            volume = 0.7,
+            channel = CHAN_STATIC
+        },
         ['headtwitch'] = {
             hasEnding = false,
             path = 'whynotboi/securitybreach/base/glamrockchica/servo/headtwitch/sfx_chica_servo_head_twitch_',

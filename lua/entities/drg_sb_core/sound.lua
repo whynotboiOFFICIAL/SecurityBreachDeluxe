@@ -102,7 +102,7 @@ if SERVER then
     -- Voice 
 
     function ENT:PlayVoiceLine(vo, anim)
-        local path = self.SFXPath
+        local path = self.VOPath or self.SFXPath
         if path == nil then return end
 
         self:EmitSound(path .. '/vo/' .. vo .. '.wav')
@@ -113,7 +113,7 @@ if SERVER then
     end
 
     function ENT:StopVoiceLine(vo)
-        local path = self.SFXPath
+        local path = self.VOPath or self.SFXPath
         if path == nil then return end
 
         self:StopSound(path .. '/vo/' .. vo .. '.wav')

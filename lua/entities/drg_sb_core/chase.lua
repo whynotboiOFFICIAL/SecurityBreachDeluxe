@@ -24,7 +24,9 @@ function ENT:OnLandOnGround()
             if self.PounceLandSounds then
                 local snd = self.PounceLandSounds[math.random(#self.PounceLandSounds)]
         
-                self:EmitSound(self.SFXPath .. snd)
+                local path = self.VOPath or self.SFXPath
+
+                self:EmitSound(path .. snd)
             end
 
             if self.PounceLandVox then
@@ -90,7 +92,8 @@ function ENT:PounceStart()
     if self.PounceJumpSounds then
         local snd = self.PounceJumpSounds[math.random(#self.PounceJumpSounds)]
 
-        self:EmitSound(self.SFXPath .. snd)
+        local path = self.VOPath or self.SFXPath
+        self:EmitSound(path .. snd)
     end
 
     self.LockAim = false
@@ -99,7 +102,13 @@ function ENT:PounceStart()
 
     self:SetPos(self:GetPos() + Vector(0, 0, 30))
 
-    self:SetVelocity(self:GetForward() * 800 + Vector(0, 0, 300))
+    local nerf = self.PounceNerf or 1
+
+    local fnerfed = 800 / nerf
+
+    local znerfed = 300 / nerf
+
+    self:SetVelocity(self:GetForward() * fnerfed + Vector(0, 0, znerfed))
     
     self:PlaySequence('pouncejumpin')
 

@@ -94,7 +94,24 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00018.wav', '<clr:200, 0, 255>I\'m the best!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00019.wav', '<clr:200, 0, 255>I found him!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00020.wav', '<clr:200, 0, 255>Over here!')
-    
+ 
+    -- Shattered Roxy Idle Voices
+
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00021.wav', '<clr:200, 0, 255>I heard that.')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00023.wav', '<clr:200, 0, 255>Where are you!')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00024.wav', '<clr:200, 0, 255>I can still hear you!')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00025.wav', '<clr:200, 0, 255>I can hear you...')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00026.wav', '<clr:200, 0, 255>I can\'t see you, but I can hear you!')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00027.wav', '<clr:200, 0, 255>Why are you hiding from me?')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00028.wav', '<clr:200, 0, 255>I know you\'re there...')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00046.wav', '<clr:200, 0, 255>Everybody still loves me, right?')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00047.wav', '<clr:200, 0, 255>I am... still beautiful.')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00048.wav', '<clr:200, 0, 255>I just need a little work done.')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00049.wav', '<clr:200, 0, 255>My hair is ruined.')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00050.wav', '<clr:200, 0, 255>*Crying*')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00050a.wav', '<clr:200, 0, 255>I\'m not a loser.')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00051.wav', '<clr:200, 0, 255>Why!... Why!...')
+
     -- Moon Idle Voices
 
     path = 'whynotboi/securitybreach/base/moon/vo/'
