@@ -117,11 +117,16 @@ if SERVER then
 
             self.loco:SetAcceleration(3000)
             self.loco:SetDeceleration(0)
+
+            local tbl = self.NPCTable
+            local enableSwitching = tbl.SwitchingEnabled
+
+            self:SetAttendantType(tbl.AttendantType or 0)
+
+            self.EnableSwitching = enableSwitching ~= nil and true or enableSwitching
         end)
 
         self.SpawnPosition = self:GetPos()
-
-        self:SetAttendantType(0)
     end
 
     function ENT:OnReachedPatrol()
@@ -330,6 +335,22 @@ else
 
     ENT.Tension = 0
 end
+
+list.Set('NPC', 'drg_sb_sun', {
+    Name = 'Sun',
+    Class = 'drg_sb_daycareattendant',
+    Category = ENT.Category,
+    AttendantType = 0,
+    SwitchingEnabled = false
+})
+
+list.Set('NPC', 'drg_sb_moon', {
+    Name = 'Moon',
+    Class = 'drg_sb_daycareattendant',
+    Category = ENT.Category,
+    AttendantType = 1,
+    SwitchingEnabled = false
+})
 
 -- DO NOT TOUCH --
 AddCSLuaFile()

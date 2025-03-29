@@ -118,6 +118,39 @@ if SERVER then
 
         self:StopSound(path .. '/vo/' .. vo .. '.wav')
     end
+
+    local EnableHearing = CreateConVar("drgbase_ai_hearing", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED})
+
+    local function HandleNPCSound(ent, sound)
+		if #DrGBase.GetNextbots() == 0 then return end
+
+		sound.Pos = sound.Pos or ent:GetPos()
+
+		local distance = math.pow(sound.SoundLevel / 2, 2) * sound.Volume
+
+		for i, nextbot in ipairs(DrGBase.GetNextbots()) do
+			if ent == nextbot or not nextbot.OnHearNPCSound then continue end
+			if nextbot:IsAIDisabled() then continue end
+			if nextbot:IsDeaf() then continue end
+
+			local mult = nextbot:VisibleVec(sound.Pos) and 1 or 0.5
+
+			if (distance * nextbot:GetHearingCoefficient() * mult) ^ 2 >= nextbot:GetRangeSquaredTo(sound.Pos) then
+				nextbot:Timer(0, nextbot.OnHearNPCSound, ent, sound)
+			end
+		end
+	end
+
+    hook.Add('EntityEmitSound', 'sb_npc_sound_detection', function(sound)
+		if not EnableHearing:GetBool() then return end
+
+        local ent = sound.Entity
+		if not IsValid(sound.Entity) then return end
+
+        if ent:IsNPC() or ent:IsNextBot() then
+            HandleNPCSound(ent, sound)
+        end
+	end)
 else
     ENT.Tension = 1
 

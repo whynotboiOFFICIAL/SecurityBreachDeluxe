@@ -74,7 +74,7 @@ if SERVER then
 
     function ENT:SpotEntity(ent)
         if IsValid(self.CurrentVictim) or self.Stunned or self.PounceStarted then return end
-        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())
+        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return end
         if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return end
 
         self:AlertedTo(ent:GetPos(), ent)
@@ -169,6 +169,10 @@ if SERVER then
     end
 
     -- Sounds --
+
+    function ENT:OnHearNPCSound(ent, sound)
+        self:SpotEntity(ent)
+    end
 
     function ENT:StepSFX()
         local shake = 0.7
