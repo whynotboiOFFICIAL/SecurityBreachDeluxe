@@ -336,21 +336,26 @@ else
     ENT.Tension = 0
 end
 
-list.Set('NPC', 'drg_sb_sun', {
+local sunClass = {
     Name = 'Sun',
     Class = 'drg_sb_daycareattendant',
     Category = ENT.Category,
     AttendantType = 0,
     SwitchingEnabled = false
-})
+}
 
-list.Set('NPC', 'drg_sb_moon', {
+local moonClass = {
     Name = 'Moon',
     Class = 'drg_sb_daycareattendant',
     Category = ENT.Category,
     AttendantType = 1,
     SwitchingEnabled = false
-})
+}
+
+list.Set('NPC', 'drg_sb_sun', sunClass)
+list.Set('NPC', 'drg_sb_moon', moonClass)
+list.Set('DrGBaseNextbots', 'drg_sb_sun', sunClass)
+list.Set('DrGBaseNextbots', 'drg_sb_moon', moonClass)
 
 -- DO NOT TOUCH --
 AddCSLuaFile()
