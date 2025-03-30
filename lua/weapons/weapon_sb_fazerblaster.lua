@@ -54,7 +54,7 @@ function SWEP:PrimaryAttack()
 
     self:EmitSound('whynotboi/securitybreach/base/props/fazerblaster/shot/sfx_fazerblast_shot_player_0' .. math.random(6) .. '.wav')
 
-    if IsValid(trace.Entity) then
+    if SERVER and IsValid(trace.Entity) then
         local ent = trace.Entity
 
         if ent.IsDrGNextbot and ent.Category == 'Security Breach' and ent.CanBeStunned then

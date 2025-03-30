@@ -8,7 +8,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     
     local path = 'whynotboi/securitybreach/base/staffbot/vo/'
 
-    SBDELUXE:AddEnglishCaption(path .. 'NoTampering.wav', '<clr:204, 104, 104>Warning. Tampering with Fazbear automated staff will result in suspension of your membership')
+    SBDELUXE:AddEnglishCaption(path .. 'NoTampering.wav', '<clr:204, 104, 104>Warning. Tampering with Fazbear automated staff will result in suspension of your membership.')
 
     path = 'whynotboi/securitybreach/base/staffbot/vo/comedy/'
 

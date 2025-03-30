@@ -94,3 +94,5 @@ if SERVER then
     function ENT:OnLoseEnemy()
     end
 end
+
+AddCSLuaFile()

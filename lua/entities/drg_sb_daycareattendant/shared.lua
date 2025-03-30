@@ -82,7 +82,7 @@ if SERVER then
 
     function ENT:SetAttendantType(typeNum)
         self.AttendantType = typeNum
-        self.SunAnger = 5
+        self.SunAnger = 0
 
         self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
         self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav')
