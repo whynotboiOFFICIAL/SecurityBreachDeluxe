@@ -2,7 +2,7 @@ local stunvox = {
     'FREDDY_00199',
     'FREDDY_00200',
     'FREDDY_00201',
-    'FREDDY_00202',
+    'FREDDY_00202'
 }
 
 if SERVER then
