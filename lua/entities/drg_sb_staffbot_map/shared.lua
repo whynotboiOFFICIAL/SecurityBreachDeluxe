@@ -102,7 +102,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if not self.OfferingMap then return end
+        if self.Stunned or not self.OfferingMap then return end
 
         if not self.VoDelay then
             self.VoDelay = true

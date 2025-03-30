@@ -24,9 +24,9 @@ local spotvox = {
 }
 
 local stunvox = {
-    'MONTY_00002_01',
-    'MONTY_00002_02',
-    'MONTY_00002_03'
+    'MONTY_00025_01',
+    'MONTY_00025_02',
+    'MONTY_00025_03'
 }
 
 ENT.PounceJumpVox = {
@@ -77,6 +77,26 @@ if SERVER then
         end)
     end
 
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        self:PlayVoiceLine(stunvox[math.random(#stunvox)], true)
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        self.IdleAnimation = 'idle'
+    end
+    
     function ENT:StopVoices(mode)
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
