@@ -7,7 +7,7 @@ function ENT:OnRangeAttack(ent)
 
     self.RangeTick = true
 
-    if math.random(100) > 50 then
+    if math.random(100) > 60 then
         self:PounceStart()
     else
         self:DrG_Timer(5, function()
