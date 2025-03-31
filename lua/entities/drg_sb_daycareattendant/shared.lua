@@ -123,8 +123,18 @@ if SERVER then
     
         self:RemoveAllGestures()
     
-        self:PlaySequenceAndMove('moonjumpscare')
+        local anim = 'jumpscare'
 
+        if self.AttendantType == 1 then
+            anim = 'moonjumpscare'
+        end
+
+        self:PlaySequenceAndMove(anim)
+
+        if self.AttendantType == 0 then
+            self:PlayVoiceLine('SUN_HW2_00067', false)
+        end
+        
         self.SunAnger = 0
     end
 
@@ -199,7 +209,11 @@ if SERVER then
         end
 
         if plyDist > 100 then
-            self.WalkAnimation = 'walk'
+            if self.SunAnger > 5 then
+                self.WalkAnimation = 'moonrun'
+            else
+                self.WalkAnimation = 'walk'
+            end
 
             self:AddPatrolPos(plyPos + forward * 5)
 
