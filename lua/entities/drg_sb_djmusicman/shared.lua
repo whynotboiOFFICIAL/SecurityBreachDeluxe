@@ -139,7 +139,10 @@ if SERVER then
             self.EyeTick = true
 
             if math.random(100) > 50 then
-                self:SetSkin(math.random(4, 10))
+                self:SetBodygroup(2, 1)
+
+                local skin = math.random(4, 10)
+                self:SetSkin(skin)
             end
 
             self:DrG_Timer(5, function()
@@ -153,6 +156,7 @@ if SERVER then
             self:SleepExit()
         end
 
+        self:SetBodygroup(2, 1)
         self:SetSkin(1)
 
         self:DrG_Timer(2.5, function()
@@ -164,6 +168,7 @@ if SERVER then
         end)
 
         self:DrG_Timer(5.5, function()
+            self:SetBodygroup(2, 0)
             self:SetSkin(0)  
         end)
         
@@ -184,6 +189,7 @@ if SERVER then
 
         self:SetAIDisabled(true)
 
+        self:SetBodygroup(2, 0)
         self:SetSkin(0)
         
         if not nomus then
