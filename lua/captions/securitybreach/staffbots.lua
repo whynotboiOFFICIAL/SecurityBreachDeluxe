@@ -107,4 +107,24 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001alt_f.wav', '<clr:204, 204, 204>Hello, please take this map')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00002_f.wav', '<clr:204, 204, 204>Take a map.')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00004_f.wav', '<clr:204, 204, 204>Thank you, please enjoy.')
+    
+    local path = 'whynotboi/securitybreach/base/staffbot/vo/alien/'
+
+    -- Alien Bot Male
+    
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00004_m.wav', '<clr:204, 204, 204>Resistance is futile.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00005_m.wav', '<clr:204, 204, 204>We come in peace.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00006_m.wav', '<clr:204, 204, 204>This one is for Stewie.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00007_m.wav', '<clr:204, 204, 204>Intruder alert.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00008_m.wav', '<clr:204, 204, 204>Die Earth scum.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00009_m.wav', '<clr:204, 204, 204>Stay still so I can shoot you.')
+    
+    -- Alien Bot Female
+    
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00004_f.wav', '<clr:204, 204, 204>Resistance is futile.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00005_f.wav', '<clr:204, 204, 204>We come in peace.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00006_f.wav', '<clr:204, 204, 204>This one is for Stewie.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00007_f.wav', '<clr:204, 204, 204>Intruder alert.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00008_f.wav', '<clr:204, 204, 204>Die Earth scum.')
+    SBDELUXE:AddEnglishCaption(path .. 'alienbot_00009_f.wav', '<clr:204, 204, 204>Stay still so I can shoot you.')
 end)
