@@ -1,3 +1,5 @@
+AddCSLuaFile()
+
 SWEP.Base = 'weapon_base'
 
 SWEP.PrintName = 'FazCamera'
@@ -86,36 +88,17 @@ function SWEP:PrimaryAttack()
 end
 
 function SWEP:LightFlash()
-    local beam = ents.Create("env_sprite")
-    if IsValid(beam) then
+    self:SetNWBool('SB_IsFlashing', true)
 
-        beam:SetPos(self.Owner:EyePos() + self.Owner:GetForward() * 25)
-        beam:SetKeyValue("model", "sprites/light_glow02_add.vmt")
-        beam:SetKeyValue("scale", "1.5")
-        beam:SetKeyValue("rendermode", "5")
-        beam:SetKeyValue("renderamt", "255")
-        beam:SetKeyValue("rendercolor", "255 255 255")
-
-        beam:SetParent(self.Owner)
-
-        beam:Spawn()
-
-        self:DeleteOnRemove(beam)
-
-        timer.Simple(0.2, function()
-            if not IsValid(beam) then return end
-
-            beam:Remove()
-        end)
-    end
+    self:DrG_Timer(0.2, function()
+        self:SetNWBool('SB_IsFlashing', false)
+    end)
 end
 
 function SWEP:SecondaryAttack()
-
 end
 
 function SWEP:Reload()
-
 end
 
 function SWEP:Holster( wep )
@@ -123,7 +106,6 @@ function SWEP:Holster( wep )
 end
 
 function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
-
 	surface.SetDrawColor( 255, 255, 255, alpha )
 	surface.SetTexture(surface.GetTextureID('vgui/weapon_sb_fazcamera'))
 
@@ -133,3 +115,39 @@ function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
 
 	surface.DrawTexturedRect( x, y, wide , ( wide / 2 ))
 end
+
+if SERVER then return end
+
+-- Camera flash
+
+function SWEP:ViewModelDrawn()
+    self.DrawingWorldModel = false
+end
+
+function SWEP:DrawWorldModel()
+    self:DrawModel()
+
+    self.DrawingWorldModel = true
+end
+
+local flashSprite = Material('sprites/light_glow02_add.vmt')
+
+-- Drawing it in this hook so it actually draws over the player
+hook.Add('PreDrawEffects', 'fnaf_sb_fazcamera_flash', function()
+    local ply = LocalPlayer()
+    if not ply:IsValid() then return end
+
+    local wep = ply:GetActiveWeapon()
+
+    if wep:GetClass() ~= 'weapon_sb_fazcamera' or not wep.DrawingWorldModel then return end
+    if not wep:GetNWBool('SB_IsFlashing') then return end
+
+    local attachment = wep:GetAttachment(wep:LookupAttachment('Flash'))
+    if not attachment then return end
+
+    local pos = attachment.Pos
+    pos = pos + ply:GetForward() * 10
+
+    render.SetMaterial(flashSprite)
+    render.DrawSprite(pos, 256, 256, color_white)
+end)
