@@ -107,7 +107,7 @@ else
             local owner = self:GetOwner()
 
             if owner == LocalPlayer() then
-                owner:ScreenFade(SCREENFADE.IN, color_white, 1, 0.5)
+                owner:ScreenFade(SCREENFADE.IN, color_white, 0.3, 0.3)
             end
         end
     end
@@ -157,6 +157,7 @@ hook.Add('PreDrawEffects', 'fnaf_sb_fazcamera_flash', function()
 
     local wep = ply:GetActiveWeapon()
 
+    if not IsValid(wep) then return end
     if wep:GetClass() ~= 'weapon_sb_fazcamera' or not wep.DrawingWorldModel then return end
     if not wep:GetNWBool('SB_IsFlashing') then return end
 
