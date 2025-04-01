@@ -24,6 +24,8 @@ SWEP.AdminSpawnable = true
 
 function SWEP:Initialize()
     self.Weapon:SetWeaponHoldType( self.HoldType )
+
+    self:SetNWInt('BlasterAmmo', 6)
 end
 
 function SWEP:Deploy()
@@ -33,10 +35,14 @@ function SWEP:Deploy()
 end
 
 function SWEP:PrimaryAttack()
-    if self.FireDelay then return end
+    if self.FireDelay or self:GetNWInt('BlasterAmmo') < 1 then return end
 
     self.FireDelay = true
 
+    local ammo = self:GetNWInt('BlasterAmmo') - 1
+
+    self:SetNWInt('BlasterAmmo', ammo)
+    
     local vm = self.Owner:GetViewModel()
 
     vm:SendViewModelMatchingSequence(self:LookupSequence('fire'))
@@ -59,6 +65,10 @@ function SWEP:PrimaryAttack()
 
         if ent.IsDrGNextbot and ent.Category == 'Security Breach' and ent.CanBeStunned then
             ent:DoStunned()
+        end
+
+        if ent:IsPlayer() then
+            ent:ScreenFade(SCREENFADE.IN, Color(255, 0, 0), 2, 0.3)
         end
     end
 
@@ -90,4 +100,75 @@ function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
 	wide = wide - 20
 
 	surface.DrawTexturedRect( x, y, wide , ( wide / 2 ))
+end
+
+if CLIENT then
+    local blastermeter = Material('ui/securitybreach/blaster/Fazerblast_Charge_Meter_frame.png')
+    local blasterbar = Material('ui/securitybreach/blaster/Fazerblast_Charge_Meter_Fill.png')
+
+    local blaster = Material('ui/securitybreach/blaster/Fazerblast_gun_charged_white.png')
+
+    local function FAZERBLASTERHUDSBNEW()
+        local ply = LocalPlayer()
+        local wep = ply:GetActiveWeapon()
+        local w, h = ScrW(), ScrH()
+
+        if not IsValid(wep) or wep:GetClass() ~= 'weapon_sb_fazerblaster' then return end
+
+        -- Blaster --
+        
+        surface.SetDrawColor(0, 255, 247, 255)
+
+        surface.SetMaterial(blaster)
+
+        local w2, h2 = ScreenScale(30), ScreenScale(23)
+        local lasermeter = w / 2 - w2 * -9.3
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 12.2, w2, h2)
+        
+        -- Meter --
+
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        surface.SetMaterial(blastermeter)
+
+        local w2, h2 = ScreenScale(15), ScreenScale(150)
+        local lasermeter = w / 2 - w2 * -19
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 1.7, w2, h2)
+        
+        -- Bars --
+   
+        surface.SetDrawColor(0, 255, 247, 255)
+
+        surface.SetMaterial(blasterbar)
+
+        if wep:GetNWInt('BlasterAmmo') < 1 then return end
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 1.7, w2, h2)
+
+        if wep:GetNWInt('BlasterAmmo') < 2 then return end
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 1.865, w2, h2)
+
+        if wep:GetNWInt('BlasterAmmo') < 3 then return end
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 2.025, w2, h2)
+
+        if wep:GetNWInt('BlasterAmmo') < 4 then return end
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 2.1865, w2, h2)
+
+        if wep:GetNWInt('BlasterAmmo') < 5 then return end
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 2.353, w2, h2)
+
+        if wep:GetNWInt('BlasterAmmo') < 6 then return end
+
+        surface.DrawTexturedRect(lasermeter, h - h2 * 2.52, w2, h2)
+    end
+
+    timer.Simple(1, function()
+        hook.Add('RenderScreenspaceEffects', 'SBNEW_BLASTER_HUD', FAZERBLASTERHUDSBNEW)
+    end)
 end

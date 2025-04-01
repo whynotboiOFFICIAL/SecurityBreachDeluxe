@@ -72,6 +72,10 @@ function SWEP:PrimaryAttack()
                 if ent.IsDrGNextbot and ent.Category == 'Security Breach' and ent.CanBeStunned then
                     ent:DoStunned()
                 end
+                
+                if ent:IsPlayer() then
+                    ent:ScreenFade(SCREENFADE.IN, color_white, 0.3, 0.3)
+                end
             end
         end
 
