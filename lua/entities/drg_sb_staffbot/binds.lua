@@ -14,6 +14,7 @@ ENT.PossessionBinds = {
     [IN_ATTACK2] = {{
         coroutine = true,
         onkeydown = function(self)
+            if not self:IsOnGround() or self.Stunned then return end
             self:PlaySequenceAndMove('turn360')
         end
     }},

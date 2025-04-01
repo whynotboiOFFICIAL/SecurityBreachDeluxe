@@ -8,7 +8,7 @@ ENT.PossessionBinds = {
     [IN_ATTACK] = {{
         coroutine = true,
         onkeydown = function(self)
-            if not self:IsOnGround() or self:GetNWBool('UseHeadAttach') then return end
+            if not self:IsOnGround() or self:GetNWBool('UseHeadAttach') or self.Stunned then return end
             for k,v in pairs(ents.FindInSphere(self:LocalToWorld(Vector(0,0,50)), 50)) do
                 if v ~= self and v ~= self:GetPossessor() then
                     if v:IsPlayer() or v:IsNextBot() or v:IsNPC() then
