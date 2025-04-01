@@ -87,12 +87,30 @@ function SWEP:PrimaryAttack()
     end)
 end
 
-function SWEP:LightFlash()
-    self:SetNWBool('SB_IsFlashing', true)
+local color_white = Color(255, 255, 255)
 
-    self:DrG_Timer(0.2, function()
-        self:SetNWBool('SB_IsFlashing', false)
-    end)
+if SERVER then
+    function SWEP:LightFlash()
+        local owner = self:GetOwner()
+        if not owner:IsValid() or not owner:IsPlayer() then return end
+
+        self:CallOnClient('LightFlash')
+        self:SetNWBool('SB_IsFlashing', true)
+
+        self:DrG_Timer(0.2, function()
+            self:SetNWBool('SB_IsFlashing', false)
+        end)
+    end
+else
+    function SWEP:LightFlash()
+        if not self.DrawingWorldModel then
+            local owner = self:GetOwner()
+
+            if owner == LocalPlayer() then
+                owner:ScreenFade(SCREENFADE.IN, color_white, 1, 0.5)
+            end
+        end
+    end
 end
 
 function SWEP:SecondaryAttack()
