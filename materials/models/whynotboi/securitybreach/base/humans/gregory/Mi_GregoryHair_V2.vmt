@@ -3,10 +3,6 @@
     "$basetexture" "models\whynotboi\securitybreach\base\humans\gregory\hair_d"
     "$bumpmap" "models\whynotboi\securitybreach\base\humans\gregory\hair_n"
 
-    "$blendtintbybasealpha"    "1"
-
-    "$color2" "[0.6 0.6 0.6]"
-
     "$nodecal" "1"
 
     "$phong" "1"
