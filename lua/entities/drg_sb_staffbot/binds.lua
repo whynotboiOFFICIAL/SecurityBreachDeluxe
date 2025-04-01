@@ -60,7 +60,21 @@ ENT.PossessionViews = {
 }
 
 if CLIENT then
+    local staffbotoverlay = Material('ui/securitybreach/staffbot/Staffbot_HUD_Frame_2k.png')
+
     function ENT:PossessionHUD() 
+        local w, h = ScrW(), ScrH()
+
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        -- Overlay --
+
+        surface.SetMaterial(staffbotoverlay)
+
+        local w1, h1 = ScreenScale(890), ScreenScale(290)
+        local w1 = ScrW()
+
+        surface.DrawTexturedRect(0, 0, w1, ScrH())
     end
 end
 

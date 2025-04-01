@@ -59,8 +59,6 @@ ENT.PossessionViews = {
 }
 
 if CLIENT then
-    function ENT:PossessionHUD() 
-    end
 end
 
 if SERVER then
