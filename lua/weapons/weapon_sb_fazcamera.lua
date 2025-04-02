@@ -14,6 +14,7 @@ SWEP.WepSelectIcon = 60
 
 SWEP.BobScale = 0.7
 
+SWEP.Slot = 1
 SWEP.SlotPos = 2
 
 SWEP.DrawAmmo = false
