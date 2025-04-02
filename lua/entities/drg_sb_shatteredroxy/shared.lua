@@ -123,7 +123,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if self.Stunned or self.PounceStarted then return end
+        if self.Stunned or self.PounceStarted or GetConVar('ai_disabled'):GetBool() then return end
         
         if not self.KillTick then
             self.KillTick = true
