@@ -139,6 +139,40 @@ function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
 	surface.DrawTexturedRect( x, y, wide , ( wide / 2 ))
 end
 
+if CLIENT then
+    local camerameter = Material('ui/securitybreach/camera/Fazerblast_Fazcam_meter_1k.png')
+    local camerafill = Material('ui/securitybreach/camera/Fazerblast_Fazcam_fill_1k.png')
+
+    local function FAZCAMERAHUDSBNEW()
+        local ply = LocalPlayer()
+        local wep = ply:GetActiveWeapon()
+        local w, h = ScrW(), ScrH()
+
+        if not IsValid(wep) or wep:GetClass() ~= 'weapon_sb_fazcamera' then return end
+
+        -- Meter --
+
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        local w2, h2 = ScreenScale(15), ScreenScale(120)
+        local camerabar = w / 2 - w2 * -19
+
+        surface.SetMaterial(camerameter)
+
+        surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2)
+        
+        surface.SetDrawColor(255, 255, 0, 255)
+
+        surface.SetMaterial(camerafill)
+
+        surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2 / 2)
+    end
+
+    timer.Simple(1, function()
+        hook.Add('RenderScreenspaceEffects', 'SBNEW_CAMERA_HUD', FAZCAMERAHUDSBNEW)
+    end)
+end
+
 if SERVER then return end
 
 -- Camera flash
