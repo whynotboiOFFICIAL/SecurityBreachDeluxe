@@ -73,7 +73,7 @@ if SERVER then
     end
 
     function ENT:SpotEntity(ent)
-        if IsValid(self.CurrentVictim) or self.Stunned or self.PounceStarted then return end
+        if IsValid(self.CurrentVictim) or self.Stunned or self.PounceStarted or self:IsPossessed() then return end
         if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return end
         if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return end
 
@@ -123,7 +123,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if self.Stunned or self.PounceStarted or GetConVar('ai_disabled'):GetBool() then return end
+        if self.Stunned or self.PounceStarted or GetConVar('ai_disabled'):GetBool() or self:IsPossessed() then return end
         
         if not self.KillTick then
             self.KillTick = true
