@@ -154,6 +154,7 @@ if SERVER then
         end)
 
         self.SpawnPosition = self:GetPos()
+        self.IdleCycles = 0
     end
 
     function ENT:OnReachedPatrol()
@@ -370,6 +371,31 @@ if SERVER then
         local radians = (x * (math.pi / 180.0))
 
         return radians
+    end
+
+    function ENT:CustomAnimEvents(e) 
+        if e == 'idlecycle' then
+            self.IdleCycles = self.IdleCycles + 1
+
+            if self.IdleCycles > 3 then
+                if self.IdleAnimation ~= 'moonidle3' then
+                    if math.random(1,100) > 50 then
+                        self.IdleAnimation = 'moonidle' .. math.random(2,3)
+                    end
+                else
+                    self.IdleAnimation = 'moonidle1'
+                end
+                self.IdleCycles = 0
+            end
+        end
+
+        if e == 'toidle' then
+            if self.AttendantType == 1 then
+                self.IdleAnimation = 'moonidle1'
+            else
+                self.IdleAnimation = 'idle'
+            end
+        end
     end
 
     function ENT:OnDeath()

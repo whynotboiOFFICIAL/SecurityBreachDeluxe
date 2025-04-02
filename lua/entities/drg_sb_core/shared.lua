@@ -372,6 +372,8 @@ if SERVER then
             end
         end
 
+        if self:GetClass() == 'drg_sb_daycareattendant' then return end
+        
         if e == 'toidle' then
             self.IdleAnimation = 'idle'
         end
