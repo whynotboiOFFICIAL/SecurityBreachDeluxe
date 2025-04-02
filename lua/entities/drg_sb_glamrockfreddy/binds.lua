@@ -201,9 +201,7 @@ end
 
 if SERVER then
     function ENT:OnPossessed()
-        self:CallInCoroutine(function(self,delay)
-            self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
-        end)
+        self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
         
         self:RemoveAllGestures()
 

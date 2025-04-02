@@ -5,9 +5,7 @@ function ENT:OpenChestHatch()
     self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestclose.wav')
     self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestopen.wav', 75, 100, 0.5)
 
-    self:CallInCoroutine(function(self,delay)
-        self:AddGestureSequence(20, false)
-    end)
+    self:AddGestureSequence(20, false)
 end
 
 function ENT:CloseChestHatch()
@@ -16,11 +14,9 @@ function ENT:CloseChestHatch()
     self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestopen.wav')
     self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestclose.wav', 75, 100, 0.5)
 
-    self:CallInCoroutine(function(self,delay)
-        self:RemoveAllGestures()
+    self:RemoveAllGestures()
 
-        self:PlaySequence('closechest')
-    end)
+    self:PlaySequence('closechest')
 end
 
 function ENT:EnterCinematic(ent)
