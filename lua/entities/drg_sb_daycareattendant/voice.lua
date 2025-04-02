@@ -56,6 +56,8 @@ if SERVER then
     end
 
     function ENT:OnStunned()
+        self:StopVoices()
+        
         if self.AttendantType == 0 then
             self:PlayVoiceLine(sunstunvox[math.random(#sunstunvox)], false)
 
