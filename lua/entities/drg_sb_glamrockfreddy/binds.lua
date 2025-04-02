@@ -225,7 +225,8 @@ if SERVER then
             end
         end
     end)
-    hook.Add( "PlayerSwitchWeapon", "WeaponSwitchExample", function( ply, oldWeapon, newWeapon )
+
+    hook.Add( "PlayerSwitchWeapon", "SBNEWSECONDARYNOWEAPONSWITCH", function(ply)
         if not ply:GetNWBool('InFreddy2Play') then return end
 
         local possessing  = ply:GetNWEntity('2PlayFreddy') 
