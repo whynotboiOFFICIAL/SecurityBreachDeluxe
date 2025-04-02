@@ -12,6 +12,7 @@ SWEP.WepSelectIcon = 60
 
 SWEP.BobScale = 0.7
 
+SWEP.Slot = 1
 SWEP.SlotPos = 2
 
 SWEP.DrawAmmo = false
@@ -26,6 +27,10 @@ function SWEP:Initialize()
     self.Weapon:SetWeaponHoldType( self.HoldType )
 
     self:SetNWInt('BlasterAmmo', 6)
+
+    self.LaserAmmo = 6
+
+    self.Recharge = 0
 end
 
 function SWEP:Deploy()
@@ -39,7 +44,11 @@ function SWEP:PrimaryAttack()
 
     self.FireDelay = true
 
+    self.Recharge = 0
+    
     local ammo = self:GetNWInt('BlasterAmmo') - 1
+
+    self.LaserAmmo = ammo
 
     self:SetNWInt('BlasterAmmo', ammo)
     
@@ -102,11 +111,37 @@ function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
 	surface.DrawTexturedRect( x, y, wide , ( wide / 2 ))
 end
 
+function SWEP:Think()
+    if not self.RechargeTick then
+        self.RechargeTick = true
+
+        if self.LaserAmmo < 6 then
+            if self.Recharge > 70 then
+                self.LaserAmmo = 6
+
+                self:SetNWInt('BlasterAmmo', 6)
+
+                self:EmitSound('whynotboi/securitybreach/base/props/fazerblaster/recharge/sfx_fazerblaster_recharge_fullyCharged.wav')
+
+                self.Recharge = 0
+            else
+                self.Recharge = self.Recharge + 1
+            end
+        end
+
+        timer.Simple( 0.3, function()
+            if not IsValid(self)  then return end
+            self.RechargeTick = false
+        end)
+    end
+end
+
 if CLIENT then
     local blastermeter = Material('ui/securitybreach/blaster/Fazerblast_Charge_Meter_frame.png')
     local blasterbar = Material('ui/securitybreach/blaster/Fazerblast_Charge_Meter_Fill.png')
 
     local blaster = Material('ui/securitybreach/blaster/Fazerblast_gun_charged_white.png')
+    local blastercharging = Material('ui/securitybreach/blaster/Fazerblast_gun_charging_white.png')
 
     local function FAZERBLASTERHUDSBNEW()
         local ply = LocalPlayer()
@@ -115,11 +150,21 @@ if CLIENT then
 
         if not IsValid(wep) or wep:GetClass() ~= 'weapon_sb_fazerblaster' then return end
 
+        local ammo = wep:GetNWInt('BlasterAmmo')
+        
         -- Blaster --
         
-        surface.SetDrawColor(0, 255, 247, 255)
+        if ammo < 3 then
+            surface.SetDrawColor(255, 0, 0, 255)
+        else
+            surface.SetDrawColor(0, 255, 247, 255)
+        end
 
-        surface.SetMaterial(blaster)
+        if ammo < 6 then
+            surface.SetMaterial(blastercharging)
+        else
+            surface.SetMaterial(blaster)
+        end
 
         local w2, h2 = ScreenScale(30), ScreenScale(23)
         local lasermeter = w / 2 - w2 * -9.3
@@ -139,31 +184,35 @@ if CLIENT then
         
         -- Bars --
    
-        surface.SetDrawColor(0, 255, 247, 255)
+        if ammo < 3 then
+            surface.SetDrawColor(255, 0, 0, 255)
+        else
+            surface.SetDrawColor(0, 255, 247, 255)
+        end
 
         surface.SetMaterial(blasterbar)
 
-        if wep:GetNWInt('BlasterAmmo') < 1 then return end
+        if ammo < 1 then return end
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 1.7, w2, h2)
 
-        if wep:GetNWInt('BlasterAmmo') < 2 then return end
+        if ammo < 2 then return end
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 1.865, w2, h2)
 
-        if wep:GetNWInt('BlasterAmmo') < 3 then return end
+        if ammo < 3 then return end
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 2.025, w2, h2)
 
-        if wep:GetNWInt('BlasterAmmo') < 4 then return end
+        if ammo < 4 then return end
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 2.1865, w2, h2)
 
-        if wep:GetNWInt('BlasterAmmo') < 5 then return end
+        if ammo < 5 then return end
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 2.353, w2, h2)
 
-        if wep:GetNWInt('BlasterAmmo') < 6 then return end
+        if ammo < 6 then return end
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 2.52, w2, h2)
     end
