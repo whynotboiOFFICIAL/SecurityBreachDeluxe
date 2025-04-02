@@ -145,9 +145,11 @@ if SERVER then
     function ENT:Use(ent)
         if (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) or self.IsSick then return end
 
-        if ent == self.Partner then
+        if (ent == self.Partner) or (self:IsPossessed() and not IsValid(self.Partner)) then
             self:EnterFreddy(ent)
         else
+            if IsValid(self.Partner) then return end
+            
             self.Partner = ent
             ent.GlamrockFreddy = self
             self:ClearPatrols()
@@ -166,6 +168,12 @@ if SERVER then
     function ENT:Removed()
         if self.Partner then
             self.Partner.GlamrockFreddy = nil
+        end
+
+        if IsValid(self.PlayerInside) then
+            local ply = self.PlayerInside
+
+            self:DeinitSecondary(ply)
         end
 
         if IsValid(self.CinTarget) then

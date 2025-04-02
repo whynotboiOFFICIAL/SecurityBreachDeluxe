@@ -22,6 +22,19 @@ ENT.PossessionBinds = {
     [IN_ATTACK2] = {{
         coroutine = false,
         onkeydown = function(self)
+            if not self:IsOnGround() or self:GetNWBool('UseHeadAttach') or self.Stunned or self.ChestDelay then return end
+
+            self.ChestDelay = true
+
+            if not self.OpenChest then
+                self:OpenChestHatch()
+            else
+                self:CloseChestHatch()
+            end
+
+            self:DrG_Timer(2, function()
+                self.ChestDelay = false
+            end)
         end
     }},
 
@@ -170,16 +183,59 @@ if CLIENT then
         
         surface.DrawTexturedRect(1510 - batterysub * 14.2, h - h3 * 1.42, w3, h3) 
     end
+
+    hook.Add("CalcView", "SBNEWSECONDARYCAMERAVIEW", function(ply, origin, angles, fov, znear, zfar)
+        if not ply:GetNWBool('InFreddy2Play') then return end
+
+        local possessing = ply:GetNWEntity('2PlayFreddy')
+
+        if not IsValid(possessing) then return end
+
+		local view = {}
+		view.origin, view.angles = possessing:PossessorView()
+		view.fov, view.znear, view.zfar = fov, znear, zfar
+		view.drawviewer = true
+		return view
+	end)
 end
 
 if SERVER then
     function ENT:OnPossessed()
-        self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
+        self:CallInCoroutine(function(self,delay)
+            self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
+        end)
         
         self:RemoveAllGestures()
 
         self.OpenChest = false
+        
+        if not self:GetNWBool('UseHeadAttach') then
+            self.Partner = nil
+        end
     end
+
+    hook.Add("PlayerButtonDown", "SBNEWSECONDARYNOBUTTONS", function(ply, button)
+        if not ply:GetNWBool('InFreddy2Play') then return end
+
+        local possessing  = ply:GetNWEntity('2PlayFreddy') 
+
+        if not IsValid(possessing) then return end
+        
+        if button == ply:GetInfoNum("drgbase_possession_exit", KEY_E) then
+            if possessing.DeinitSecondary then
+                possessing:DeinitSecondary(ply)
+            end
+        end
+    end)
+    hook.Add( "PlayerSwitchWeapon", "WeaponSwitchExample", function( ply, oldWeapon, newWeapon )
+        if not ply:GetNWBool('InFreddy2Play') then return end
+
+        local possessing  = ply:GetNWEntity('2PlayFreddy') 
+
+        if not IsValid(possessing) then return end
+        
+        return true
+    end)
 
     function ENT:OnDispossessed(ent)
         self:DrG_Timer(0, function()
@@ -190,6 +246,7 @@ if SERVER then
             self:SetNWBool('UseHeadAttach', false)
         end)
     end
+    
 end
 
 AddCSLuaFile()
