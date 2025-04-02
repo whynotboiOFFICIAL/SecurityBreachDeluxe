@@ -50,7 +50,8 @@ if SERVER then
         if self.Stunned or self.StunDelaythen then return end
         
         self.Moving = false
-
+        self.Aiming = false
+        
         if self.StopVoices then 
             self:StopVoices()
         end
@@ -78,7 +79,11 @@ if SERVER then
             self:SetAIDisabled(false)
 
             self.StunDelay = true
-
+            
+            if self:HasEnemy() then
+                self.Aiming = true
+            end
+            
             self:DrG_Timer(2, function()
                 self.StunDelay = false
             end)

@@ -18,7 +18,7 @@ ENT.PossessionBinds = {
     [IN_ATTACK2] = {{
         coroutine = false,
         onkeydown = function(self)
-            if self.AimDelay then return end
+            if self.AimDelay or self.Stunned then return end
 
             self.AimDelay = true
 
