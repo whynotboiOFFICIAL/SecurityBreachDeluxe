@@ -172,6 +172,7 @@ function ENT:SecondaryInit(ply)
     self.PlayerInside = ply
 
     self:DrG_Timer(0.1, function()
+        if not IsValid(ply) then return end
         ply:StripWeapon('drgbase_possession')
     end)
 end
