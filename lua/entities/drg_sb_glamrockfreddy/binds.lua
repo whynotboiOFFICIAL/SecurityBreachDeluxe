@@ -212,30 +212,6 @@ if SERVER then
         end
     end
 
-    hook.Add("PlayerButtonDown", "SBNEWSECONDARYNOBUTTONS", function(ply, button)
-        if not ply:GetNWBool('InFreddy2Play') then return end
-
-        local possessing  = ply:GetNWEntity('2PlayFreddy') 
-
-        if not IsValid(possessing) then return end
-        
-        if button == ply:GetInfoNum("drgbase_possession_exit", KEY_E) then
-            if possessing.DeinitSecondary then
-                possessing:DeinitSecondary(ply)
-            end
-        end
-    end)
-
-    hook.Add( "PlayerSwitchWeapon", "SBNEWSECONDARYNOWEAPONSWITCH", function(ply)
-        if not ply:GetNWBool('InFreddy2Play') then return end
-
-        local possessing  = ply:GetNWEntity('2PlayFreddy') 
-
-        if not IsValid(possessing) then return end
-        
-        return true
-    end)
-
     function ENT:OnDispossessed(ent)
         self:DrG_Timer(0, function()
             if self:GetNWBool('UseHeadAttach') and self:GetNWInt('Energy') > 1 then

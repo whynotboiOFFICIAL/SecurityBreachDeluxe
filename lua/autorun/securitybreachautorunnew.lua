@@ -5,7 +5,7 @@ if SERVER then
 
 	
     hook.Add("PlayerButtonDown", "SBNEWSECONDARYNOBUTTONS", function(ply, button)
-        if not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
+        if IsValid(ply:GetNWEntity('2PlayFreddy')) or not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
 
         local spot  = ply:GetNWEntity('HidingSpotSB') 
 
@@ -15,11 +15,10 @@ if SERVER then
     end)
 
     hook.Add( "PlayerSwitchWeapon", "SBNEWSECONDARYNOWEAPONSWITCH", function(ply)
-		if not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
+		if IsValid(ply:GetNWEntity('2PlayFreddy')) or not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
 
         return true
     end)
-
 end
 
 if CLIENT then
