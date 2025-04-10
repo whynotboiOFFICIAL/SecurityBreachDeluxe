@@ -1,0 +1,34 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\props\kiosk\00\kiosk_d"
+    "$bumpmap" "models\whynotboi\securitybreach\base\props\kiosk\kiosk_n"
+
+    "$blendtintbybasealpha"    "1"
+
+    "$color2" "[0.4 0.4 0.4]"
+
+    "$nodecal" "1"
+
+    "$phong" "1"
+    "$phongalbedotint"	"1"
+
+    "$phongexponenttexture" "models\whynotboi\securitybreach\base\props\kiosk\kiosk_s"
+
+    "$phongboost"    "1"
+    
+    "$phongalbedoboost"    "50"
+
+    "$phongfresnelranges"	"[0.5 1 1]"
+
+    "$phongdisablehalflambert"    "1"
+
+    "$emissiveblendenabled"   "1"
+    "$emissiveblendtexture"   "models\whynotboi\securitybreach\shared\white"
+    "$emissiveblendbasetexture"    "models\whynotboi\securitybreach\base\props\kiosk\00\kiosk_e"
+    "$emissiveblendflowtexture"   "models\whynotboi\securitybreach\shared\white"
+    "$emissiveblendstrength"  "1"
+    "$emissiveblendtint"  "[1 1 1]"
+    "$emissiveblendscrollvector"  "[0 0]"
+
+    "$nocull" "1"
+}

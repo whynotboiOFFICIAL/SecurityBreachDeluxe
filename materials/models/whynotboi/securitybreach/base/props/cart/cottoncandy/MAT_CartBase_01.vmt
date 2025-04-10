@@ -1,0 +1,29 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\props\cart\cottoncandy\base_d"
+    "$bumpmap" "models\whynotboi\securitybreach\base\props\cart\base_n"
+
+    "$blendtintbybasealpha"    "1"
+
+    "$color2" "[0.4 0.4 0.4]"
+
+    "$nodecal" "1"
+
+    "$phong" "1"
+    "$phongalbedotint"	"1"
+
+    "$phongexponenttexture" "models\whynotboi\securitybreach\base\props\cart\base_s"
+
+    "$phongexponentfactor" "0"
+    
+    "$phongboost"    "1"
+    
+    "$phongalbedoboost"    "50"
+
+    "$phongfresnelranges"	"[0.5 1 1]"
+
+    "$phongdisablehalflambert"    "1"
+
+    "$nocull" "1"
+    
+}
