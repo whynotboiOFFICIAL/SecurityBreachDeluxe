@@ -7,6 +7,7 @@ ENT.Category = 'Security Breach'
 ENT.Model = 'models/whynotboi/securitybreach/base/props/cart/cart.mdl'
 ENT.Spawnable = true
 ENT.AdminOnly = false
+
 ENT.CanEnterLeft = false
 ENT.CanEnterRight = false
 

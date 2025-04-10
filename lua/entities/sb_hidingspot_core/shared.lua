@@ -55,14 +55,16 @@ function ENT:Use(ent)
     if self.SpotDisabled or self.SpotDelay then return end
     if IsValid(self.Occupant) and ent ~= self.Occupant then return end
 
+    local instant = self.IsInstant
+
     if IsValid(self.Occupant) and ent == self.Occupant then
-        self:ExitSpot(ent)
+        self:ExitSpot(ent, instant)
     else
-        self:EnterSpot(ent)
+        self:EnterSpot(ent, instant)
     end
 end
 
-function ENT:EnterSpot(ent)
+function ENT:EnterSpot(ent, instant)
     local side = self:GetSide(ent)
 
     if not side then return end
@@ -71,6 +73,8 @@ function ENT:EnterSpot(ent)
 
     self.Occupant = ent
 
+    self.OccupantSide = side
+
     self.Occupant:SetNWEntity('HidingSpotSB', self)
 
     local path1 = self.SFXPath
@@ -78,15 +82,21 @@ function ENT:EnterSpot(ent)
 
     self:EnterCinematic(ent)
 
-    self:ResetSequence('enter' .. (side))
-
     self:ForceLose(ent)
 
     if path2 ~= nil then
         self:EmitSound(path1 .. path2 .. '/enter/enter_0' .. math.random(3) .. '.wav')
     end
 
-    timer.Simple(1.3, function()
+    local animtime = 0
+
+    if not instant then      
+        self:ResetSequence('enter' .. (side))
+
+        animtime = 1.3
+    end
+
+    timer.Simple(animtime, function()
         if not IsValid(self) or not IsValid(ent) then return end
 
         ent:SetNoDraw(true)
@@ -94,15 +104,15 @@ function ENT:EnterSpot(ent)
         --self:EnterHiding(ent)
     end)
 
-    timer.Simple(1.5, function()
+    timer.Simple((animtime + 0.2), function()
         if not IsValid(self) then return end
 
         self.SpotDelay = false
     end)
 end
 
-function ENT:ExitSpot(ent)
-    local side = self:GetSide(ent)
+function ENT:ExitSpot(ent, instant)
+    local side = self.OccupantSide
 
     if not side then return end
 
@@ -112,24 +122,32 @@ function ENT:ExitSpot(ent)
 
     self.Occupant = nil
 
+    self.OccupantSide = nil
+
     local path1 = self.SFXPath
     local path2 = self.SpotID
-
-    self:ResetSequence('exit' .. (side))
 
     if path2 ~= nil then
         self:EmitSound(path1 .. path2 .. '/exit/exit_0' .. math.random(3) .. '.wav')
     end
 
-    timer.Simple(1.3, function()
-        if not IsValid(self) or not IsValid(ent) then return end
+    local animtime = 0
 
-        print(ent:EyeAngles())
+    if not instant then      
+        self:ResetSequence('exit' .. (side))
+
+        animtime = 1.3
+    end
+
+    timer.Simple(animtime, function()
+        if not IsValid(self) or not IsValid(ent) then return end
 
         ent:SetNoDraw(false)
 
         self:ExitCinematic(ent)
         
+        self:ResetSequence('ref')
+
         local exitpos =  self:GetExitPos(side)
         local pos = (self:GetPos() + exitpos)
         local ang = (pos - self:GetPos()):Angle()
@@ -138,7 +156,7 @@ function ENT:ExitSpot(ent)
         ent:SetEyeAngles(Angle(0, ang.y, 0))
     end)
 
-    timer.Simple(1.5, function()
+    timer.Simple((animtime + 0.3), function()
         if not IsValid(self) then return end
 
         self.SpotDelay = false
@@ -153,6 +171,7 @@ function ENT:OnRemove()
         self:ExitCinematic(self.Occupant)
 
         self.Occupant:SetNWEntity('HidingSpotSB', nil)
+        self.Occupant:SetNoDraw(false)
     end
 end
 
@@ -176,8 +195,6 @@ function ENT:GetSide(ent)
 
     local fside = (pos - entpos):Dot(self:GetForward())
     local rside = (pos - entpos):Dot(self:GetRight())
-
-    --print('front', fside, 'side', rside)
 
     if fside < -25 then
         return 'front'
