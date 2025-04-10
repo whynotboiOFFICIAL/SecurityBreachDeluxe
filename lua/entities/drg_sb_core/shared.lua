@@ -432,7 +432,7 @@ if SERVER then
             self:OnLoseEnemy(ent)
         end
 
-        if self.HidingSpotSearch then return end
+        if not self.HidingSpotSearch then return end
         
         if ent:IsPlayer() and IsValid(ent:GetNWEntity('HidingSpotSB')) and self:VisibleVec(ent:GetPos()) then
 
