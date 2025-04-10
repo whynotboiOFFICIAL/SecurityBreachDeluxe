@@ -431,6 +431,19 @@ if SERVER then
         if self.OnLoseEnemy then
             self:OnLoseEnemy(ent)
         end
+
+        if self.HidingSpotSearch then return end
+        
+        if ent:IsPlayer() and IsValid(ent:GetNWEntity('HidingSpotSB')) and self:VisibleVec(ent:GetPos()) then
+
+            local spot = ent:GetNWEntity('HidingSpotSB')
+
+            self.InvestigatingSpot = spot
+            
+            self:ClearPatrols()
+
+            self:AddPatrolPos(spot:GetPos() + spot:GetForward() * 70)
+        end
     end
 
     function ENT:EnterCinematic(ent)

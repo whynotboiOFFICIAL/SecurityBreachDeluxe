@@ -54,6 +54,8 @@ function ENT:ForceLose(ent)
             v:SetEntityRelationship(ent, D_LI)
 
             self:DrG_Timer(1, function()
+                if not IsValid(v) then return end
+                
                 v:SetEntityRelationship(ent, D_HT)
             end)
         end

@@ -10,6 +10,8 @@ ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
+ENT.HidingSpotSearch = true
+
 -- Stats --
 ENT.SpawnHealth = 700
 

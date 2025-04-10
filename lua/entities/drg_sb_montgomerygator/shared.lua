@@ -11,6 +11,8 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
+ENT.HidingSpotSearch = true
+
 -- Stats --
 ENT.SpawnHealth = 1000
 
