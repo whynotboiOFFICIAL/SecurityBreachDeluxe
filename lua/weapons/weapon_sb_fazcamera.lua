@@ -153,6 +153,12 @@ if CLIENT then
     local camerameter = Material('ui/securitybreach/camera/Fazerblast_Fazcam_meter_1k.png')
     local camerafill = Material('ui/securitybreach/camera/Fazerblast_Fazcam_fill_1k.png')
 
+    local icon = Material('ui/securitybreach/camera/FazCamIcon.png')
+    local iconEmpty = Material('ui/securitybreach/camera/FazCamIconEmpty.png')
+
+    local barColor = Color(255, 0, 0)
+    local iconColor = Color(255, 255, 255)
+
     function SWEP:DrawHUD()
         local w, h = ScrW(), ScrH()
 
@@ -176,15 +182,27 @@ if CLIENT then
         local w2, h2 = ScreenScale(15), ScreenScale(120)
         local camerabar = w / 2 - w2 * -19
 
+        if not isCharged then
+            local saturation = math.abs(math.sin(CurTime() * 3))
+
+            iconColor:SetSaturation(1 - saturation)
+        else
+            iconColor:SetSaturation(0)
+        end
+        
+        surface.SetDrawColor(iconColor.r, iconColor.g, iconColor.b)
+        surface.SetMaterial(isCharged and icon or iconEmpty)
+        surface.DrawTexturedRect(camerabar - 15, ScreenScale(70), 70, 100)
+
+        surface.SetDrawColor(255, 255, 255)
         surface.SetMaterial(camerameter)
         surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2)
 
-        local color = Color(255, 0, 0)
         local charge = math.EaseInOut(self.BarCharge, 0.5, 0)
 
-        color:AddHue(40 * math.min(1, charge / 0.75))
+        barColor:SetHue(40 * math.min(1, charge / 0.75))
         
-        surface.SetDrawColor(color)
+        surface.SetDrawColor(barColor.r, barColor.g, barColor.b)
         surface.SetMaterial(camerafill)
         surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2)
 

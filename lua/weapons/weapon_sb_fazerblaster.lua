@@ -143,14 +143,11 @@ if CLIENT then
     local blaster = Material('ui/securitybreach/blaster/Fazerblast_gun_charged_white.png')
     local blastercharging = Material('ui/securitybreach/blaster/Fazerblast_gun_charging_white.png')
 
-    local function FAZERBLASTERHUDSBNEW()
-        local ply = LocalPlayer()
-        local wep = ply:GetActiveWeapon()
+    local color = Color(255, 255, 255)
+
+    function SWEP:DrawHUD()
         local w, h = ScrW(), ScrH()
-
-        if not IsValid(wep) or wep:GetClass() ~= 'weapon_sb_fazerblaster' then return end
-
-        local ammo = wep:GetNWInt('BlasterAmmo')
+        local ammo = self:GetNWInt('BlasterAmmo')
         
         -- Blaster --
         
@@ -169,12 +166,20 @@ if CLIENT then
         local w2, h2 = ScreenScale(30), ScreenScale(23)
         local lasermeter = w / 2 - w2 * -9.3
 
+        if ammo < 6 then
+            local cyanAmount = math.abs(math.sin(CurTime() * 3))
+            local g = 255 * cyanAmount
+
+            surface.SetDrawColor(255 * (1 - cyanAmount), g, g)
+        else
+            surface.SetDrawColor(0, 255, 247)
+        end
+
         surface.DrawTexturedRect(lasermeter, h - h2 * 12.2, w2, h2)
         
         -- Meter --
 
         surface.SetDrawColor(255, 255, 255, 255)
-
         surface.SetMaterial(blastermeter)
 
         local w2, h2 = ScreenScale(15), ScreenScale(150)
@@ -216,8 +221,4 @@ if CLIENT then
 
         surface.DrawTexturedRect(lasermeter, h - h2 * 2.52, w2, h2)
     end
-
-    timer.Simple(1, function()
-        hook.Add('RenderScreenspaceEffects', 'SBNEW_BLASTER_HUD', FAZERBLASTERHUDSBNEW)
-    end)
 end
