@@ -25,8 +25,16 @@ SWEP.UseHands = true
 SWEP.Spawnable = true
 SWEP.AdminSpawnable = true
 
+SWEP.ViewModelFlip = true
+
 function SWEP:Initialize()
     self.Weapon:SetWeaponHoldType( self.HoldType )
+
+    self:SetNWBool('IsCharged', true)
+
+    if CLIENT then
+        self.BarCharge = 1
+    end
 end
 
 function SWEP:Deploy()
@@ -44,10 +52,8 @@ function SWEP:PrimaryAttack()
     if self.FireDelay then return end
 
     self.FireDelay = true
-
     
     self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/trigger/sfx_fazcam_trigger_click_0' .. math.random(6) .. '.wav')
-
 
     local vm = self.Owner:GetViewModel()
 
@@ -55,9 +61,11 @@ function SWEP:PrimaryAttack()
 
     timer.Simple( 0.2, function()
         if not IsValid(self)  then return end
+
         self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/activate/sfx_fazcam_activate_0' .. math.random(3) .. '.wav')
 
         self:LightFlash()
+        self:SetNWBool('IsCharged', false)
 
         local size = 350
         local dir = self:GetForward()
@@ -85,9 +93,11 @@ function SWEP:PrimaryAttack()
             vm:SendViewModelMatchingSequence(self:LookupSequence('idle'))
         end)
 
-        timer.Simple( 0.8, function()
-            if not IsValid(self)  then return end
+        timer.Simple( 29.8, function()
+            if not IsValid(self) then return end
+
             self.FireDelay = false
+            self:SetNWBool('IsCharged', true)
         end)
     end)
 end
@@ -143,12 +153,21 @@ if CLIENT then
     local camerameter = Material('ui/securitybreach/camera/Fazerblast_Fazcam_meter_1k.png')
     local camerafill = Material('ui/securitybreach/camera/Fazerblast_Fazcam_fill_1k.png')
 
-    local function FAZCAMERAHUDSBNEW()
-        local ply = LocalPlayer()
-        local wep = ply:GetActiveWeapon()
+    function SWEP:DrawHUD()
         local w, h = ScrW(), ScrH()
 
-        if not IsValid(wep) or wep:GetClass() ~= 'weapon_sb_fazcamera' then return end
+        local newCharge
+        local isCharged = self:GetNWBool('IsCharged')
+
+        if not isCharged then
+            newCharge = self.BarCharge - FrameTime()
+        else
+            newCharge = self.BarCharge + FrameTime()
+        end
+
+        newCharge = math.Clamp(newCharge, 0, 1)
+
+        self.BarCharge = newCharge
 
         -- Meter --
 
@@ -158,19 +177,20 @@ if CLIENT then
         local camerabar = w / 2 - w2 * -19
 
         surface.SetMaterial(camerameter)
-
         surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2)
+
+        local color = Color(255, 0, 0)
+        local charge = math.EaseInOut(self.BarCharge, 0.5, 0)
+
+        color:AddHue(40 * math.min(1, charge / 0.75))
         
-        surface.SetDrawColor(255, 255, 0, 255)
-
+        surface.SetDrawColor(color)
         surface.SetMaterial(camerafill)
+        surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2)
 
-        surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2 / 2)
+        surface.SetDrawColor(38, 38, 41, 255)
+        surface.DrawTexturedRect(camerabar, h - h2 * 2.1, w2, h2 * (1 - charge))
     end
-
-    timer.Simple(1, function()
-        hook.Add('RenderScreenspaceEffects', 'SBNEW_CAMERA_HUD', FAZCAMERAHUDSBNEW)
-    end)
 end
 
 if SERVER then return end
