@@ -91,6 +91,15 @@ ENT.PossessionBinds = {
     }}
 }
 
+ENT.HidingSpotOffsets = {
+    ['cart'] = 55,
+    ['firstaid'] = 70,
+    ['kiosk'] = 60,
+    ['locker'] = 55,
+    ['photobooth'] = 65,
+    ['servicecart'] = 55,
+}
+
 include('sound.lua')
 
 if CLIENT then
@@ -356,6 +365,26 @@ if SERVER then
             self:CustomAnimEvents(e)
         end
 
+        if e == 'search' then
+            local spot = self.InvestigatingSpot
+            
+            if not IsValid(spot) then return end
+
+            local ent = spot.Occupant
+
+            if not IsValid(ent) then return end
+
+            spot:ForceEject(ent)
+
+            self._InterruptSeq = true
+
+            self:CallInCoroutine(function(self,delay)
+                self:JumpscareEntity(ent)
+            end)
+
+            self.InterruptSeq = false
+        end
+
         if e == 'onlleg' then
             self.CurrentFoot = 1
 
@@ -416,33 +445,6 @@ if SERVER then
             self:SmoothDirectPoseParametersAt(self.AimTarget, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 8)
         elseif self.AimTarget == nil then
             self:SmoothDirectPoseParametersAt(self:WorldSpaceCenter() + self:GetForward() * 1, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 3)
-        end
-    end
-
-    function ENT:OnNewEnemy(ent)
-        if self.OnSpotEnemy then
-            self:OnSpotEnemy(ent)
-        end
-
-        self:CallOnClient('OnEnemySpotted', ent)
-    end
-
-    function ENT:OnLastEnemy(ent)
-        if self.OnLoseEnemy then
-            self:OnLoseEnemy(ent)
-        end
-
-        if not self.HidingSpotSearch then return end
-        
-        if ent:IsPlayer() and IsValid(ent:GetNWEntity('HidingSpotSB')) and self:VisibleVec(ent:GetPos()) then
-
-            local spot = ent:GetNWEntity('HidingSpotSB')
-
-            self.InvestigatingSpot = spot
-            
-            self:ClearPatrols()
-
-            self:AddPatrolPos(spot:GetPos() + spot:GetForward() * 70)
         end
     end
 

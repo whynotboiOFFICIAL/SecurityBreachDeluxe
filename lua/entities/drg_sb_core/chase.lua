@@ -1,3 +1,36 @@
+function ENT:OnNewEnemy(ent)
+    if self.OnSpotEnemy then
+        self:OnSpotEnemy(ent)
+    end
+
+    self:CallOnClient('OnEnemySpotted', ent)
+end
+
+function ENT:OnLastEnemy(ent)
+    if self.OnLoseEnemy then
+        self:OnLoseEnemy(ent)
+    end
+
+    if self.Stunned or not self.HidingSpotSearch then return end
+    
+    if ent:IsPlayer() and IsValid(ent:GetNWEntity('HidingSpotSB')) and self:VisibleVec(ent:GetPos()) then
+
+        local spot = ent:GetNWEntity('HidingSpotSB')
+
+        if spot.CantBeSearched then return end
+
+        local tosearch = spot.SpotID
+
+        local offset = self.HidingSpotOffsets[tosearch] or 55
+
+        self.InvestigatingSpot = spot
+        
+        self:ClearPatrols()
+
+        self:AddPatrolPos(spot:GetPos() + spot:GetForward() * offset)
+    end
+end
+
 function ENT:OnChaseEnemy()
     self:DoorCode()  
 end
@@ -69,6 +102,10 @@ function ENT:PounceStart()
 
     self:SetAIDisabled(true)
 
+    if self.Weeping then
+        self:StopWeeping()
+    end
+    
     self.PounceStarted = true
     self.LockAim = true
     self.VoiceDisabled = true

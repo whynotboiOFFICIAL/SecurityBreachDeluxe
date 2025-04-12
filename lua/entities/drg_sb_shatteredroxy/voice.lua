@@ -10,7 +10,6 @@ local idlevox = {
     'ROXY_00047',
     'ROXY_00048',
     'ROXY_00049',
-    'ROXY_00050',
     'ROXY_00050a',
     'ROXY_00051'
 }
@@ -55,8 +54,26 @@ if SERVER then
 
         local timer = math.random(15, 30)
 
-        if math.random(1,10) > 3 then
-            self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+        if self.Weeping then
+            if math.random(1, 100) > 60 then
+                self:StopWeeping()
+            else
+                timer = math.random(20, 25)
+
+                self:PlayVoiceLine('ROXY_00050', false)
+            end
+        else
+            if math.random(1,10) > 3 then
+                if math.random(1, 100) > 60 then
+                    timer = 20
+
+                    self:StartWeeping()
+
+                    self:PlayVoiceLine('ROXY_00050', false)
+                else
+                    self:PlayVoiceLine(idlevox[math.random(#idlevox)], false)
+                end
+            end
         end
 
         self:DrG_Timer(timer, function()
@@ -64,10 +81,30 @@ if SERVER then
         end)
     end
 
+    function ENT:StartWeeping()
+        self.IdleAnimation = 'weepidle'
+        self.WalkAnimation = 'weepwalk'
+        self.RunAnimation = 'weepwalk'
+
+        self.Weeping = true
+        
+        self.Moving = false
+    end
+
+    function ENT:StopWeeping()
+        self.IdleAnimation = 'idle'
+        self.WalkAnimation = 'walk'
+        self.RunAnimation = 'run'
+
+        self.Weeping = false
+    end
+
     function ENT:StopVoices(mode)
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
         end
+
+        self:StopVoiceLine('ROXY_00050')
 
         if mode == 1 then return end
 
@@ -79,12 +116,18 @@ if SERVER then
     function ENT:OnSpotEnemy()
         if self.Stunned then return end
         
+        if self.Weeping then
+            self:StopWeeping()
+        end
+
         self:DrG_Timer(0, function()
             self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
         end)
 
         self:DrG_Timer(0.05, function()
             self:StopVoices(1)
+
+            self.WalkAnimation = 'run'
 
             self.VoiceDisabled = true
         end)
@@ -93,6 +136,10 @@ if SERVER then
     function ENT:OnLoseEnemy()
         if self.Stunned then return end
         
+        self:DrG_Timer(0.05, function()
+            self.WalkAnimation = 'walk'
+        end)
+
         if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
             self.VoiceDisabled = false
         end

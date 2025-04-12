@@ -12,6 +12,7 @@ ENT.CanPounce = true
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.HidingSpotSearch = true
+ENT.SearchID = 'roxy'
 
 -- Stats --
 ENT.SpawnHealth = 1000

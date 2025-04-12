@@ -9,6 +9,7 @@ ENT.Spawnable = true
 ENT.AdminOnly = false
 
 ENT.IsInstant = true
+ENT.CantBeSearched = true
 
 ENT.CanEnterBack = false
 ENT.CanEnterLeft = false

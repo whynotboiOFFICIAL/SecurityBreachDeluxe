@@ -111,16 +111,28 @@ function ENT:EnterSpot(ent, instant)
     end)
 end
 
+function ENT:SearchSpot(char)
+    local seq = self:LookupSequence('search' .. char)
+
+    self.SpotDisabled = true
+
+    self:AddLayeredSequence(seq, 1)
+
+    timer.Simple(5, function()
+        if not IsValid(self) then return end
+
+        self:RemoveAllGestures()
+
+        self.SpotDisabled = false
+    end)
+end
+
 function ENT:ExitSpot(ent, instant)
     local side = self.OccupantSide
 
     if not side then return end
 
     self.SpotDelay = true
-
-    self.Occupant:SetNWEntity('HidingSpotSB', nil)
-
-    self.Occupant = nil
 
     self.OccupantSide = nil
 
@@ -141,6 +153,10 @@ function ENT:ExitSpot(ent, instant)
 
     timer.Simple(animtime, function()
         if not IsValid(self) or not IsValid(ent) then return end
+
+        self.Occupant:SetNWEntity('HidingSpotSB', nil)
+
+        self.Occupant = nil
 
         ent:SetNoDraw(false)
 
@@ -229,6 +245,7 @@ function ENT:EnterCinematic(ent)
     ent:AddFlags(FL_NOTARGET)
     ent:DrawViewModel(false)
     ent:SetActiveWeapon(nil)
+    ent:SetCollisionGroup(10)
 
     net.Start('SECURITYBREACHFINALLYCINEMATIC')
     net.WriteEntity(self)
@@ -261,8 +278,19 @@ function ENT:ExitCinematic(ent)
     ent:RemoveFlags(FL_NOTARGET)
     ent:Freeze(false)
     ent:DrawViewModel(true)
+    ent:SetCollisionGroup(5)
 
     self.CinTarget = nil
+end
+
+function ENT:ForceEject(ent)
+    self:ExitCinematic(ent)
+
+    self.Occupant = nil
+    
+    ent:SetNWEntity('HidingSpotSB', nil)
+
+    ent:SetNoDraw(false)
 end
 
 function ENT:ForceLose(ent)

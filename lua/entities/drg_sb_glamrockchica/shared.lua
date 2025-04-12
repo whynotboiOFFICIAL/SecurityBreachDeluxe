@@ -11,6 +11,7 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.HidingSpotSearch = true
+ENT.SearchID = 'chica'
 
 -- Stats --
 ENT.SpawnHealth = 1000

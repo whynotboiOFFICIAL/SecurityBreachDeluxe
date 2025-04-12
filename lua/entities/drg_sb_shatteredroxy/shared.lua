@@ -11,6 +11,7 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.CanBeSummoned = true
 ENT.HidingSpotSearch = true
+ENT.SearchID = 'roxy'
 
 -- Stats --
 ENT.SpawnHealth = 700
@@ -83,8 +84,6 @@ if SERVER then
 
     function ENT:AlertedTo(pos)
         if not self.Alerted then
-            self.WalkAnimation = 'run'
-
             self:OnSpotEnemy()
             self:CallOnClient('OnEnemySpotted', ent)
 
@@ -130,7 +129,10 @@ if SERVER then
             self.KillTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 30)) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or v:Health() < 1 then continue end
+                if v == self or self.Stunned or self.PounceStarted or self:IsPossessed() then continue end
+                if GetConVar('ai_disabled'):GetBool() or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then continue end
+                if (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or v:Health() < 1 then continue end
+                
                 self:CallInCoroutine(function(self,delay)
                     self:JumpscareEntity(v)
                 end)
