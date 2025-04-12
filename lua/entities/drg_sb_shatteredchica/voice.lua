@@ -33,7 +33,7 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            self:PlayVoiceLine(vox[math.random(#vox)], true)
+            self:PlayVoiceLine(vox[math.random(#vox)], false)
         end
 
         self:DrG_Timer(timer, function()
@@ -48,7 +48,7 @@ if SERVER then
             self:PlaySequenceAndMove('stunin') 
         end)
 
-        self:PlayVoiceLine(vox[math.random(#vox)], true)
+        self:PlayVoiceLine(vox[math.random(#vox)], false)
 
         self.IdleAnimation = 'stunloop'
     end
