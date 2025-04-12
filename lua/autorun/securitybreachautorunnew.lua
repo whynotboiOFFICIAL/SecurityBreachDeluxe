@@ -5,7 +5,7 @@ if SERVER then
 
 	
     hook.Add("PlayerButtonDown", "SBNEWSECONDARYNOBUTTONS", function(ply, button)
-        if IsValid(ply:GetNWEntity('2PlayFreddy')) or not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
+        if not IsValid(ply:GetNWEntity('2PlayFreddy')) and not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
 
         local ent = ply:GetNWEntity('HidingSpotSB') or ply:GetNWEntity('2PlayFreddy')
 
