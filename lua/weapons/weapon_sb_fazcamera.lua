@@ -46,6 +46,10 @@ function SWEP:Deploy()
         if not IsValid(self)  then return end
         vm:SendViewModelMatchingSequence(self:LookupSequence('idle'))
     end)
+
+    if not self:GetNWBool('IsCharged') then
+        self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_0' .. math.random(3) .. '.wav', 75, 100, 0.3)
+    end
 end
 
 function SWEP:PrimaryAttack()
@@ -62,7 +66,7 @@ function SWEP:PrimaryAttack()
     timer.Simple( 0.2, function()
         if not IsValid(self)  then return end
 
-        self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/activate/sfx_fazcam_activate_0' .. math.random(3) .. '.wav')
+        self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/activate/sfx_fazcam_activate_0' .. math.random(3) .. '.wav', 75, 100, 1, CHAN_STATIC)
 
         self:LightFlash()
         self:SetNWBool('IsCharged', false)
@@ -91,6 +95,7 @@ function SWEP:PrimaryAttack()
         timer.Simple( 0.2, function()
             if not IsValid(self)  then return end
             vm:SendViewModelMatchingSequence(self:LookupSequence('idle'))
+            self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_0' .. math.random(3) .. '.wav', 75, 100, 0.3)
         end)
 
         timer.Simple( 29.8, function()
@@ -98,6 +103,12 @@ function SWEP:PrimaryAttack()
 
             self.FireDelay = false
             self:SetNWBool('IsCharged', true)
+
+            self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_01.wav')
+            self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_02.wav')
+            self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_03.wav')
+
+            self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_recharge_0' .. math.random(3) .. '.wav')
         end)
     end)
 end
@@ -135,6 +146,10 @@ function SWEP:Reload()
 end
 
 function SWEP:Holster( wep )
+    self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_01.wav')
+    self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_02.wav')
+    self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_03.wav')
+
     return true
 end
 
