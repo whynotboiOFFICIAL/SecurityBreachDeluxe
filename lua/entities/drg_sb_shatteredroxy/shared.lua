@@ -75,9 +75,8 @@ if SERVER then
     end
 
     function ENT:SpotEntity(ent)
-        if IsValid(self.CurrentVictim) or self.Stunned or self.PounceStarted or self:IsPossessed() then return end
-        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return end
-        if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return end
+        if self:IsPossessed() then return end
+        if self:EntityInaccessible(ent) then return end
 
         self:AlertedTo(ent:GetPos(), ent)
     end
@@ -129,10 +128,9 @@ if SERVER then
             self.KillTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 30)) do
-                if v == self or self.Stunned or self.PounceStarted or self:IsPossessed() then continue end
-                if GetConVar('ai_disabled'):GetBool() or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then continue end
-                if (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or v:Health() < 1 then continue end
-                
+                if self:IsPossessed() then continue end
+                if self:EntityInaccessible(v) then continue end
+
                 self:CallInCoroutine(function(self,delay)
                     self:JumpscareEntity(v)
                 end)

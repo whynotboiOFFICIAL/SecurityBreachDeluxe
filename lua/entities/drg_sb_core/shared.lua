@@ -134,6 +134,14 @@ if SERVER then
         self.Width = self:BoundingRadius() * 0.1
     end
 
+    function ENT:EntityInaccessible(ent)
+        if ent == self or ent == self:GetPossessor() then return true end
+        if self.Stunned or self.PounceStarted or self:IsPossessed() then return true end
+        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return true end
+        if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return true end
+        if IsValid(ent:GetNWEntity('2PlayFreddy')) or IsValid(ent:GetNWEntity('HidingSpotSB')) then return true end
+    end
+
     function ENT:IsBeingLookedAt()
         local players = player.GetHumans()
         local isBeingLookedAt = false
@@ -195,8 +203,13 @@ if SERVER then
             self.PounceTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or v:Health() < 1 then continue end
-                self:CallInCoroutine(function(self,delay)
+                if v == self or v == self:GetPossessor() then continue end
+                if self.Stunned or self:IsPossessed() then continue end
+                if GetConVar('ai_disabled'):GetBool() or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then continue end
+                if (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or v:Health() < 1 then continue end
+                if IsValid(v:GetNWEntity('2PlayFreddy')) or IsValid(v:GetNWEntity('HidingSpotSB')) then continue end
+                
+                self:CallInCoroutine(function(self, delay)
                     self:JumpscareEntity(v)
                 end)
             end
@@ -447,6 +460,8 @@ if SERVER then
             self:SmoothDirectPoseParametersAt(self:WorldSpaceCenter() + self:GetForward() * 1, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 3)
         end
     end
+
+    -- Cinematic
 
     function ENT:EnterCinematic(ent)
         ent:Freeze(true)

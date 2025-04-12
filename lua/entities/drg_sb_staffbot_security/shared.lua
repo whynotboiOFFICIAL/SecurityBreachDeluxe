@@ -148,7 +148,7 @@ if SERVER then
             self.CatchTick = true
 
             for k, v in ipairs( ents.FindInCone( startPos, dir, size, angle ) ) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or v:Health() < 1 then continue end
+                if self:EntityInaccessible(v) then continue end
 
                 self:CallInCoroutine(function(self,delay)
                     self:JumpscareEntity(v)
