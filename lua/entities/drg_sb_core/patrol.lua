@@ -18,6 +18,8 @@ function ENT:OnIdle()
 
         self:FaceInstant(spot)
 
+        self.InterruptSeq = false
+        
         local searchid = self.SearchID or 'monty'
 
         spot:SearchSpot(searchid)
