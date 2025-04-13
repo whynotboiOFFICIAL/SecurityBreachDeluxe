@@ -135,10 +135,6 @@ if SERVER then
 
     function ENT:OnLoseEnemy()
         if self.Stunned then return end
-        
-        self:DrG_Timer(0.05, function()
-            self.WalkAnimation = 'walk'
-        end)
 
         if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
             self.VoiceDisabled = false

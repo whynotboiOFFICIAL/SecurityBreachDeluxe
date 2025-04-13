@@ -115,10 +115,12 @@ if SERVER then
     function ENT:EndPursuit()
         self.Alerted = false
         self.VoiceDisabled = false
-
-        self.WalkAnimation = 'walk'
         
         self.PursuePos = nil
+        
+        self:DrG_Timer(0.1, function()
+            self.WalkAnimation = 'walk'
+        end)
     end
 
     function ENT:AddCustomThink()
