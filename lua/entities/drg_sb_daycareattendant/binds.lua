@@ -8,6 +8,17 @@ ENT.PossessionBinds = {
     [IN_ATTACK] = {{
         coroutine = true,
         onkeydown = function(self)
+            if not self:IsOnGround() or self.Stunned then return end
+
+            if self.AttendantType == 1 then
+                for k,v in pairs(ents.FindInSphere(self:LocalToWorld(Vector(0,0,50)), 50)) do
+                    if v ~= self and v ~= self:GetPossessor() then
+                        if v:IsPlayer() or v:IsNextBot() or v:IsNPC() then
+                            self:JumpscareEntity(v)
+                        end
+                    end
+                end   
+            end
         end
     }},
 
@@ -16,7 +27,9 @@ ENT.PossessionBinds = {
         onkeydown = function(self)
             if self.Swimming then return end
             
-            self:StartHook()
+            -- Fuck this --
+
+            --self:StartHook()
         end
     }},
 
@@ -49,6 +62,23 @@ ENT.PossessionBinds = {
     [IN_DUCK] = {{
         coroutine = false,
         onkeydown = function(self)
+            if self.Stunned or self.SkitterDelay or self.AttendantType ~= 1 then return end
+
+            self.SkitterDelay = true
+
+            if self.Skittering then
+                self.IdleAnimation = 'mooncrawltowalk'
+                self.WalkAnimation = 'mooncrawltowalk'
+                self.RunAnimation = 'mooncrawltowalk'
+            else
+                self.IdleAnimation = 'moonwalktocrawl'
+                self.WalkAnimation = 'moonwalktocrawl'
+                self.RunAnimation = 'moonwalktocrawl'
+            end
+            
+            self:DrG_Timer(2, function()
+                self.SkitterDelay = false
+            end)
         end
     }}
 }

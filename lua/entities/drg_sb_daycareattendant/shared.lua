@@ -313,13 +313,43 @@ if SERVER then
         end
     end
 
+    function ENT:SpawnHook(pos)
+        local hook = ents.Create('prop_dynamic')
+        
+        hook:SetModel('models/whynotboi/securitybreach/base/animatronics/daycareattendant/hook.mdl')
+        hook:SetModelScale(1)
+        hook:SetParent(self)
+        hook:SetSolid(SOLID_NONE)
+
+        hook:Fire('SetParentAttachment','Hook')
+
+        hook:Spawn()
+
+        self.HookModel = hook
+        
+        constraint.Elastic(
+            self, 
+            game.GetWorld(), 
+            0, 0, 
+            self:WorldToLocal(self:GetBonePosition(0)), 
+            pos, 
+            59, 59, 0, 
+            nil, 2
+        )
+    end
+
     function ENT:StartHook()
         local hookpos = self:HookTrace()
 
         if hookpos then
+
             self.JumpAnimation = 'moonswimloop'
 
             self.Swimming = true
+            
+            self.loco:SetVelocity(vector_origin)
+            self.loco:SetGravity(0)
+            
 
             local oldhookpos = Vector(hookpos)
 
@@ -327,18 +357,7 @@ if SERVER then
 
             self:SetPos(hookpos)
 
-            self.loco:SetVelocity(vector_origin)
-            self.loco:SetGravity(0)
-            
-            constraint.Elastic(
-                self, 
-                game.GetWorld(), 
-                0, 0, 
-                self:WorldToLocal(self:GetBonePosition(3)), 
-                oldhookpos, 
-                59, 59, 0, 
-                nil, 2
-            )
+            self:SpawnHook(oldhookpos)
         end
     end
 
@@ -385,7 +404,64 @@ if SERVER then
                 else
                     self.IdleAnimation = 'moonidle1'
                 end
+
                 self.IdleCycles = 0
+            end
+        end
+
+        if e == 'walkcycle' then
+            if self:IsPossessed() then return end
+
+            self.IdleCycles = self.IdleCycles + 1
+
+            if self.IdleCycles > 3 and math.random(1,100) > 50 then
+                if self.WalkAnimation ~= 'moonskitter' then
+                    self.IdleAnimation = 'moonwalktocrawl'
+                    self.WalkAnimation = 'moonwalktocrawl'
+                    self.RunAnimation = 'moonwalktocrawl'
+                end
+
+                self.IdleCycles = 0
+            end
+        end
+
+        if e == 'skittercycle' then
+            if self:IsPossessed() then return end
+
+            self.IdleCycles = self.IdleCycles + 1
+
+            if self.IdleCycles > 3 and math.random(1,100) > 50 then
+                if self.WalkAnimation ~= 'moonwalk' then
+                    self.IdleAnimation = 'mooncrawltowalk'
+                    self.WalkAnimation = 'mooncrawltowalk'
+                    self.RunAnimation = 'mooncrawltowalk'
+                end
+
+                self.IdleCycles = 0
+            end
+        end
+
+        if e == 'toskitter' then
+            self.IdleAnimation = 'moonidle4'
+            self.WalkAnimation = 'moonskitter'
+            self.RunAnimation = 'moonskitter'
+            
+            self.Skittering = true
+
+            self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 35))
+        end
+
+        if e == 'towalk' then
+            self.IdleAnimation = 'moonidle1'
+            self.WalkAnimation = 'moonwalk'
+            self.RunAnimation = 'moonwalk'
+
+            self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
+
+            self.Skittering = false
+
+            if self:IsPossessed() then
+                self.RunAnimation = 'moonrun'
             end
         end
 
