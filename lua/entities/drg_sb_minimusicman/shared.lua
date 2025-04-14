@@ -95,7 +95,7 @@ if SERVER then
     end
 
     function ENT:StepSFX()
-        self:EmitSound('whynotboi/securitybreach/base/minimusicman/footsteps/walk/fly_lmm_walk_'.. math.random(1,10) .. '.wav')
+        self:EmitSound('whynotboi/securitybreach/base/minimusicman/footsteps/walk/fly_lmm_walk_'.. math.random(1,10) .. '.wav', 75, 100, 0.6)
     end
 
 else
