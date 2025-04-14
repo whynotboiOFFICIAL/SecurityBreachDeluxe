@@ -4,6 +4,13 @@
 hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     hook.Remove('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS')
 
+    local path = 'whynotboi/securitybreach/base/gregory/vo/'
+
+    -- Gregory Voices
+    
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00128b.wav', '<clr:255, 255, 255>Augh! I hate that thing!')
+
+
     local path = 'whynotboi/securitybreach/base/vanessa/vo/'
 
     -- Vanessa Idle Voices
