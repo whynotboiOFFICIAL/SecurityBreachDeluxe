@@ -79,7 +79,7 @@ if SERVER then
     end
 
     function ENT:OnRangeAttack(enemy)
-        if self.RangeTick or self.Stunned then return end
+        if self.RangeTick or self.Stunned or not enemy:IsPlayer() then return end
         
         self.RangeTick = true
 

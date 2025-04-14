@@ -6,7 +6,7 @@
         
         -- HardTile
         [84] = 'whynotboi/securitybreach/base/vanessa/footsteps/walk/hardtile/fly_vanessa_hardTile_walk_0',
-        [89] = 'whynotboi/securitybreach/base/vanessa/footsteps/walk/hardtile/fly_vanessa_hardTile_walk_0.wav'
+        [89] = 'whynotboi/securitybreach/base/vanessa/footsteps/walk/hardtile/fly_vanessa_hardTile_walk_0'
     }
    
     local footsteps7walk = {
