@@ -50,8 +50,6 @@ ENT.PossessionBinds = {
     [IN_USE] = {{
         coroutine = true,
         onkeydown = function(self)
-            if not self:IsOnGround() or self.DisableControls then return end
-            self:DoorCode() -- DO NOT TOUCH
         end
     }},
 
