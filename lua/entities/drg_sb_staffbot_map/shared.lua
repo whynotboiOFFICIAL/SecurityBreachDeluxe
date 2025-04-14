@@ -156,6 +156,13 @@ if SERVER then
         self.CurrentVictim = entity
         entity:AddFlags(FL_NOTARGET)
     
+        if entity.DoPossessorJumpscare then
+            entity:SetNoDraw(true)
+            
+            entity:SetNWBool('CustomPossessorCam', true)
+            entity:SetNWEntity('PossessionJumpscareEntity', self)
+        end
+
         if entity:IsPlayer() then
             entity:Freeze(true)
             entity:AddFlags(FL_NOTARGET)
@@ -179,7 +186,14 @@ if SERVER then
         self.CurrentVictim = nil
     
         entity:RemoveFlags(FL_NOTARGET)
-    
+
+        if entity.DoPossessorJumpscare then
+            entity:SetNoDraw(false)
+
+            entity:SetNWBool('CustomPossessorCam', false)
+            entity:SetNWEntity('PossessionJumpscareEntity', nil)
+        end
+
         if entity:IsPlayer() then
             entity:Freeze(false)
             net.Start('SECURITYBREACHFINALLYJUMPSCARE')

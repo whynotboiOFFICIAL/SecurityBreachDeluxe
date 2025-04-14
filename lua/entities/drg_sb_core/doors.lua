@@ -1,12 +1,16 @@
 function ENT:DoorCode(door)
-    if self.DoorDelay then return end
     for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
-        if not IsValid(v) then continue end
+        if not IsValid(v) or v == self then continue end
         local classname = v:GetClass()
         
         local propDoor = classname == 'prop_door_rotating'
         local funcDoor = classname == 'func_door_rotating'
         
+        local freddy = (classname == 'drg_sb_glamrockfreddy' and self:IsPossessed())
+        local mapBot = (classname == 'drg_sb_staffbot_map' and v.OfferingMap and self:IsPossessed())
+
+        local hidingSpot = (v.SBHidingSpot and self:IsPossessed())
+
         if (propDoor or funcDoor) then
             local toggle
             
@@ -69,5 +73,22 @@ function ENT:DoorCode(door)
                 break
             end
         end
+
+        if (freddy or mapBot or hidingSpot) then
+            if self:GetClass() ~= 'drg_sb_gregory' then continue end
+
+            v:Use(self)
+
+            if mapBot then
+                self:DrG_Timer(3, function()
+                    if not self.HasMap then
+                        self.HasMap = true
+
+                        self:PlayVoiceLineSingular('GREGORY_00128b')
+                    end
+                end)
+            end
+        end
+        
     end
 end

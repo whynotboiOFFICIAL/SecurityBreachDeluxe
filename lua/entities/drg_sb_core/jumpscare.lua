@@ -12,6 +12,13 @@ function ENT:JumpscareEntity(entity)
     self.CurrentVictim = entity
     entity:AddFlags(FL_NOTARGET)
 
+    if entity.DoPossessorJumpscare then
+        entity:SetNoDraw(true)
+
+        entity:SetNWBool('CustomPossessorCam', true)
+        entity:SetNWEntity('PossessionJumpscareEntity', self)
+    end
+    
     if entity:IsPlayer() then
         entity:Freeze(true)
         entity:AddFlags(FL_NOTARGET)
@@ -80,6 +87,13 @@ function ENT:CancelJumpscare()
     end
 
     ent:RemoveFlags(FL_NOTARGET)
+
+    if ent.DoPossessorJumpscare then
+        ent:SetNoDraw(false)
+
+        ent:SetNWBool('CustomPossessorCam', false)
+        ent:SetNWEntity('PossessionJumpscareEntity', nil)
+    end
 
     if ent:IsPlayer() then
         net.Start('SECURITYBREACHFINALLYJUMPSCARE')

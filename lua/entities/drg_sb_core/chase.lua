@@ -3,6 +3,10 @@ function ENT:OnNewEnemy(ent)
         self:OnSpotEnemy(ent)
     end
 
+    if (ent.IsDrGNextbot and ent:IsPossessed()) then
+        ent = ent:GetPossessor()
+    end
+
     self:CallOnClient('OnEnemySpotted', ent)
 end
 

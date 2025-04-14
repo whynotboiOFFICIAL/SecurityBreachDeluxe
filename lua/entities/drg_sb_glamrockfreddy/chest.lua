@@ -19,33 +19,6 @@ function ENT:CloseChestHatch()
     self:PlaySequence('closechest')
 end
 
-function ENT:EnterCinematic(ent)
-    ent:Freeze(true)
-    ent:AddFlags(FL_NOTARGET)
-    ent:DrawViewModel(false)
-    ent:SetActiveWeapon(nil)
-
-    net.Start('SECURITYBREACHFINALLYCINEMATIC')
-    net.WriteEntity(self)
-    net.WriteBool(true)
-    net.Send(ent)
-
-    self.CinTarget = ent
-end
-
-function ENT:ExitCinematic(ent)
-    net.Start('SECURITYBREACHFINALLYCINEMATIC')
-    net.WriteEntity(self)
-    net.WriteBool(false)
-    net.Send(ent)
-
-    ent:RemoveFlags(FL_NOTARGET)
-    ent:Freeze(false)
-    ent:DrawViewModel(true)
-
-    self.CinTarget = nil
-end
-
 function ENT:ForceLose(ent)
     for k, v in ipairs( ents.GetAll() ) do
         if v.IsDrGNextbot then
@@ -88,7 +61,11 @@ function ENT:EnterFreddy(ent)
 
         self:DrG_Timer(4.3, function()
             self:ExitCinematic(ent)
-            ent:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 255 ), 0.8, 0 )
+
+            if ent:IsPlayer() then
+                ent:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 255 ), 0.8, 0 )
+            end
+            
             self:InitChestControls(ent)
 
             self.DisableControls = false
@@ -97,7 +74,29 @@ function ENT:EnterFreddy(ent)
 end
 
 function ENT:ExitFreddy(ent)
-    ent:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 255 ), 0.8, 0 )
+
+    local oldent = ent
+
+    if IsValid(self.HoldEntity) then
+        ent = self.HoldEntity
+
+        self.HoldEntity = nil
+    end
+
+    if ent:IsPlayer() then
+        ent:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 255 ), 0.8, 0 )
+    end
+
+    if ent.IsDrGNextbot then
+        ent:SetNoDraw(false)
+        ent:SetAIDisabled(false)
+
+        ent:SetCollisionGroup(9)
+
+        ent.DisableControls = false
+
+        ent:Possess(oldent)
+    end
 
     self.WalkAnimation = 'walk'
     self.RunAnimation = 'run'
@@ -146,11 +145,32 @@ function ENT:InitChestControls(ent)
 
     self:SetNWBool('UseHeadAttach', true)
 
-    if not self:IsPossessed() then
-        self:Possess(ent)
-    else
-        self:SecondaryInit(ent)
+    if ent.IsDrGNextbot then
+        ent:SetNoDraw(true)
+        ent:SetAIDisabled(true)
+
+        ent:SetCollisionGroup(10)
+
+        ent.DisableControls = true
+
+        self.HoldEntity = ent
+
+        if ent:IsPossessed() then
+            local oldent = ent
+
+            ent = ent:GetPossessor()
+
+            oldent:Dispossess()
+        end
     end
+
+    self:DrG_Timer(0, function()
+        if not self:IsPossessed() then
+            self:Possess(ent)
+        else
+            self:SecondaryInit(ent)
+        end
+    end)
 end
 
 function ENT:SecondaryInit(ply)

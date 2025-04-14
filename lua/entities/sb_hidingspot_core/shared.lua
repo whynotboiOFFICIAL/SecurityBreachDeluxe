@@ -75,7 +75,11 @@ function ENT:EnterSpot(ent, instant)
 
     self.OccupantSide = side
 
-    self.Occupant:SetNWEntity('HidingSpotSB', self)
+    if ent:IsPlayer() then
+        self.Occupant:SetNWEntity('HidingSpotSB', self)  
+    end
+
+    self.Occupant.IsHiding = true
 
     local path1 = self.SFXPath
     local path2 = self.SpotID
@@ -136,6 +140,8 @@ function ENT:ExitSpot(ent, instant)
 
     self.OccupantSide = nil
 
+    self.Occupant.IsHiding = false
+
     local path1 = self.SFXPath
     local path2 = self.SpotID
 
@@ -169,7 +175,12 @@ function ENT:ExitSpot(ent, instant)
         local ang = (pos - self:GetPos()):Angle()
 
         ent:SetPos(pos)
-        ent:SetEyeAngles(Angle(0, ang.y, 0))
+
+        if ent:IsPlayer() then
+            ent:SetEyeAngles(Angle(0, ang.y, 0))
+        else
+            ent:SetAngles(Angle(0, ang.y, 0))
+        end
     end)
 
     timer.Simple((animtime + 0.3), function()
@@ -255,30 +266,51 @@ function ENT:EnterCinematic(ent)
     self.CinTarget = ent
 end
 
-function ENT:EnterHiding(ent)
-    net.Start('SECURITYBREACHFINALLYCINEMATIC')
-    net.WriteEntity(self)
-    net.WriteBool(false)
-    net.Send(ent)
+function ENT:EnterCinematic(ent)
+    if ent:IsPlayer() then
+        ent:Freeze(true)
+        ent:AddFlags(FL_NOTARGET)
+        ent:DrawViewModel(false)
+        ent:SetActiveWeapon(nil)
 
-    self.CinTarget = nil
+        net.Start('SECURITYBREACHFINALLYCINEMATIC')
+        net.WriteEntity(self)
+        net.WriteBool(true)
+        net.Send(ent)
+    else
+        if ent.DoPossessorJumpscare then
+            ent:SetNoDraw(true)
+    
+            ent:SetNWBool('CustomPossessorCam', true)
+            ent:SetNWEntity('PossessionCinematicEntity', self)
+        end
 
-    net.Start('SECURITYBREACHFINALLYHIDING')
-    net.WriteEntity(self)
-    net.WriteBool(true)
-    net.Send(ent)
+        --ent:NextThink(CurTime() + 1e9)
+    end
+
+    self.CinTarget = ent
 end
 
 function ENT:ExitCinematic(ent)
-    net.Start('SECURITYBREACHFINALLYCINEMATIC')
-    net.WriteEntity(self)
-    net.WriteBool(false)
-    net.Send(ent)
+    if ent:IsPlayer() then
+        net.Start('SECURITYBREACHFINALLYCINEMATIC')
+        net.WriteEntity(self)
+        net.WriteBool(false)
+        net.Send(ent)
+    
+        ent:RemoveFlags(FL_NOTARGET)
+        ent:Freeze(false)
+        ent:DrawViewModel(true)
+    else
+        if ent.DoPossessorJumpscare then
+            ent:SetNoDraw(false)
+    
+            ent:SetNWBool('CustomPossessorCam', false)
+            ent:SetNWEntity('PossessionCinematicEntity', nil)
+        end
 
-    ent:RemoveFlags(FL_NOTARGET)
-    ent:Freeze(false)
-    ent:DrawViewModel(true)
-    ent:SetCollisionGroup(5)
+        --ent:NextThink(CurTime())
+    end
 
     self.CinTarget = nil
 end

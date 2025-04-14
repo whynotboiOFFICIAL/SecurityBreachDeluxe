@@ -29,7 +29,7 @@ ENT.DefaultRelationship = D_LI
 
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/glamrockfreddy/jumpscare/sfx_jumpscare_pas_freddy.wav'
-ENT.SFXPath = 'whynotboi/securitybreach/base/glamrockfreddy/'
+ENT.SFXPath = 'whynotboi/securitybreach/base/glamrockfreddy'
 
 -- Detection --
 ENT.EyeBone = 'Head_jnt'
@@ -84,6 +84,10 @@ if SERVER then
 
         if self:GetNWInt('Energy') < 1 and not self.IsSick then
             self:SickMode()
+        end
+
+        if IsValid(self.HoldEntity) then
+            self.HoldEntity:SetPos(self:GetPos() + self:GetForward() * 10)
         end
 
         if self.Inhabited then return end

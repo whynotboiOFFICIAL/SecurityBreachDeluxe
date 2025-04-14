@@ -204,8 +204,8 @@ if SERVER then
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
                 if v == self or v == self:GetPossessor() then continue end
-                if self.Stunned or self:IsPossessed() then continue end
-                if GetConVar('ai_disabled'):GetBool() or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then continue end
+                if self.Stunned then continue end
+                if (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) then continue end
                 if (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or v:Health() < 1 then continue end
                 if IsValid(v:GetNWEntity('2PlayFreddy')) or IsValid(v:GetNWEntity('HidingSpotSB')) then continue end
                 
@@ -464,28 +464,50 @@ if SERVER then
     -- Cinematic
 
     function ENT:EnterCinematic(ent)
-        ent:Freeze(true)
-        ent:AddFlags(FL_NOTARGET)
-        ent:DrawViewModel(false)
-        ent:SetActiveWeapon(nil)
-    
-        net.Start('SECURITYBREACHFINALLYCINEMATIC')
-        net.WriteEntity(self)
-        net.WriteBool(true)
-        net.Send(ent)
+        if ent:IsPlayer() then
+            ent:Freeze(true)
+            ent:AddFlags(FL_NOTARGET)
+            ent:DrawViewModel(false)
+            ent:SetActiveWeapon(nil)
+
+            net.Start('SECURITYBREACHFINALLYCINEMATIC')
+            net.WriteEntity(self)
+            net.WriteBool(true)
+            net.Send(ent)
+        else
+            if ent.DoPossessorJumpscare then
+                ent:SetNoDraw(true)
+        
+                ent:SetNWBool('CustomPossessorCam', true)
+                ent:SetNWEntity('PossessionCinematicEntity', self)
+            end
+
+            ent:NextThink(CurTime() + 1e9)
+        end
     
         self.CinTarget = ent
     end
     
     function ENT:ExitCinematic(ent)
-        net.Start('SECURITYBREACHFINALLYCINEMATIC')
-        net.WriteEntity(self)
-        net.WriteBool(false)
-        net.Send(ent)
-    
-        ent:RemoveFlags(FL_NOTARGET)
-        ent:Freeze(false)
-        ent:DrawViewModel(true)
+        if ent:IsPlayer() then
+            net.Start('SECURITYBREACHFINALLYCINEMATIC')
+            net.WriteEntity(self)
+            net.WriteBool(false)
+            net.Send(ent)
+        
+            ent:RemoveFlags(FL_NOTARGET)
+            ent:Freeze(false)
+            ent:DrawViewModel(true)
+        else
+            if ent.DoPossessorJumpscare then
+                ent:SetNoDraw(false)
+        
+                ent:SetNWBool('CustomPossessorCam', false)
+                ent:SetNWEntity('PossessionCinematicEntity', nil)
+            end
+
+            ent:NextThink(CurTime())
+        end
     
         self.CinTarget = nil
     end

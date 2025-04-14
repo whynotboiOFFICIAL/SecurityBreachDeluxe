@@ -81,10 +81,17 @@ if SERVER then
         self:AlertedTo(ent:GetPos(), ent)
     end
 
-    function ENT:AlertedTo(pos)
+    function ENT:AlertedTo(pos, ent)
         if not self.Alerted then
             self:OnSpotEnemy()
-            self:CallOnClient('OnEnemySpotted', ent)
+            
+            if (ent.IsDrGNextbot and ent:IsPossessed()) then
+                ent = ent:GetPossessor()
+            end
+            
+            if not self.Alerted then
+                self:CallOnClient('OnEnemySpotted', ent)
+            end
 
             self.Alerted = true
         end

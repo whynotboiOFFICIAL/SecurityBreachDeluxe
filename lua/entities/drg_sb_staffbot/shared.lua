@@ -58,7 +58,7 @@ if SERVER then
             channel = CHAN_STATIC
         },
         ['mopswipe'] = {
-            hasEnding = true,
+            hasEnding = false,
             path = 'whynotboi/securitybreach/base/staffbot/mopswipe/sfx_staffBot_mop_swipe_',
             count = 4,
             volume = 0.45,
