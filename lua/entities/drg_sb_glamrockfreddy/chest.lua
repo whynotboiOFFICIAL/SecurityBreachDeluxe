@@ -76,11 +76,9 @@ function ENT:EnterFreddy(ent)
         
         self:EnterCinematic(ent)
 
-        self:CallInCoroutine(function(self,delay)
-            self:RemoveAllGestures()
+        self:RemoveAllGestures()
             
-            self:PlaySequence('enterfreddy')
-        end)
+        self:PlaySequence('enterfreddy')
 
         ent:EmitSound('whynotboi/securitybreach/base/gregory/enterfreddy/fly_gregory_freddy_enter_0' .. math.random(1,5) .. '.wav')
         
@@ -125,9 +123,7 @@ function ENT:ExitFreddy(ent)
 
     self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestopen.wav', 75, 100, 0.5)
 
-    self:CallInCoroutine(function(self,delay)
-        self:AddGestureSequence(23, false)
-    end)
+    self:AddGestureSequence(23, false)
 
     ent:EmitSound('whynotboi/securitybreach/base/gregory/exitfreddy/fly_gregory_freddy_exit_0' .. math.random(1,5) .. '.wav')
 
