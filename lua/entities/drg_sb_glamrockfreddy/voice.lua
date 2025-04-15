@@ -7,6 +7,8 @@ local stunvox = {
 
 if SERVER then
     function ENT:StopVoices(mode)
+        self:StopVoiceLine('FREDDY_00094')
+
         for i = 1, #stunvox do
             self:StopVoiceLine(stunvox[i])
         end

@@ -8,10 +8,22 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
 
     -- Gregory Voices
     
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00046.wav', '<clr:255, 255, 255>Freddy! Are you ok?')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00058.wav', '<clr:255, 255, 255>Freddy! You saved me!')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00067.wav', '<clr:255, 255, 255>Freddy!')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00074.wav', '<clr:255, 255, 255>Freddy? Freddy are you there?')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00102.wav', '<clr:255, 255, 255>Freddy? Freddy! Are you ok?')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00104.wav', '<clr:255, 255, 255>Freddy, I need your help.')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00105.wav', '<clr:255, 255, 255>Come on... Where are you?')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00106.wav', '<clr:255, 255, 255>What was that? Are you ok?')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00118_pref.wav', '<clr:255, 255, 255>Freddy!!! No!!!')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00127a.wav', '<clr:255, 255, 255>Freddy! Can you hear me?')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00046.wav', '<clr:255, 255, 255>Freddy! Are you ok?')
     SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00128b.wav', '<clr:255, 255, 255>Augh! I hate that thing!')
+    SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00148.wav', '<clr:255, 255, 255>Punch it Freddy!')
 
 
-    local path = 'whynotboi/securitybreach/base/vanessa/vo/'
+    path = 'whynotboi/securitybreach/base/vanessa/vo/'
 
     -- Vanessa Idle Voices
     

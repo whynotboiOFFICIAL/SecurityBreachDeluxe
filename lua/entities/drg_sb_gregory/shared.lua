@@ -69,6 +69,14 @@ if SERVER then
         self:SetClassRelationship('drg_sb_staffbot_comedian', D_LI)
     end
 
+    function ENT:AddCustomThink()
+        if self.GlamrockFreddy then
+            if not IsValid(self.GlamrockFreddy) then
+                self.GlamrockFreddy = nil
+            end
+        end
+    end
+
     function ENT:SpawnFlashlight()
         local flashlight = ents.Create('prop_dynamic')
         

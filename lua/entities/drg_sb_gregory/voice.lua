@@ -1,20 +1,3 @@
-local idlevox = {
-    'VANESSA_00019',
-    'VANESSA_00020',
-    'VANESSA_00021',
-    'VANESSA_00022',
-    'VANESSA_00023',
-    'VANESSA_00024',
-    'VANESSA_00025',
-    'VANESSA_00026',
-    'VANESSA_00027',
-    'VANESSA_00028',
-    'VANESSA_00029',
-    'VANESSA_00030',
-    'VANESSA_00030b',
-    'VANESSA_00031'
-}
-
 local hidingvox = {
     'GREGORY_HIDING_00001',
     'GREGORY_HIDING_00002',
@@ -34,6 +17,18 @@ local hidingvox = {
     'GREGORY_HIDING_00016',
     'GREGORY_HIDING_00017',
     'GREGORY_HIDING_00018'
+}
+
+ENT.CineVox = {
+    'GREGORY_00046',
+    'GREGORY_00074',
+    'GREGORY_00102',
+    'GREGORY_00104',
+    'GREGORY_00105',
+    'GREGORY_00127a',
+    'GREGORY_00106',
+    'GREGORY_00058',
+    'GREGORY_00067'
 }
 
 ENT.JumpVox = {
@@ -83,8 +78,8 @@ if SERVER then
     end
     
     function ENT:StopVoices(mode)
-        for i = 1, #idlevox do
-            self:StopVoiceLine(idlevox[i])
+        for i = 1, #self.CineVox do
+            self:StopVoiceLine(self.CineVox[i])
         end
     end
 end

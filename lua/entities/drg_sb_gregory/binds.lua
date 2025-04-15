@@ -55,11 +55,26 @@ ENT.PossessionBinds = {
     [IN_RELOAD] = {{
         coroutine = true,
         onkeydown = function(self)
+            if self.SummonDelay or not self.GlamrockFreddy or self.VoiceDisabled then return end
+
+            local fred = self.GlamrockFreddy
+
+            self.SummonDelay = true
+
+            if fred.IsSick and math.random(1,100) > 50 and not fred.MetWhenSick then
+                self:PlayVoiceLineSingular(self.CineVox[math.random(6)])
+            end
+
+            fred:SummonFreddy(self)
+
+            self:DrG_Timer(0.5, function()
+                self.SummonDelay = false
+            end)
         end
     }},
 
     [IN_SCORE] = {{
-        coroutine = true,
+        coroutine = false,
         onkeydown = function(self)
         end
     }},

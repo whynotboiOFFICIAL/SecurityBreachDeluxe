@@ -88,8 +88,8 @@ function ENT:ExitFreddy(ent)
     end
 
     if IsValid(self.PlayerInside) then
-        self.PlayerInside:SetNWBool('InFreddy2Play', false)
-        self.PlayerInside:SetNWEntity('2PlayFreddy', nil)
+        ent:SetNWBool('InFreddy2Play', false)
+        ent:SetNWEntity('2PlayFreddy', nil)
     
         self.PlayerInside = nil
     else
@@ -161,6 +161,8 @@ function ENT:InitChestControls(ent)
 
         if ent:IsPossessed() then
             ent = ent:GetPossessor()
+
+            self.BackupEnt = ent
 
             oldent:Dispossess()
         end

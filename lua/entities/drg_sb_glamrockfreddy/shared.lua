@@ -60,7 +60,7 @@ if SERVER then
 
             self:SetNWInt('Energy', currentpower - 1)
 
-            if self:GetNWInt('Energy') < 1 and (self.Inhabited and self:GetPossessor() == self.Partner) then
+            if self:GetNWInt('Energy') < 1 and (self.Inhabited and self:GetPossessor() == self.Partner or self:GetPossessor() == self.BackupEnt) then
                 local loldie = self.Partner
 
                 self:Dispossess(loldie)
@@ -96,11 +96,19 @@ if SERVER then
             local pos = partner:GetPos()
             local dist = pos:DistToSqr(self:GetPos())/ 1000
 
+            if dist > 15000 then
+                partner.GlamrockFreddy = nil
+
+                partner:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/alerts/sfx_freddy_alert_connectionError.wav')
+                
+                self.Partner = nil
+            end
+            
             if  dist < 50 and not (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) and partner:Health() > 0 then
                 if self.AimTarget ~= partner then
                     self.AimTarget = partner
 
-                    if math.random(1,100) > 60 and not self.WaveDelay then
+                    if math.random(1,100) > 60 and not self.WaveDelay and not self.Summoning then
                         self:CallInCoroutine(function(self,delay)
                             self.WaveDelay = true
 
@@ -111,6 +119,8 @@ if SERVER then
                             end)
                         end)
                     end
+
+                    self:DialogueTrigger(2, partner)
                 end
             else
                 if self.AimTarget ~= nil then
@@ -118,13 +128,15 @@ if SERVER then
                 end
             end
 
-            if dist < 20 and not (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) and partner:Health() > 0 then
-                if not self.OpenChest then
-                    self:OpenChestHatch()
-                end
-            else
-                if self.OpenChest then
-                    self:CloseChestHatch()
+            if not self.IsSick then
+                if dist < 20 and not (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) and partner:Health() > 0 then
+                    if not self.OpenChest then
+                        self:OpenChestHatch()
+                    end
+                else
+                    if self.OpenChest then
+                        self:CloseChestHatch()
+                    end
                 end
             end
 
@@ -132,10 +144,26 @@ if SERVER then
         end
     end
 
+    function ENT:DialogueTrigger(inst, ent)
+        if ent:GetClass() ~= 'drg_sb_gregory' then return end
+
+        if inst == 1 then
+            self:PlayVoiceLine('FREDDY_00094', true)
+            
+            self.MetWhenSick = true
+        elseif inst == 2 then
+            if self.IsSick and not self.MetWhenSick then
+                self.MetWhenSick = true
+
+                self:PlayVoiceLine('FREDDY_00094', true)
+            end
+        end
+    end
+
     function ENT:SickMode()
         self.Inhabited = false
         self.Moving = false
-        self.Partner = nil
+        --self.Partner = nil
         self.IsSick = true
         
         self.PossessionMovement = POSSESSION_MOVE_CUSTOM
@@ -143,6 +171,44 @@ if SERVER then
         self.IdleAnimation = 'idlesick'
         self.WalkAnimation = 'walksick'
         self.RunAnimation = 'runsick'
+        
+        if self.OpenChest then
+            self:CloseChestHatch()
+        end
+
+        if not IsValid(self.Partner) then return end
+
+        local partner = self.Partner
+        local pos = partner:GetPos()
+        local dist = pos:DistToSqr(self:GetPos())/ 1000
+
+        if dist < 50 then
+            self:DialogueTrigger(1, partner)
+        end
+    end
+
+    function ENT:SummonFreddy(ent)
+        if self.IsSick then 
+            ent:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/call/sfx_freddy_call_unsuccesful.wav')
+        return end
+
+        local partner = self.Partner
+        local pos = partner:GetPos()
+        local dist = pos:DistToSqr(self:GetPos())/ 1000
+
+        if dist < 90 then return end
+
+        ent:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/call/sfx_freddy_call_succesful.wav')
+
+        local pos = ent:DrG_RandomPos(50, 100)
+
+        self.WalkAnimation = 'run'
+
+        self.Summoning = true
+
+        self:ClearPatrols()
+
+        self:AddPatrolPos(pos)
     end
 
     function ENT:Use(ent)
@@ -157,6 +223,18 @@ if SERVER then
             ent.GlamrockFreddy = self
             self:ClearPatrols()
         end
+    end
+
+    function ENT:OnReachedPatrol()
+        if self.Summoning then
+            self.Summoning = false
+            
+            self.WalkAnimation = 'walk'
+        end
+
+        if IsValid(self.Partner) then return end
+
+        self:Wait(math.random(3, 7))
     end
 
     function ENT:OnIdle()
