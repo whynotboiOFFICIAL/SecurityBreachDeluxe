@@ -79,11 +79,11 @@ if SERVER then
 
         table.insert( self.PatrolPaths, pos )
 
-        pos = self:RandomPos(1000)
+        pos = self:RandomPos(500, 500)
 
         table.insert( self.PatrolPaths, pos )
 
-        pos = self:RandomPos(700)
+        pos = self:RandomPos(700, 700)
 
         table.insert( self.PatrolPaths, pos )
     end
