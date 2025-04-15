@@ -214,8 +214,17 @@ if SERVER then
                 self.WalkAnimation = 'moonrun'
             else
                 self.WalkAnimation = 'walk'
+
+                if not self.SunPanicked and self.SunGreeted and self.SunAnger < 1 then
+                    self:StopVoices()
+
+                    self.SunPanicked = true
+    
+                    self:PlayVoiceLine('SUN_00004')
+                end
             end
 
+                
             self:AddPatrolPos(plyPos + forward * 5)
 
             return
@@ -235,8 +244,28 @@ if SERVER then
                     self.RunAnimation = 'walkcarry'
                     self.IdleAnimation = 'walkcarry'
 
-                    if self.SunAnger > 0 and not self.SunWarned then
-                        self:SunAngerResponse()
+                    if self.SunAnger > 0 then
+                        if not self.SunWarned then
+                            self:SunAngerResponse()
+                        end
+                    else
+                        if not self.SunGreeted then
+                            self.SunGreeted = true
+
+                            self:PlayVoiceLine('SUN_00001a')
+
+                            self:DrG_Timer(8, function()
+                                if self.SunPanicked or self.SunAnger > 0 then return end
+
+                                self:PlayVoiceLine('SUN_00001b')
+
+                                self:DrG_Timer(8, function()
+                                    if self.SunPanicked or self.SunAnger > 0 then return end
+
+                                    self:PlayVoiceLine('SUN_00001c')
+                                end)
+                            end)
+                        end
                     end
                 end
             end

@@ -30,7 +30,8 @@ local sunangervox = {
     'SUN_HW2_00043',
     'SUN_HW2_00040',
     'SUN_HW2_00044',
-    'SUN_HW2_00046'
+    'SUN_HW2_00046',
+    'SUN_00004a'
 }
 
 local moonstunvox = {
@@ -82,7 +83,7 @@ if SERVER then
         end
 
         if self.AttendantType == 0 and self.SunAnger > 5 then
-            self:PlayVoiceLine(sunangervox[math.random(7,8)], false)
+            self:PlayVoiceLine(sunangervox[math.random(7,9)], false)
         end
     end
     
@@ -98,15 +99,23 @@ if SERVER then
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
         end
+
         for i = 1, #sunstunvox do
             self:StopVoiceLine(sunstunvox[i])
         end
+
         for i = 1, #sunangervox do
             self:StopVoiceLine(sunangervox[i])
         end
+        
         for i = 1, #moonstunvox do
             self:StopVoiceLine(moonstunvox[i])
         end
+
+        self:StopVoiceLine('SUN_00004')
+        self:StopVoiceLine('SUN_00001a')
+        self:StopVoiceLine('SUN_00001b')
+        self:StopVoiceLine('SUN_00001c')
     end
 end
 
