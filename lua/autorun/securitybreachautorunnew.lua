@@ -5,7 +5,7 @@ if SERVER then
 
 	
     hook.Add("PlayerButtonDown", "SBNEWSECONDARYNOBUTTONS", function(ply, button)
-        if not IsValid(ply:GetNWEntity('2PlayFreddy')) and not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
+        if not IsValid(ply:GetNWEntity('2PlayFreddy')) and not IsValid(ply:GetNWEntity('HidingSpotSB')) and not IsValid(ply.GlamrockFreddy) then return end
 
         local ent = ply:GetNWEntity('HidingSpotSB')
 
@@ -13,13 +13,24 @@ if SERVER then
 			ent = ply:GetNWEntity('2PlayFreddy')
 		end
 
-        if button == 15 then
-			if ent.DeinitSecondary then
-				ent:DeinitSecondary(ply)
-			else
-				ent:Use(ply)
+		
+		if IsValid(ply.GlamrockFreddy) then
+			ent = ply.GlamrockFreddy
+	
+			if button == 17 then
+				if ent.SummonFreddy then
+					ent:SummonFreddy(ply)
+				end
 			end
-        end
+		else
+			if button == 15 then
+				if ent.DeinitSecondary then
+					ent:DeinitSecondary(ply)
+				else
+					ent:Use(ply)
+				end
+			end
+		end
     end)
 
     hook.Add( "PlayerSwitchWeapon", "SBNEWSECONDARYNOWEAPONSWITCH", function(ply)
