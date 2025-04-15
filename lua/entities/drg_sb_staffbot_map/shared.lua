@@ -159,7 +159,7 @@ if SERVER then
         if entity.DoPossessorJumpscare then
             entity:SetNoDraw(true)
             
-            entity:SetNWBool('CustomPossessorCam', true)
+            entity:SetNWBool('CustomPossessorJumpscare', true)
             entity:SetNWEntity('PossessionJumpscareEntity', self)
         end
 
@@ -190,7 +190,7 @@ if SERVER then
         if entity.DoPossessorJumpscare then
             entity:SetNoDraw(false)
 
-            entity:SetNWBool('CustomPossessorCam', false)
+            entity:SetNWBool('CustomPossessorJumpscare', false)
             entity:SetNWEntity('PossessionJumpscareEntity', nil)
         end
 

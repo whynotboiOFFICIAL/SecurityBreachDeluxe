@@ -69,6 +69,21 @@ if SERVER then
         self:SetClassRelationship('drg_sb_staffbot_comedian', D_LI)
     end
 
+    function ENT:SpawnFlashlight()
+        local flashlight = ents.Create('prop_dynamic')
+        
+        flashlight:SetModel('models/whynotboi/securitybreach/base/props/flashlight/flashlight.mdl')
+        flashlight:SetModelScale(0.8)
+        flashlight:SetParent(self)
+        flashlight:SetSolid(SOLID_NONE)
+
+        flashlight:Fire('SetParentAttachment','FlashLight')
+
+        flashlight:Spawn()
+
+        self.FlashLight = flashlight
+    end
+
     function ENT:SpawnLight()
         local light = ents.Create('env_projectedtexture')
         local pos = self:GetAttachment(2).Pos
@@ -89,12 +104,70 @@ if SERVER then
             light:SetParent(self)
             light:Spawn()
             light:Fire('SetParentAttachment', 'light')
-            light:Fire('LightOn')
+            light:Fire('TurnOff')
 
             self:DeleteOnRemove(light)
     
-            self.Flashlight = light
+            self.Light = light
         end
+    end
+
+    function ENT:FlashlightToggle()
+        self:EmitSound('whynotboi/securitybreach/base/props/flashlight/Gregory_Flashlight_On.wav')
+
+        if self.LightOn then
+            self.Light:Fire('TurnOff')
+
+            self.LightOn = false
+        else
+            self.Light:Fire('TurnOn')
+
+            self.LightOn = true
+        end
+    end
+
+    function ENT:DeEquipFlashlight()
+        self:EmitSound('whynotboi/securitybreach/base/gregory/putaway/sfx_gregory_inventory_item_equip_putAway_0' .. math.random(6) .. '.wav')
+
+        local state = ''
+
+        if self.Crouched then
+            state = 'crouch'
+        end
+
+        self.IdleAnimation = state .. 'idle'
+        self.WalkAnimation = state .. 'walk'
+        self.RunAnimation = state .. 'run'
+
+        self.JumpAnimation = 'fall'
+
+        self.FlashLight:Remove()
+        self.Light:Remove()
+        
+        self.CurrentItem = 0
+
+        self.LightOn = false
+    end
+
+    function ENT:EquipFlashlight()
+        self:EmitSound('whynotboi/securitybreach/base/gregory/takeout/sfx_gregory_inventory_item_equip_takeOut_0' .. math.random(6) .. '.wav')
+
+        local state = ''
+
+        if self.Crouched then
+            state = 'crouch'
+        end
+
+        self.IdleAnimation = 'fl' .. state .. 'idle'
+        self.WalkAnimation = 'fl' .. state .. 'walk'
+        self.RunAnimation = 'fl' .. state .. 'run'
+
+        self.JumpAnimation = 'flfall'
+
+        self:SpawnFlashlight()
+        self:SpawnLight()
+        
+        self.CurrentItem = 1
     end
 
     function ENT:OnMeleeAttack()

@@ -87,6 +87,15 @@ function ENT:ExitFreddy(ent)
         ent:ScreenFade( SCREENFADE.IN, Color( 0, 0, 0, 255 ), 0.8, 0 )
     end
 
+    if IsValid(self.PlayerInside) then
+        self.PlayerInside:SetNWBool('InFreddy2Play', false)
+        self.PlayerInside:SetNWEntity('2PlayFreddy', nil)
+    
+        self.PlayerInside = nil
+    else
+        self:Dispossess()
+    end
+
     if ent.IsDrGNextbot then
         ent:SetNoDraw(false)
         ent:SetAIDisabled(false)
@@ -102,15 +111,6 @@ function ENT:ExitFreddy(ent)
     self.RunAnimation = 'run'
     self.PossessionMovement = POSSESSION_MOVE_CUSTOM
     self.DisableControls = true
-
-    if IsValid(self.PlayerInside) then
-        ent:SetNWBool('InFreddy2Play', false)
-        ent:SetNWEntity('2PlayFreddy', nil)
-    
-        self.PlayerInside = nil
-    else
-        self:Dispossess()
-    end
 
     ent:SetPos(self:GetPos() + self:GetForward() * 35)
 
@@ -133,6 +133,8 @@ function ENT:ExitFreddy(ent)
 
         self:ExitCinematic(ent)
 
+        ent:RemoveFlags(FL_NOTARGET)
+        
         self:ForceLose(ent)
     end)
 end
@@ -145,6 +147,8 @@ function ENT:InitChestControls(ent)
 
     self:SetNWBool('UseHeadAttach', true)
 
+    local oldent = ent
+
     if ent.IsDrGNextbot then
         ent:SetNoDraw(true)
         ent:SetAIDisabled(true)
@@ -156,8 +160,6 @@ function ENT:InitChestControls(ent)
         self.HoldEntity = ent
 
         if ent:IsPossessed() then
-            local oldent = ent
-
             ent = ent:GetPossessor()
 
             oldent:Dispossess()
@@ -168,44 +170,57 @@ function ENT:InitChestControls(ent)
         if not self:IsPossessed() then
             self:Possess(ent)
         else
-            self:SecondaryInit(ent)
+            self:SecondaryInit(oldent, ent)
         end
     end)
 end
 
-function ENT:SecondaryInit(ply)
-    ply:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-    ply:SetNoTarget(true)
-    ply:SetNoDraw(true)
-    ply:Freeze(true)
-    ply:Flashlight(false)
-    ply:AllowFlashlight(false)
-    ply:SetEyeAngles(self:EyeAngles())
-    ply:Give('drgbase_possession')
-    ply:SpectateEntity(self)
+function ENT:SecondaryInit(ent, ply)
+    if not IsValid(ply) then
+        ply = ent
+    end
 
-    ply:SetNWEntity('2PlayFreddy', self)
-    ply:SetNWBool('InFreddy2Play', true)
+    if ply:IsPlayer() then
+        ply:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
+        ply:SetNoTarget(true)
+        ply:SetNoDraw(true)
+        ply:Freeze(true)
+        ply:Flashlight(false)
+        ply:AllowFlashlight(false)
+        ply:SetEyeAngles(self:EyeAngles())
+        ply:Give('drgbase_possession')
+        ply:SpectateEntity(self)
+        
+        ply:SetNWEntity('2PlayFreddy', self)
+        ply:SetNWBool('InFreddy2Play', true)
+
+        self:DrG_Timer(0.1, function()
+            if not IsValid(ply) then return end
+            ply:StripWeapon('drgbase_possession')
+        end)
+    end
 
     self.PlayerInside = ply
-
-    self:DrG_Timer(0.1, function()
-        if not IsValid(ply) then return end
-        ply:StripWeapon('drgbase_possession')
-    end)
+    self.HoldEntity = ent
 end
 
-function ENT:DeinitSecondary(ply)
-    ply:SetCollisionGroup(5)
-    ply:SetNoTarget(false)
-    ply:SetNoDraw(false)
-    ply:Freeze(false)
-    ply:Flashlight(false)
-    ply:AllowFlashlight(true)
-    ply:UnSpectate()
+function ENT:DeinitSecondary(ent)
+
+    local ply = ent
+    
+    if ply:IsPlayer() then
+        ply:SetCollisionGroup(5)
+        ply:SetNoTarget(false)
+        ply:SetNoDraw(false)
+        ply:Freeze(false)
+        ply:Flashlight(false)
+        ply:AllowFlashlight(true)
+        ply:UnSpectate()
+    end
     
     if IsValid(self) then
         self:ExitFreddy(ply)
+
         self:SetNWBool('UseHeadAttach', false)
     end
 end

@@ -80,7 +80,7 @@ function ENT:DoorCode(door)
             v:Use(self)
 
             if mapBot then
-                self:DrG_Timer(3, function()
+                self:DrG_Timer(math.random(3,6), function()
                     if not self.HasMap then
                         self.HasMap = true
 

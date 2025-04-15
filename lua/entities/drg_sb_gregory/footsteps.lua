@@ -269,9 +269,15 @@
     end
 
     function ENT:Crouch()
-        self.IdleAnimation = 'crouchidle'
-        self.WalkAnimation = 'crouchwalk'
-        self.RunAnimation = 'crouchrun'
+        local item = ''
+
+        if self.CurrentItem == 1 then
+            item = 'fl'
+        end
+
+        self.IdleAnimation = item .. 'crouchidle'
+        self.WalkAnimation = item .. 'crouchwalk'
+        self.RunAnimation = item .. 'crouchrun'
 
         self.WalkSpeed = 34.38
         self.RunSpeed = 68.75
@@ -294,9 +300,15 @@
     end
     
     function ENT:UnCrouch()
-        self.IdleAnimation = 'idle'
-        self.WalkAnimation = 'walk'
-        self.RunAnimation = 'run'
+        local item = ''
+        
+        if self.CurrentItem == 1 then
+            item = 'fl'
+        end
+
+        self.IdleAnimation = item .. 'idle'
+        self.WalkAnimation = item .. 'walk'
+        self.RunAnimation = item .. 'run'
 
         self.WalkSpeed = 41.25
         self.RunSpeed = 210

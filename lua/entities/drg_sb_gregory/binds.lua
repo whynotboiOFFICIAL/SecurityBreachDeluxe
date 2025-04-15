@@ -1,25 +1,50 @@
-ENT.PossessionBinds = {
-    [IN_JUMP] = {{
+ENT.PossessionBinds = {    
+    [KEY_0] = {{
         coroutine = false,
+        onbuttondown = function(self)
+            if self.SwitchDelay or self.CurrentItem == 0 then return end
+
+            self.SwitchDelay = true
+
+            self:DeEquipFlashlight()
+
+            self:DrG_Timer(0.5, function()
+                self.SwitchDelay = false
+            end)
+        end,
+        onkeydown = function(self)
+            if self.FlashlightToggleDelay or self.CurrentItem ~= 1 then return end
+
+            self.FlashlightToggleDelay = true
+            
+            self:FlashlightToggle()
+
+            self:DrG_Timer(0.3, function()
+                self.FlashlightToggleDelay = false
+            end)
+        end
+    }},
+
+    [KEY_1] = {{
+        coroutine = false,
+        onbuttondown = function(self)
+            if self.SwitchDelay or self.CurrentItem == 1 then return end
+
+            self.SwitchDelay = true
+
+            self:EquipFlashlight()
+
+            self:DrG_Timer(0.5, function()
+                self.SwitchDelay = false
+            end)
+        end,
         onkeydown = function(self)
             if not self:IsOnGround() or self.Crouched then return end
             
             self:DoJump()
         end
     }},
-    
-    [IN_ATTACK] = {{
-        coroutine = true,
-        onkeydown = function(self)
-            if not self:IsOnGround() then return end
-        end
-    }},
 
-    [IN_ATTACK2] = {{
-        coroutine = false,
-        onkeydown = function(self)
-        end
-    }},
 
     [IN_SPEED] = {{
         coroutine = false,
@@ -93,7 +118,7 @@ if CLIENT then
     function ENT:PossessorView()
         local pos, ang = self.BaseTable.PossessorView(self)
 
-        if self:GetNWBool('CustomPossessorCam') then
+        if self:GetNWBool('CustomPossessorJumpscare') then
             local ent = self:GetNWEntity('PossessionJumpscareEntity')
 
             if IsValid(ent) then
@@ -102,7 +127,9 @@ if CLIENT then
                 pos = attach.Pos
                 ang = attach.Ang + AngleRand(-0.35,0.35)
             end
+        end
 
+        if self:GetNWBool('CustomPossessorCam') then
             ent = self:GetNWEntity('PossessionCinematicEntity')
 
             if IsValid(ent) then

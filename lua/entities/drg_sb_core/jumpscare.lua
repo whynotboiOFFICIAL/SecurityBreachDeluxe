@@ -15,7 +15,7 @@ function ENT:JumpscareEntity(entity)
     if entity.DoPossessorJumpscare then
         entity:SetNoDraw(true)
 
-        entity:SetNWBool('CustomPossessorCam', true)
+        entity:SetNWBool('CustomPossessorJumpscare', true)
         entity:SetNWEntity('PossessionJumpscareEntity', self)
     end
     
@@ -91,7 +91,7 @@ function ENT:CancelJumpscare()
     if ent.DoPossessorJumpscare then
         ent:SetNoDraw(false)
 
-        ent:SetNWBool('CustomPossessorCam', false)
+        ent:SetNWBool('CustomPossessorJumpscare', false)
         ent:SetNWEntity('PossessionJumpscareEntity', nil)
     end
 

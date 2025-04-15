@@ -7,7 +7,11 @@ if SERVER then
     hook.Add("PlayerButtonDown", "SBNEWSECONDARYNOBUTTONS", function(ply, button)
         if not IsValid(ply:GetNWEntity('2PlayFreddy')) and not IsValid(ply:GetNWEntity('HidingSpotSB')) then return end
 
-        local ent = ply:GetNWEntity('HidingSpotSB') or ply:GetNWEntity('2PlayFreddy')
+        local ent = ply:GetNWEntity('HidingSpotSB')
+
+		if IsValid(ply:GetNWEntity('2PlayFreddy')) then
+			ent = ply:GetNWEntity('2PlayFreddy')
+		end
 
         if button == 15 then
 			if ent.DeinitSecondary then

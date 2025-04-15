@@ -140,6 +140,7 @@ if SERVER then
         if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return true end
         if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return true end
         if IsValid(ent:GetNWEntity('2PlayFreddy')) or IsValid(ent:GetNWEntity('HidingSpotSB')) then return true end
+        if not (ent:IsPlayer() or ent:IsNextBot() or ent:IsNPC()) then return true end
     end
 
     function ENT:IsBeingLookedAt()
@@ -208,6 +209,7 @@ if SERVER then
                 if (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) then continue end
                 if (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or v:Health() < 1 then continue end
                 if IsValid(v:GetNWEntity('2PlayFreddy')) or IsValid(v:GetNWEntity('HidingSpotSB')) then continue end
+                if not (v:IsPlayer() or v:IsNextBot() or v:IsNPC()) then continue end
                 
                 self:CallInCoroutine(function(self, delay)
                     self:JumpscareEntity(v)
@@ -466,7 +468,6 @@ if SERVER then
     function ENT:EnterCinematic(ent)
         if ent:IsPlayer() then
             ent:Freeze(true)
-            ent:AddFlags(FL_NOTARGET)
             ent:DrawViewModel(false)
             ent:SetActiveWeapon(nil)
 
@@ -485,10 +486,14 @@ if SERVER then
             ent:NextThink(CurTime() + 1e9)
         end
     
+        ent:AddFlags(FL_NOTARGET)
+        
         self.CinTarget = ent
     end
     
     function ENT:ExitCinematic(ent)
+        if not IsValid(ent) then return end
+
         if ent:IsPlayer() then
             net.Start('SECURITYBREACHFINALLYCINEMATIC')
             net.WriteEntity(self)
@@ -508,7 +513,7 @@ if SERVER then
 
             ent:NextThink(CurTime())
         end
-    
+
         self.CinTarget = nil
     end
 else

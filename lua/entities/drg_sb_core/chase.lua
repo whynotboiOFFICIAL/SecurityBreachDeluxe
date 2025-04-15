@@ -16,8 +16,8 @@ function ENT:OnLastEnemy(ent)
     end
 
     if self.Stunned or not self.HidingSpotSearch then return end
-    
-    if ent:IsPlayer() and IsValid(ent:GetNWEntity('HidingSpotSB')) and self:VisibleVec(ent:GetPos()) then
+
+    if (ent:IsPlayer() or ent.IsDrGNextbot) and IsValid(ent:GetNWEntity('HidingSpotSB')) and self:VisibleVec(ent:GetPos()) then
 
         local spot = ent:GetNWEntity('HidingSpotSB')
 

@@ -75,9 +75,7 @@ function ENT:EnterSpot(ent, instant)
 
     self.OccupantSide = side
 
-    if ent:IsPlayer() then
-        self.Occupant:SetNWEntity('HidingSpotSB', self)  
-    end
+    self.Occupant:SetNWEntity('HidingSpotSB', self)  
 
     self.Occupant.IsHiding = true
 
@@ -199,6 +197,8 @@ function ENT:OnRemove()
 
         self.Occupant:SetNWEntity('HidingSpotSB', nil)
         self.Occupant:SetNoDraw(false)
+
+        self.Occupant.IsHiding = false
     end
 end
 
@@ -252,24 +252,8 @@ function ENT:GetExitPos(side)
 end
 
 function ENT:EnterCinematic(ent)
-    ent:Freeze(true)
-    ent:AddFlags(FL_NOTARGET)
-    ent:DrawViewModel(false)
-    ent:SetActiveWeapon(nil)
-    ent:SetCollisionGroup(10)
-
-    net.Start('SECURITYBREACHFINALLYCINEMATIC')
-    net.WriteEntity(self)
-    net.WriteBool(true)
-    net.Send(ent)
-
-    self.CinTarget = ent
-end
-
-function ENT:EnterCinematic(ent)
     if ent:IsPlayer() then
         ent:Freeze(true)
-        ent:AddFlags(FL_NOTARGET)
         ent:DrawViewModel(false)
         ent:SetActiveWeapon(nil)
 
@@ -281,12 +265,19 @@ function ENT:EnterCinematic(ent)
         if ent.DoPossessorJumpscare then
             ent:SetNoDraw(true)
     
+            ent.WalkSpeed = 0
+            ent.RunSpeed = 0
+
+            ent:SetAIDisabled(true)
+
             ent:SetNWBool('CustomPossessorCam', true)
             ent:SetNWEntity('PossessionCinematicEntity', self)
         end
 
         --ent:NextThink(CurTime() + 1e9)
     end
+
+    ent:AddFlags(FL_NOTARGET)
 
     self.CinTarget = ent
 end
@@ -298,19 +289,30 @@ function ENT:ExitCinematic(ent)
         net.WriteBool(false)
         net.Send(ent)
     
-        ent:RemoveFlags(FL_NOTARGET)
         ent:Freeze(false)
         ent:DrawViewModel(true)
     else
         if ent.DoPossessorJumpscare then
             ent:SetNoDraw(false)
-    
+
+            if ent.Crouched then
+                ent.WalkSpeed = 32.38
+                ent.RunSpeed = 68.75
+            else
+                ent.WalkSpeed = 41.25
+                ent.RunSpeed = 210
+            end
+
+            ent:SetAIDisabled(false)
+
             ent:SetNWBool('CustomPossessorCam', false)
             ent:SetNWEntity('PossessionCinematicEntity', nil)
         end
 
         --ent:NextThink(CurTime())
     end
+
+    ent:RemoveFlags(FL_NOTARGET)
 
     self.CinTarget = nil
 end
@@ -319,6 +321,8 @@ function ENT:ForceEject(ent)
     self:ExitCinematic(ent)
 
     self.Occupant = nil
+
+    ent.IsHiding = false
     
     ent:SetNWEntity('HidingSpotSB', nil)
 
