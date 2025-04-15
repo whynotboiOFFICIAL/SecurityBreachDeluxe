@@ -8,6 +8,7 @@ ENT.Models = {'models/whynotboi/securitybreach/base/humans/vanny/vanny.mdl'}
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(8, 8, 75)
 ENT.BloodColor = BLOOD_COLOR_RED
+ENT.CanBeSummoned = true
 
 -- Stats --
 ENT.SpawnHealth = 150

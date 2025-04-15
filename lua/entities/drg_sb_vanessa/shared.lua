@@ -8,6 +8,7 @@ ENT.Models = {'models/whynotboi/securitybreach/base/humans/vanessa/vanessa.mdl'}
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(8, 8, 68)
 ENT.BloodColor = BLOOD_COLOR_RED
+ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.CustomStunSFX = true
 
