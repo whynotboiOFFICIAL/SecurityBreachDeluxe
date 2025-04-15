@@ -57,6 +57,10 @@ if SERVER then
 
         if math.random(1,10) > 3 then
             self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+        else
+            timer = math.random(5, 15)
+
+            self:EmitSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. math.random(8) .. '.wav')     
         end
 
         self:DrG_Timer(timer, function()
@@ -90,6 +94,10 @@ if SERVER then
 
         for i = 1, #pizzavox do
             self:StopVoiceLine(pizzavox[i])
+        end
+
+        for i = 1, 8 do
+            self:StopSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. i .. '.wav')
         end
 
         if mode == 1 then return end
