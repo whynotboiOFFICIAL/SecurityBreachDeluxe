@@ -151,11 +151,23 @@ if SERVER then
         
         self:EmitSound('whynotboi/securitybreach/base/staffbot/alert/sfx_staffBot_security_alert_0' .. math.random(3) .. '.wav')
 
-        for k, v in ipairs( ents.GetAll() ) do
+        local tosummon = {}
+        
+        for k, v in pairs( ents.GetAll() ) do
             if v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC') and v.CanBeSummoned then
-                v:SpotEntity(ent)
+                if v.Stunned then continue end
+                
+                table.insert(tosummon, v)
             end
         end
+
+        local tospawn = tosummon[math.random(#tosummon)]
+        
+        if not IsValid(tospawn) then return end
+
+        tospawn:SpotEntity(ent)
+
+        tospawn:SetPos(self:RandomPos(300))
     end
 
     function ENT:OnReachedPatrol()

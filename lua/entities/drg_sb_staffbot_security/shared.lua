@@ -191,7 +191,7 @@ if SERVER then
         if entity.DoPossessorJumpscare then
             entity:SetNoDraw(true)
 
-            entity:SetNWBool('CustomPossessorCam', true)
+            entity:SetNWBool('CustomPossessorJumpscare', true)
             entity:SetNWEntity('PossessionJumpscareEntity', self)
         end
 
@@ -222,7 +222,7 @@ if SERVER then
         if entity.DoPossessorJumpscare then
             entity:SetNoDraw(false)
 
-            entity:SetNWBool('CustomPossessorCam', false)
+            entity:SetNWBool('CustomPossessorJumpscare', false)
             entity:SetNWEntity('PossessionJumpscareEntity', nil)
         end
 
@@ -254,11 +254,23 @@ if SERVER then
             self:PlayVoiceLine(voices[math.random(#voices)])
         end)
 
-        for k, v in ipairs( ents.GetAll() ) do
+        local tosummon = {}
+        
+        for k, v in pairs( ents.GetAll() ) do
             if v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC') and v.CanBeSummoned then
-                v:SpotEntity(ent)
+                if v.Stunned then continue end
+                
+                table.insert(tosummon, v)
             end
         end
+
+        local tospawn = tosummon[math.random(#tosummon)]
+        
+        if not IsValid(tospawn) then return end
+
+        tospawn:SpotEntity(ent)
+
+        tospawn:SetPos(self:RandomPos(300))
     end
     
     function ENT:OnDeath()
