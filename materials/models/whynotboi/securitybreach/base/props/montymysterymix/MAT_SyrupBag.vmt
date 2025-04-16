@@ -1,0 +1,19 @@
+"VertexlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\base\props\montymysterymix\mix_d"
+    "$bumpmap" "models\whynotboi\securitybreach\base\props\montymysterymix\mix_n"
+
+    "$nodecal" "1"
+
+    "$phong" "1"
+
+    "$phongexponenttexture" "models\whynotboi\securitybreach\base\props\montymysterymix\mix_s"
+    
+    "$phongboost"    "1"
+    
+    "$phongfresnelranges"	"[0.5 1 1]"
+
+    "$phongdisablehalflambert"    "1"
+
+    "$nocull" "1"
+}
