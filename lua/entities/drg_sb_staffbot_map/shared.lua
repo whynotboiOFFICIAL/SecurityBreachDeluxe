@@ -98,6 +98,8 @@ if SERVER then
 
         map:Spawn()
         
+        self:DeleteOnRemove(map)
+
         self.Map = map
     end
 

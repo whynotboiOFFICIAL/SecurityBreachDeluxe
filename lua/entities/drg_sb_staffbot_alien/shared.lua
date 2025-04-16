@@ -132,6 +132,8 @@ if SERVER then
 
         gun:Spawn()
         
+        self:DeleteOnRemove(gun)
+
         self.Blaster = gun
     end
 

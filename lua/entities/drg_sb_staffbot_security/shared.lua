@@ -94,6 +94,8 @@ if SERVER then
         hat:Fire('SetParentAttachment','Head')
 
         hat:Spawn()
+
+        self:DeleteOnRemove(hat)
     end
 
     function ENT:SpawnFlashlight()
@@ -107,6 +109,8 @@ if SERVER then
         flashlight:Fire('SetParentAttachment','Prop')
 
         flashlight:Spawn()
+
+        self:DeleteOnRemove(flashlight)
     end
 
     function ENT:SpawnLight()

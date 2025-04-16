@@ -89,6 +89,8 @@ if SERVER then
 
         flashlight:Spawn()
 
+        self:DeleteOnRemove(flashlight)
+        
         self.FlashLight = flashlight
     end
 
@@ -179,6 +181,12 @@ if SERVER then
     end
 
     function ENT:OnMeleeAttack()
+    end
+
+    function ENT:OnNewEnemy()
+    end
+
+    function ENT:OnLastEnemy()
     end
 
     function ENT:CustomAnimEvents(e)
