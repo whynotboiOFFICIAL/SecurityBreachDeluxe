@@ -64,6 +64,10 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00017.wav', '<clr:255, 177, 255>I am just trying to help.')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00018.wav', '<clr:255, 177, 255>Who wants candy?')
 
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00025_01.wav', '<clr:255, 177, 255>I smell pizza!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00025_02.wav', '<clr:255, 177, 255>I smell pizza!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00025_03.wav', '<clr:255, 177, 255>I smell pizza!')
+
     -- Chica Spot Voices
 
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00019.wav', '<clr:255, 177, 255>I found you!')

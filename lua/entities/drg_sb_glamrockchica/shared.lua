@@ -97,6 +97,15 @@ if SERVER then
     function ENT:AddCustomThink()
     end
 
+    function ENT:CustomAnimEvents(e)
+        if e == 'sfx_rummage' then
+            ParticleEffectAttach( 'blood_impact_antlion_01', 3, self, 2 )
+        end
+        if e == 'sfx_garbageeat' then
+            ParticleEffectAttach( 'blood_impact_antlion_01', 3, self, 3 )
+        end
+    end
+
     function ENT:OnDeath()
     end
     

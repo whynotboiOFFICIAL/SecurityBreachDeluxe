@@ -87,6 +87,49 @@ if SERVER then
         self.IdleAnimation = 'idle'
     end
 
+    function ENT:LuredTo(ent)
+        self:StopVoices() 
+        
+        self:CallInCoroutine(function(self,delay)
+            self:PlayVoiceLine(pizzavox[math.random(#pizzavox)], true) 
+
+            self.Luring = true
+            
+            self:GoTo(ent:GetPos() + ent:GetForward() * 35)
+
+            if not IsValid(ent) then self.Luring = false return end
+
+            ent:SetBodygroup(1, 1)
+
+            self:SetPos(ent:GetPos() + ent:GetForward() * 35)
+
+            self:FaceInstant(ent)
+
+            self.DisableControls = true
+            self.Moving = false
+
+            self:SetAIDisabled(true)
+
+            self.IdleAnimation = 'rummageloop'
+
+            self:PlaySequenceAndMove('rummagein')
+
+            self:DrG_Timer(10, function()
+                ent:SetBodygroup(2, 1)
+
+                self:CallInCoroutine(function(self,delay)
+                    self.IdleAnimation = 'idle'
+                    self:PlaySequenceAndMove('rummageout')
+
+                    self.DisableControls = false
+                    self.Luring = false
+        
+                    self:SetAIDisabled(false)
+                end)
+            end)
+        end)
+    end
+    
     function ENT:StopVoices(mode)
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])

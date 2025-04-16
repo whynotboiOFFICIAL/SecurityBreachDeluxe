@@ -244,7 +244,7 @@ if SERVER then
     end
     
     function ENT:DoStunned()
-        if self.Stunned or self.StunDelay or self.PounceStarted then return end
+        if self.Stunned or self.StunDelay or self.PounceStarted or self.Luring then return end
         
         self.Moving = false
 
