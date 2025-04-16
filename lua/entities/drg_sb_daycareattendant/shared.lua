@@ -354,6 +354,8 @@ if SERVER then
 
         hook:Spawn()
 
+        self:DeleteOnRemove(hook)
+
         self.HookModel = hook
         
         constraint.Elastic(
