@@ -14,8 +14,6 @@ function ENT:Initialize()
     if SERVER then
         self:SpawnDoor()
 
-        self:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_idle_lp.wav')
-
         self:PhysicsInit(SOLID_VPHYSICS)
         self:SetMoveType(MOVETYPE_NONE)
         self:SetSolid(SOLID_VPHYSICS)
@@ -56,7 +54,9 @@ function ENT:HandleAnimEvent(a,b,c,d,e)
 end
 
 function ENT:Use(ent)
-    if ent:GetClass() ~= 'drg_sb_glamrockfreddy' then return end
+    if ent:GetClass() ~= 'drg_sb_glamrockfreddy' or self.Occupied then return end
+    
+    self.Occupied = true
     
     ent:EnterRecharge(self)
 end

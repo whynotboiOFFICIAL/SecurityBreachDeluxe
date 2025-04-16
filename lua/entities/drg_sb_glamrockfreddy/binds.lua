@@ -215,7 +215,10 @@ if SERVER then
         self.OpenChest = false
         
         if not self:GetNWBool('UseHeadAttach') then
-            self.Partner = nil
+            if IsValid(self.Partner) then
+                self.Partner.GlamrockFreddy = nil
+                self.Partner = nil
+            end
         end
     end
 

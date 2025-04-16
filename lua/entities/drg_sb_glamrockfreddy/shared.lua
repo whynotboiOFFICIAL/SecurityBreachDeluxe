@@ -57,6 +57,10 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
+        if self.FoundRecharge and not self.Stunned then
+            self:OnPatrolling()
+        end
+
         if not self.PowerTick and not self.FoundRecharge then
             local currentpower = self:GetNWInt('Energy')
 
@@ -95,14 +99,22 @@ if SERVER then
 
         if self.Inhabited then return end
         
-        if self.IsSick and not self.RechargeSearchTick and not self.FoundRecharge then
+        if self.Partner then
+            if not IsValid(self.Partner) or self.Partner.GlamrockFreddy ~= self then
+                self.Partner = nil
+            end
+        end
+
+        if self.IsSick and not self.RechargeSearchTick and not self.FoundRecharge and not self:IsPossessed() then
             self.RechargeSearchTick = true
 
             for k, v in pairs( ents.GetAll() ) do
-                if v:GetClass() == 'sb_entities_rechargestation' then
+                if v:GetClass() == 'sb_entities_rechargestation' and not v.Occupied then
                     self:GoToRecharge(v)
                     
                     self.FoundRecharge = true
+
+                    break
                 end
             end
 
@@ -193,11 +205,21 @@ if SERVER then
                 self:Wait(5)
             end
 
-            self:GoTo(ent:GetPos() + ent:GetForward() * 35)
+            self:GoTo(ent:GetPos() + ent:GetForward() * 35, 40, function() 
+                if not IsValid(ent) or ent.Occupied then
+                    return true 
+                end
+            end)
+
+            self.WalkAnimation = 'walksick'
 
             if not IsValid(ent) then self.FoundRecharge = false return end
 
-            ent:Use(self)
+            if not ent.Occupied then
+                ent:Use(self)
+            else
+                self.FoundRecharge = false
+            end
         end)
     end
     
@@ -206,6 +228,7 @@ if SERVER then
         
         ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_progress.wav')
         ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_static.wav')
+        ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_idle_lp.wav')
 
         ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/sfx_rechargeStation_enter.wav')
 
@@ -224,22 +247,27 @@ if SERVER then
         self.UseWalkframes = false
 
         self:DrG_Timer(5, function()
-            self:SetPos(ent:GetPos() + ent:GetForward() * 50)
-            self:SetAngles(ent:GetAngles())
+            if IsValid(ent) then
+                self:SetPos(ent:GetPos() + ent:GetForward() * 50)
+                self:SetAngles(ent:GetAngles())
+                
+                ent.Occupied = false
+                
+                ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_progress.wav')
+                ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_static.wav')
+                ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_idle_lp.wav')
+
+                ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/sfx_rechargeStation_exit.wav')
+            end
 
             self.FoundRecharge = false
-
             self.DisableControls = false
+
             self:SetAIDisabled(false)
 
             self:SetMaxYawRate(250)
 
             self.UseWalkframes = true
-
-            ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_progress.wav')
-            ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_static.wav')
-
-            ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/sfx_rechargeStation_exit.wav')
 
             self:EmitSound('whynotboi/securitybreach/base/props/rechargestation/charge/sfx_rechargeStation_charge_complete.wav')
 
@@ -285,6 +313,8 @@ if SERVER then
         local partner = self.Partner
         local pos = partner:GetPos()
         local dist = pos:DistToSqr(self:GetPos())/ 1000
+
+        partner:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/alerts/sfx_freddy_alert_outOfPower.wav')
 
         if dist < 50 then
             self:DialogueTrigger(1, partner)

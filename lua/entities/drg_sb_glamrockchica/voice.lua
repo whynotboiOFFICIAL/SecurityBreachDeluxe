@@ -90,6 +90,8 @@ if SERVER then
     function ENT:LuredTo(ent)
         self:StopVoices() 
         
+        self:SetDefaultRelationship(D_LI)
+
         self:CallInCoroutine(function(self,delay)
             self:PlayVoiceLine(pizzavox[math.random(#pizzavox)], true) 
 
@@ -131,6 +133,7 @@ if SERVER then
                     self.VoiceDisabled = false
         
                     self:SetAIDisabled(false)
+                    self:SetDefaultRelationship(D_HT)
                 end)
             end)
         end)

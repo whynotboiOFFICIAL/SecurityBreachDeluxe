@@ -95,6 +95,9 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
+        if self.FoundRecharge and not self.Stunned then
+            self:OnPatrolling()
+        end
     end
 
     function ENT:CustomAnimEvents(e)
