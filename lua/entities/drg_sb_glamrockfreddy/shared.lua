@@ -23,6 +23,10 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
 ENT.JumpAnimRate = 1
 
+-- Speed --
+ENT.WalkSpeed = 0
+ENT.RunSpeed = 0
+
 -- Relationships --
 ENT.DefaultRelationship = D_LI
 
@@ -49,11 +53,11 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetNWInt('Energy', 100)
+        self:SetNWInt('Energy', 10)
     end
 
     function ENT:AddCustomThink()
-        if not self.PowerTick then
+        if not self.PowerTick and not self.FoundRecharge then
             local currentpower = self:GetNWInt('Energy')
 
             self.PowerTick = true
@@ -91,6 +95,22 @@ if SERVER then
 
         if self.Inhabited then return end
         
+        if self.IsSick and not self.RechargeSearchTick and not self.FoundRecharge then
+            self.RechargeSearchTick = true
+
+            for k, v in pairs( ents.GetAll() ) do
+                if v:GetClass() == 'sb_entities_rechargestation' then
+                    self:GoToRecharge(v)
+                    
+                    self.FoundRecharge = true
+                end
+            end
+
+            self:DrG_Timer(1, function()
+                self.RechargeSearchTick = false
+            end)
+        end
+
         if IsValid(self.Partner) and not self:IsPossessed() then
             local partner = self.Partner
             local pos = partner:GetPos()
@@ -158,6 +178,90 @@ if SERVER then
                 self:PlayVoiceLine('FREDDY_00094', true)
             end
         end
+    end
+
+    function ENT:GoToRecharge(ent)
+        self:StopVoices() 
+        
+        self.WalkAnimation = 'runsick'
+
+        self:CallInCoroutine(function(self,delay)
+
+            if IsValid(self.Partner) then
+                self:PlayVoiceLine('FREDDY_00083', true) 
+
+                self:Wait(5)
+            end
+
+            self:GoTo(ent:GetPos() + ent:GetForward() * 35)
+
+            if not IsValid(ent) then self.FoundRecharge = false return end
+
+            ent:Use(self)
+        end)
+    end
+    
+    function ENT:EnterRecharge(ent)
+        self:EmitSound('whynotboi/securitybreach/base/props/rechargestation/charge/sfx_rechargeStation_charge_activate.wav')
+        
+        ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_progress.wav')
+        ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_static.wav')
+
+        ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/sfx_rechargeStation_enter.wav')
+
+        self:SetPos(ent:GetPos() + Vector(0, 0, 5))
+        self:SetAngles(ent:GetAngles())
+
+        self:SetVelocity(vector_origin)
+        
+        self.DisableControls = true
+        self.FoundRecharge = true
+
+        self:SetAIDisabled(true)
+
+        self:SetMaxYawRate(0)
+
+        self.UseWalkframes = false
+
+        self:DrG_Timer(5, function()
+            self:SetPos(ent:GetPos() + ent:GetForward() * 50)
+            self:SetAngles(ent:GetAngles())
+
+            self.FoundRecharge = false
+
+            self.DisableControls = false
+            self:SetAIDisabled(false)
+
+            self:SetMaxYawRate(250)
+
+            self.UseWalkframes = true
+
+            ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_progress.wav')
+            ent:StopSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_static.wav')
+
+            ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/sfx_rechargeStation_exit.wav')
+
+            self:EmitSound('whynotboi/securitybreach/base/props/rechargestation/charge/sfx_rechargeStation_charge_complete.wav')
+
+            self:SetNWInt('Energy', 100)
+
+            if self.IsSick then
+                self:NormalMode()
+            end
+        end)
+    end
+
+    function ENT:NormalMode()
+        self.Inhabited = false
+        self.Moving = false
+        --self.Partner = nil
+        self.IsSick = false
+        
+        self.PossessionMovement = POSSESSION_MOVE_CUSTOM
+
+        self.IdleAnimation = 'idle'
+        self.WalkAnimation = 'walk'
+        self.RunAnimation = 'run'
     end
 
     function ENT:SickMode()
