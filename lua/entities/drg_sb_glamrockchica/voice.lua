@@ -94,7 +94,8 @@ if SERVER then
             self:PlayVoiceLine(pizzavox[math.random(#pizzavox)], true) 
 
             self.Luring = true
-            
+            self.VoiceDisabled = true
+
             self:GoTo(ent:GetPos() + ent:GetForward() * 35)
 
             if not IsValid(ent) then self.Luring = false return end
@@ -114,8 +115,12 @@ if SERVER then
 
             self:PlaySequenceAndMove('rummagein')
 
+            self:PlayVoiceLine('CHICA_EATING_GARBAGE_0' .. math.random(2), true)
+
             self:DrG_Timer(10, function()
-                ent:SetBodygroup(2, 1)
+                if IsValid(ent) then
+                    ent:SetBodygroup(2, 1)
+                end
 
                 self:CallInCoroutine(function(self,delay)
                     self.IdleAnimation = 'idle'
@@ -123,6 +128,7 @@ if SERVER then
 
                     self.DisableControls = false
                     self.Luring = false
+                    self.VoiceDisabled = false
         
                     self:SetAIDisabled(false)
                 end)
@@ -142,6 +148,9 @@ if SERVER then
         for i = 1, 8 do
             self:StopSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. i .. '.wav')
         end
+
+        self:StopVoiceLine('CHICA_EATING_GARBAGE_01')
+        self:StopVoiceLine('CHICA_EATING_GARBAGE_02')
 
         if mode == 1 then return end
 
