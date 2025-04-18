@@ -170,10 +170,10 @@ if CLIENT then
 
 			-- General
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('General')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('General')
+			panel:Help('')
 
 
             panel:CheckBox('Help Wanted 2 Jumpscares', 'fnaf_sb_new_hw2_jumpscares')
@@ -198,10 +198,10 @@ if CLIENT then
 
 			-- Glamrock Freddy
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Glamrock Freddy')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Glamrock Freddy')
+			panel:Help('')
 
 			panel:CheckBox('Glamrock Freddy Safe Mode', 'fnaf_sb_new_freddy_friendly')
             panel:ControlHelp('Glamrock Freddy will not be hostile and instead will assist if available')
@@ -229,10 +229,10 @@ if CLIENT then
 
 			-- Glamrock Chica
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Glamrock Chica')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Glamrock Chica')
+			panel:Help('')
 
 			panel:CheckBox('Glamrock Chica Voicebox', 'fnaf_sb_new_chica_voiceattack')
             panel:ControlHelp('Glamrock Chica will be use her vocals to slow enemies and scare animatronics')
@@ -245,10 +245,10 @@ if CLIENT then
 			
 			-- Montgomery Gator
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Montgomery Gator')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Montgomery Gator')
+			panel:Help('')
 
 			panel:CheckBox('Montgomery Gator Pounce', 'fnaf_sb_new_monty_pounceattack')
             panel:ControlHelp('Montgomery Gator will leap through the air to try and kill you')
@@ -258,20 +258,20 @@ if CLIENT then
 
 			-- Roxanne Wolf
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Roxanne Wolf')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Roxanne Wolf')
+			panel:Help('')
 
 			panel:CheckBox('Roxanne Wolf Pounce', 'fnaf_sb_new_roxy_pounceattack')
             panel:ControlHelp('Roxanne Wolf will leap through the air to try and kill you')
 			
 			-- Shattered Chica
 			
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Shattered Chica')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Shattered Chica')
+			panel:Help('')
 
 			panel:CheckBox('Shattered Chica Has Voice', 'fnaf_sb_new_shatteredchica_hasvoice')
             panel:ControlHelp('Shattered Chica will be able to use her voicebox again')
@@ -284,10 +284,10 @@ if CLIENT then
 					
 			-- Shattered Monty
 			
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Shattered Monty')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Shattered Monty')
+			panel:Help('')
 
 			panel:CheckBox('Shattered Monty Has Legs', 'fnaf_sb_new_shatteredmonty_haslegs')
             panel:ControlHelp('Shattered Monty will be able to stand on his legs again')
@@ -297,10 +297,10 @@ if CLIENT then
 						
 			-- Shattered Roxy
 			
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Shattered Roxy')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Shattered Roxy')
+			panel:Help('')
 
 			panel:CheckBox('Shattered Roxy Has Eyes', 'fnaf_sb_new_shatteredroxy_haseyes')
             panel:ControlHelp('Shattered Roxy will be able to see again')
@@ -310,10 +310,10 @@ if CLIENT then
 			
 			-- Daycare Attendant
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Daycare Attendant')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Daycare Attendant')
+			panel:Help('')
 
 			panel:CheckBox('Sun Always Hostile', 'fnaf_sb_new_sun_alwayshostile')
             panel:ControlHelp('Sun will chase and kill you instead of being protective')
@@ -324,10 +324,10 @@ if CLIENT then
 			
 			-- Glamrock Endo
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Glamrock Endo')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Glamrock Endo')
+			panel:Help('')
 
 			panel:CheckBox('Glamrock Endo Sleeping', 'fnaf_sb_new_endo_sleep')
             panel:ControlHelp('Glamrock Endo will spawn in asleep')
@@ -337,10 +337,10 @@ if CLIENT then
 													
 			-- STAFFBOTS
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('S.T.A.F.F. Bots')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('S.T.A.F.F. Bots')
+			panel:Help('')
 
 			panel:CheckBox('S.T.A.F.F. Bot Stun Voiceline', 'fnaf_sb_new_staffbot_stunvoice')
             panel:ControlHelp('S.T.A.F.F. Bots use the stun voiceline that was removed from the game')
@@ -360,20 +360,20 @@ if CLIENT then
 
 			-- Wind-Up Music Man
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Wind-Up Music Man')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Wind-Up Music Man')
+			panel:Help('')
 
 			panel:CheckBox('Wind-Up Music Man Music', 'fnaf_sb_new_ldjmm_music')
             panel:ControlHelp('Wind-Up Music Man plays his music box while spawned')
 									
 			-- DJ Music Man
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('DJ Music Man')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('DJ Music Man')
+			panel:Help('')
 
 			panel:CheckBox('DJ Music Man Music', 'fnaf_sb_new_djmm_music')
             panel:ControlHelp('DJ Music Man plays his groovy music while spawned')
@@ -386,10 +386,10 @@ if CLIENT then
 												
 			-- Vanessa
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Vanessa')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Vanessa')
+			panel:Help('')
 
 			panel:CheckBox('Vanesssa Old Voicelines', 'fnaf_sb_new_vanessa_oldvo')
             panel:ControlHelp('Vanessa uses old versions of her search lines')
@@ -402,10 +402,10 @@ if CLIENT then
 															
 			-- Vanny
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Vanny')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Vanny')
+			panel:Help('')
 
 			panel:CheckBox('Vanny Old Voicelines', 'fnaf_sb_new_vanny_oldvo')
             panel:ControlHelp('Vanny uses old versions of her voicelines')
@@ -430,10 +430,10 @@ if CLIENT then
 																	
 			-- The Blob
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('The Blob')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('The Blob')
+			panel:Help('')
 
 			panel:CheckBox('Blob Tendril Attack', 'fnaf_sb_new_blob_tendrils')
             panel:ControlHelp('The Blob uses its tendrils to search and attack you around the map')
@@ -443,10 +443,10 @@ if CLIENT then
 																				
 			-- Burntrap
 
-			panel:ControlHelp('')
-			panel:ControlHelp('')
-			panel:ControlHelp('Burntrap')
-			panel:ControlHelp('')
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Burntrap')
+			panel:Help('')
 
 			panel:CheckBox('Burntrap Jumpscare', 'fnaf_sb_new_burntrap_jumpscare')
             panel:ControlHelp('Burntrap uses a custom jumpscare whenever you get cloes')

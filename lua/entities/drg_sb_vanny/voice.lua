@@ -57,6 +57,8 @@ if SERVER then
 
                 self:DrG_Timer(3, function()
                     self.UseWalkframes = true
+
+                    self.IdleAnimation = 'idle'
                 end)
             end
         elseif GetConVar('fnaf_sb_new_vanny_prespot'):GetBool() then
