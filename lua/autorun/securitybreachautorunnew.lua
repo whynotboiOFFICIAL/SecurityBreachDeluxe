@@ -5,6 +5,7 @@ CreateConVar('fnaf_sb_new_voicelines', 1, FCVAR_ARCHIVE, 'Use Voice Lines', 0, 1
 CreateConVar('fnaf_sb_new_damaging', 1, FCVAR_ARCHIVE, 'Gradual Damging', 0, 1)
 CreateConVar('fnaf_sb_new_betaeyes', 0, FCVAR_ARCHIVE, 'Beta Eye Glows', 0, 1)
 CreateConVar('fnaf_sb_new_traileranims', 0, FCVAR_ARCHIVE, 'Gameplay Trailer Animations', 0, 1)
+CreateConVar('fnaf_sb_new_shattereds_redeyes', 0, FCVAR_ARCHIVE, 'Shattereds Red Eyes', 0, 1)
 
 -- Glamrock Freddy
 
@@ -196,6 +197,9 @@ if CLIENT then
 			panel:CheckBox('Gameplay Trailer Animations', 'fnaf_sb_new_traileranims')
 			panel:ControlHelp('Characters will use recreations of their animations from the gameplay trailer')
 			panel:ControlHelp('(This will only apply to Chica, Monty, and Roxy)')
+
+			panel:CheckBox('Shattereds Red Eyes', 'fnaf_sb_new_shattereds_redeyes')
+			panel:ControlHelp('Shattereds will use a red eye glow like in the Halloween tweet by Steel Wool')
 
 			-- Glamrock Freddy
 

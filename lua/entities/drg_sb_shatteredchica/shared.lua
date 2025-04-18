@@ -89,6 +89,10 @@ if SERVER then
             self.HW2Jumpscare = true
         end
 
+        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
+            self:SetBodygroup(2, 1)
+        end
+
         if GetConVar('fnaf_sb_new_shatteredchica_hasvoice'):GetBool() then
             self.CanSpeak = true
 

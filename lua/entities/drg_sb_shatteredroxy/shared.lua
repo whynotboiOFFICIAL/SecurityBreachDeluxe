@@ -77,6 +77,10 @@ if SERVER then
             self:SetBodygroup(2, 1)
         end
 
+        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
+            self:SetSkin(2)
+        end
+
         if GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool() then
             self.CanSee = true
 
@@ -103,6 +107,10 @@ if SERVER then
         eyes:Spawn()
 
         eyes:ResetSequence('idle')
+
+        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
+            eyes:SetBodygroup(0, 1)
+        end
 
         self:DeleteOnRemove(eyes)
     end

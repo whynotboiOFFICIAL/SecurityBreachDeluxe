@@ -77,6 +77,10 @@ if SERVER then
             self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
         end
 
+        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
+            self:SetBodygroup(1, 1)
+        end
+
         if not GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool() then
             self.CanPounce = false
         end
