@@ -151,7 +151,7 @@ if SERVER then
                     self:SetBodygroup(2, 1)
                 end        
 
-                local skin = math.random(4, 10)
+                local skin = math.random(4, 9)
                 
                 self:SetSkin(skin)
             end
