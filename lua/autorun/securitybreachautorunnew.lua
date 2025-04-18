@@ -24,6 +24,7 @@ CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Po
 
 -- Montgomery Gator
 
+CreateConVar('fnaf_sb_new_monty_transglass', 0, FCVAR_ARCHIVE, 'Montgomery Gator Transparent Shades', 0, 1)
 CreateConVar('fnaf_sb_new_monty_pounceattack', 1, FCVAR_ARCHIVE, 'Montgomery Gator Pounce', 0, 1)
 CreateConVar('fnaf_sb_new_monty_enablestun', 0, FCVAR_ARCHIVE, 'Montgomery Gator Stun', 0, 1)
 
@@ -249,6 +250,9 @@ if CLIENT then
 			panel:Help('')
 			panel:Help('Montgomery Gator')
 			panel:Help('')
+
+			panel:CheckBox('Montgomery Gator Transparent Shades', 'fnaf_sb_new_monty_transglass')
+            panel:ControlHelp('Montgomery Gator has see through glasses')
 
 			panel:CheckBox('Montgomery Gator Pounce', 'fnaf_sb_new_monty_pounceattack')
             panel:ControlHelp('Montgomery Gator will leap through the air to try and kill you')

@@ -77,8 +77,11 @@ if SERVER then
             self.GradualDamaging = true
         end
 
-        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
+        if GetConVar('fnaf_sb_new_monty_transglass'):GetBool() then
             self:SetBodygroup(2, 1)
+        end
+
+        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
             self:SetBodygroup(3, 1)
         end
 
