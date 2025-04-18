@@ -102,6 +102,8 @@ if SERVER then
     -- Voice 
 
     function ENT:PlayVoiceLine(vo, anim)
+        if not GetConVar('fnaf_sb_new_voicelines'):GetBool() then return end
+
         local path = self.VOPath or self.SFXPath
         if path == nil then return end
 

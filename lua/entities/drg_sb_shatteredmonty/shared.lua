@@ -71,6 +71,15 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        if GetConVar('fnaf_sb_new_shatteredmonty_haslegs'):GetBool() then
+            self:SetModel('models/whynotboi/securitybreach/base/animatronics/shatteredmonty/shatteredmontywithlegs.mdl')
+            
+            self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
+        end
+
+        if not GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool() then
+            self.CanPounce = false
+        end
     end
 
     function ENT:AddCustomThink()

@@ -71,10 +71,44 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetSightFOV(0)
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+
+            self:SetBodygroup(2, 1)
+        end
+
+        if GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool() then
+            self.CanSee = true
+
+            self:SpawnEyes()
+        else
+            self:SetSightFOV(0)
+        end
+
+        if not GetConVar('fnaf_sb_new_shatteredroxy_pounceattack'):GetBool() then
+            self.CanPounce = false
+        end
+    end
+
+    function ENT:SpawnEyes()
+        local eyes = ents.Create('prop_dynamic')
+        
+        eyes:SetModel('models/whynotboi/securitybreach/base/animatronics/shatteredroxy/shatteredroxyeyes.mdl')
+        eyes:SetModelScale(1)
+        eyes:SetParent(self)
+        eyes:SetSolid(SOLID_NONE)
+
+        eyes:Fire('SetParentAttachment','Head')
+
+        eyes:Spawn()
+
+        eyes:ResetSequence('idle')
+
+        self:DeleteOnRemove(eyes)
     end
 
     function ENT:SpotEntity(ent)
+        if self.CanSee then return self.BaseClass.SpotEntity(self, ent) end
         if self:IsPossessed() then return end
         if self:EntityInaccessible(ent) then return end
 
@@ -82,18 +116,22 @@ if SERVER then
     end
 
     function ENT:AlertedTo(pos, ent)
+        if self.CanSee then return end
+
         if not self.Alerted then
-            self:OnSpotEnemy()
-            
             if (ent.IsDrGNextbot and ent:IsPossessed()) then
                 ent = ent:GetPossessor()
             end
             
-            if not self.Alerted then
+            if not self.Pursuit then
+                self.Pursuit = true
+
                 self:CallOnClient('OnEnemySpotted', ent)
+
+                self:OnSpotEnemy()
             end
 
-            self.Alerted = true
+            self.ForceRun = true
         end
         
         self:ClearPatrols()
@@ -105,12 +143,16 @@ if SERVER then
 
     function ENT:OnReachedPatrol()
         if self.Alerted then 
-            self:EndPursuit()
+            self.Alerted = false
         end
 
         self:Wait(math.random(3, 7), function()
             if self.Alerted then return true end
         end)
+
+        if not self.Alerted and self.Pursuit then 
+            self:EndPursuit()
+        end
     end
 
     function ENT:OnIdle()
@@ -120,19 +162,23 @@ if SERVER then
     end
 
     function ENT:EndPursuit()
+        if self.CanSee then return end
+
         self.Alerted = false
+        self.Pursuit = false
         self.VoiceDisabled = false
         
         self.PursuePos = nil
         
         self:DrG_Timer(0.1, function()
-            self.WalkAnimation = 'walk'
+            self.ForceRun = false
         end)
     end
 
     function ENT:AddCustomThink()
         if self.Stunned or self.PounceStarted or GetConVar('ai_disabled'):GetBool() or self:IsPossessed() then return end
-        
+        if self.CanSee then return end
+
         if not self.KillTick then
             self.KillTick = true
 
@@ -151,6 +197,8 @@ if SERVER then
         end
 
         if self.PursuePos and not self.LeapTick then
+            if not self.CanPounce then return end
+
             self.LeapTick = true
 
             local pos = self.PursuePos
@@ -172,15 +220,14 @@ if SERVER then
         end
     end
 
-    function ENT:OnDeath()
-    end
-    
     function ENT:Removed()
     end
 
     -- Sounds --
 
     function ENT:OnHearNPCSound(ent, sound)
+        if self.CanSee then return end
+        
         self:SpotEntity(ent)
     end
 

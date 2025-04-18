@@ -10,7 +10,6 @@ ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.CanBeSummoned = true
-ENT.CanBeStunned = true
 ENT.HidingSpotSearch = true
 ENT.SearchID = 'monty'
 
@@ -70,14 +69,39 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+        
+        if GetConVar('fnaf_sb_new_damaging'):GetBool() then
+            self.GradualDamaging = true
+        end
+
+        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
+            self:SetBodygroup(2, 1)
+            self:SetBodygroup(3, 1)
+        end
+
+        if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
+            self.IdleAnimation = 'preidle'
+            self.WalkAnimation = 'prewalk'
+            self.RunAnimation = 'prerun'
+
+            self.PreAnim = true
+        end
+
+        if not GetConVar('fnaf_sb_new_monty_pounceattack'):GetBool() then
+            self.CanPounce = false
+        end
+
+        if GetConVar('fnaf_sb_new_monty_enablestun'):GetBool() then
+            self.CanBeStunned = true
+        end
     end
 
     function ENT:AddCustomThink()
     end
 
-    function ENT:OnDeath()
-    end
-    
     function ENT:Removed()
     end
 

@@ -61,7 +61,11 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self:SetPlayersRelationship(D_LI)
-        self:SetClassRelationship('drg_sb_glamrockfreddy', D_LI)
+
+        if GetConVar('fnaf_sb_new_freddy_friendly'):GetBool() then
+            self:SetClassRelationship('drg_sb_glamrockfreddy', D_LI)
+        end
+
         self:SetClassRelationship('drg_sb_staffbot_security', D_LI)
         self:SetClassRelationship('drg_sb_staffbot_sewer', D_LI)
         self:SetClassRelationship('drg_sb_staffbot_map', D_LI)

@@ -84,7 +84,11 @@ if SERVER then
             self:PlaySequenceAndMove('stunout') 
         end)
 
-        self.IdleAnimation = 'idle'
+        if self.PreAnim then
+            self.IdleAnimation = 'preidle'
+        else
+            self.IdleAnimation = 'idle'
+        end
     end
 
     function ENT:LuredTo(ent)
@@ -96,6 +100,7 @@ if SERVER then
             self:PlayVoiceLine(pizzavox[math.random(#pizzavox)], true) 
 
             self.Luring = true
+            self.LuringTo = ent
             self.VoiceDisabled = true
 
             self:GoTo(ent:GetPos() + ent:GetForward() * 35)
@@ -103,6 +108,8 @@ if SERVER then
             if not IsValid(ent) then self.Luring = false return end
 
             ent:SetBodygroup(1, 1)
+
+            self:SetVelocity(vector_origin)
 
             self:SetPos(ent:GetPos() + ent:GetForward() * 35)
 
@@ -119,19 +126,30 @@ if SERVER then
 
             self:PlayVoiceLine('CHICA_EATING_GARBAGE_0' .. math.random(2), true)
 
+            self:DrG_Timer(6, function()
+                ParticleEffectAttach( 'fnafsb_drool_chica', 4, self, 3 )
+            end)
+            
             self:DrG_Timer(10, function()
                 if IsValid(ent) then
                     ent:SetBodygroup(2, 1)
                 end
 
                 self:CallInCoroutine(function(self,delay)
-                    self.IdleAnimation = 'idle'
+                    if self.PreAnim then
+                        self.IdleAnimation = 'preidle'
+                    else
+                        self.IdleAnimation = 'idle'
+                    end
+
                     self:PlaySequenceAndMove('rummageout')
 
                     self.DisableControls = false
                     self.Luring = false
                     self.VoiceDisabled = false
-        
+
+                    self.LuringTo = nil
+
                     self:SetAIDisabled(false)
                     self:SetDefaultRelationship(D_HT)
                 end)

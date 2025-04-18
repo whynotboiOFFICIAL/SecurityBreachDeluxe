@@ -23,6 +23,10 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
 ENT.JumpAnimRate = 1
 
+-- Speed -- 
+ENT.WalkSpeed = 0
+ENT.RunSpeed = 0
+
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/vanny/jumpscare/sfx_jumpScare_vanny.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/vanny'
@@ -46,6 +50,29 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        if GetConVar('fnaf_sb_new_vanny_preidle'):GetBool() then
+            self.IdleAnimation = 'idlepre'
+        end
+
+        if GetConVar('fnaf_sb_new_vanny_prewalk'):GetBool() then
+            self.WalkAnimation = 'walkpre' .. math.random(3)
+        end
+
+        if GetConVar('fnaf_sb_new_vanny_prerun'):GetBool() then
+            self.RunAnimation = 'runpre'
+        end
+    end
+
+    function ENT:Jumpscare()
+        if GetConVar('fnaf_sb_new_vanny_prejumpscare'):GetBool() then
+            self:EmitSound('whynotboi/securitybreach/base/vanny/jumpscare/sfx_jumpScare_vanny_pre.wav')
+
+            self:RemoveAllGestures()
+        
+            self:PlaySequenceAndMove('jumpscarepre')
+        else
+            self.BaseClass.Jumpscare(self)
+        end
     end
 
     function ENT:OnDeath()

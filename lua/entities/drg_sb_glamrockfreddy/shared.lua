@@ -34,6 +34,21 @@ ENT.DefaultRelationship = D_LI
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/glamrockfreddy/jumpscare/sfx_jumpscare_pas_freddy.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/glamrockfreddy'
 
+ENT.PouncePath = 'whynotboi/securitybreach/base/montgomerygator'
+
+ENT.PounceJumpSounds = {
+    '/leap/fly_monty_leap_01.wav',
+    '/leap/fly_monty_leap_02.wav',
+    '/leap/fly_monty_leap_03.wav',
+    '/leap/fly_monty_leap_04.wav'
+}
+
+ENT.PounceLandSounds = {
+    '/land/fly_monty_land_01.wav',
+    '/land/fly_monty_land_02.wav',
+    '/land/fly_monty_land_03.wav'
+}
+
 -- Detection --
 ENT.EyeBone = 'Head_jnt'
 ENT.EyeOffset = Vector(0, 0, 0)
@@ -53,15 +68,104 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetNWInt('Energy', 10)
+        self:SetNWInt('Energy', 100)
+
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+
+        if GetConVar('fnaf_sb_new_damaging'):GetBool() then
+            self.GradualDamaging = true
+        end
+
+        if not GetConVar('fnaf_sb_new_freddy_friendly'):GetBool() then
+            self:SetDefaultRelationship(D_HT)
+
+            self.Hostile = true
+            self.CanBeSummoned = true
+        end
+
+
+        if GetConVar('fnaf_sb_new_freddy_montyclaws'):GetBool() then
+            self:SetBodygroup(7, 1)
+
+            self.Claws = true
+        end
+
+        if GetConVar('fnaf_sb_new_freddy_chicavoice'):GetBool() then
+            self:SetBodygroup(4, 1)
+
+            self.Voicebox = true
+        end
+        
+        self:EyesConfig()
+
+        if GetConVar('fnaf_sb_new_freddy_montylegs'):GetBool() then
+            self:SetBodygroup(8, 1)
+            self:SetBodygroup(9, 1)
+            self:SetBodygroup(10, 1)
+
+            self.CanPounce = true
+        end
+    end
+
+    function ENT:EyesConfig()
+        local eyes = 0
+        
+        if GetConVar('fnaf_sb_new_freddy_roxyeyes'):GetBool() then
+            eyes = 2
+        end
+
+        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
+            if GetConVar('fnaf_sb_new_freddy_roxyeyes'):GetBool() then
+                eyes = 5
+            else
+                eyes = 4
+            end
+        end 
+
+        if GetConVar('fnaf_sb_new_freddy_friendly'):GetBool() and GetConVar('fnaf_sb_new_freddy_safeeyes'):GetBool() then
+            eyes = 1
+        end
+
+        self:SetBodygroup(1, eyes)
+    end
+
+    function ENT:BreakDoor(d)
+        if not self.Claws then return end
+
+        self.DisableControls = true
+        self.UseWalkframes = false
+
+        self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/claws/swing/sfx_montyClaws_swing_0' .. math.random(3) .. '.wav')
+
+        self:PlaySequence('smash')
+
+        if IsValid(self.HoldEntity) and not self.Punched then
+            self.Punched = true
+            self.HoldEntity:PlayVoiceLine('GREGORY_00148')
+        end
+
+        self:DrG_Timer(0.2, function()
+            if not IsValid(d) then return end
+            
+            self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/claws/impact/sfx_montyClaws_fence_impact_0' .. math.random(3) .. '.wav')
+
+            d:Fire('Unlock')
+
+            d:Fire('Open')
+
+            d:Fire('Lock')
+
+            self:DrG_Timer(0.5, function()
+                self.DisableControls = false
+                self.UseWalkframes = true
+            end)
+        end)
     end
 
     function ENT:AddCustomThink()
-        if self.FoundRecharge and not self.Stunned then
-            self:OnPatrolling()
-        end
-
-        if not self.PowerTick and not self.FoundRecharge then
+        if not self.PowerTick and not self.FoundRecharge and not (GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 3 or (GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 1 and not self.Inhabited)) then
             local currentpower = self:GetNWInt('Energy')
 
             self.PowerTick = true
@@ -136,7 +240,7 @@ if SERVER then
                 self.Partner = nil
             end
             
-            if  dist < 50 and not (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) and partner:Health() > 0 then
+            if  dist < 50 and not ((GetConVar('ai_disabled'):GetBool()) or (partner:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) and partner:Health() > 0 then
                 if self.AimTarget ~= partner then
                     self.AimTarget = partner
 
@@ -160,8 +264,8 @@ if SERVER then
                 end
             end
 
-            if not self.IsSick then
-                if dist < 20 and not (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) and partner:Health() > 0 then
+            if not self.IsSick and not self.Stunned then
+                if dist < 20 and not ((GetConVar('ai_disabled'):GetBool()) or (partner:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) and partner:Health() > 0 then
                     if not self.OpenChest then
                         self:OpenChestHatch()
                     end
@@ -195,7 +299,7 @@ if SERVER then
     function ENT:GoToRecharge(ent)
         self:StopVoices() 
         
-        self.WalkAnimation = 'runsick'
+        self.ForceRun = true
 
         self:CallInCoroutine(function(self,delay)
 
@@ -211,7 +315,7 @@ if SERVER then
                 end
             end)
 
-            self.WalkAnimation = 'walksick'
+            self.ForceRun = false
 
             if not IsValid(ent) then self.FoundRecharge = false return end
 
@@ -224,6 +328,8 @@ if SERVER then
     end
     
     function ENT:EnterRecharge(ent)
+        self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
+
         self:EmitSound('whynotboi/securitybreach/base/props/rechargestation/charge/sfx_rechargeStation_charge_activate.wav')
         
         ent:EmitSound('whynotboi/securitybreach/base/props/rechargestation/idle/sfx_rechargeStation_active_progress.wav')
@@ -239,6 +345,8 @@ if SERVER then
         
         self.DisableControls = true
         self.FoundRecharge = true
+
+        self.ForceRun = false
 
         self:SetAIDisabled(true)
 
@@ -282,7 +390,6 @@ if SERVER then
     function ENT:NormalMode()
         self.Inhabited = false
         self.Moving = false
-        --self.Partner = nil
         self.IsSick = false
         
         self.PossessionMovement = POSSESSION_MOVE_CUSTOM
@@ -295,7 +402,6 @@ if SERVER then
     function ENT:SickMode()
         self.Inhabited = false
         self.Moving = false
-        --self.Partner = nil
         self.IsSick = true
         
         self.PossessionMovement = POSSESSION_MOVE_CUSTOM
@@ -334,9 +440,9 @@ if SERVER then
 
         ent:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/call/sfx_freddy_call_succesful.wav')
 
-        local pos = ent:DrG_RandomPos(50, 100)
+        local pos = ent:DrG_RandomPos(40, 50)
 
-        self.WalkAnimation = 'run'
+        self.ForceRun = true
 
         self.Summoning = true
 
@@ -346,7 +452,7 @@ if SERVER then
     end
 
     function ENT:Use(ent)
-        if (GetConVar('ai_disabled'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) or self.IsSick then return end
+        if ((GetConVar('ai_disabled'):GetBool()) or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) or self.IsSick then return end
 
         if (ent == self.Partner) or (self:IsPossessed() and not IsValid(self.Partner)) then
             self:EnterFreddy(ent)
@@ -363,7 +469,7 @@ if SERVER then
         if self.Summoning then
             self.Summoning = false
             
-            self.WalkAnimation = 'walk'
+            self.ForceRun = false
         end
 
         if IsValid(self.Partner) then return end
@@ -377,10 +483,9 @@ if SERVER then
         self:AddPatrolPos(self:RandomPos(1500))
     end
     
-    function ENT:OnDeath()
-    end
-    
     function ENT:Removed()
+        self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/sfx_roxyEyes_hud_lp.wav')
+        
         if self.Partner then
             self.Partner.GlamrockFreddy = nil
         end

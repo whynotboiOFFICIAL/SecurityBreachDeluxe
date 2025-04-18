@@ -65,18 +65,69 @@ if SERVER then
             count = 14,
             volume = 1,
             channel = CHAN_STATIC
+        },
+        ['rummage'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/glamrockchica/garbage/rummage/sfx_chica_garbage_rummage_',
+            count = 6,
+            volume = 1,
+            channel = CHAN_STATIC
+        },        
+        ['garbageeat'] = {
+            hasEnding = false,
+            path = 'whynotboi/securitybreach/base/glamrockchica/garbage/eat/sfx_chica_garbage_eat_',
+            count = 6,
+            volume = 1,
+            channel = CHAN_STATIC
         }
     }
 
     -- Basic --
 
     function ENT:CustomInitialize()
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+
+        if GetConVar('fnaf_sb_new_shatteredchica_hasvoice'):GetBool() then
+            self.CanSpeak = true
+
+            self.VOPath = 'whynotboi/securitybreach/base/glamrockchica'
+            
+            self:SpawnBeak()
+        end
+    end
+
+    function ENT:SpawnBeak()
+        local beak = ents.Create('prop_dynamic')
+        
+        beak:SetModel('models/whynotboi/securitybreach/base/animatronics/shatteredchica/shatteredchicabeak.mdl')
+        beak:SetModelScale(1)
+        beak:SetParent(self)
+        beak:SetSolid(SOLID_NONE)
+        
+        beak:AddEffects(EF_BONEMERGE)
+
+        beak:Spawn()
+
+        beak:Fire('SetParentAttachment','Jumpscare_jnt')
+
+        self:DeleteOnRemove(beak)
     end
 
     function ENT:AddCustomThink()
     end
 
     function ENT:OnDeath()
+    end
+    
+    function ENT:CustomAnimEvents(e)
+        if e == 'sfx_rummage' then
+            ParticleEffectAttach( 'fnafsb_chicagrabfood', 4, self, 2 )
+        end
+        if e == 'sfx_garbageeat' then
+            ParticleEffectAttach( 'fnafsb_slime_eating', 4, self, 3 )
+        end
     end
     
     function ENT:Removed()

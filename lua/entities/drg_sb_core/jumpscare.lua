@@ -74,7 +74,11 @@ function ENT:Jumpscare()
 
     self:RemoveAllGestures()
 
-    self:PlaySequenceAndMove('jumpscare')
+    if self.HW2Jumpscare then
+        self:PlaySequenceAndMove('jumpscarehw')
+    else
+        self:PlaySequenceAndMove('jumpscare')
+    end
 end
 
 function ENT:CancelJumpscare()

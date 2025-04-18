@@ -103,10 +103,6 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self:SetMaxYawRate(100)
-        
-        self:EmitSound('whynotboi/securitybreach/base/music/djmm/part1.wav', 100)
-
-        self:SleepEnter(true)
 
         self.PatrolsHit = 0
         
@@ -117,6 +113,18 @@ if SERVER then
         self:SetSkin(0)
 
         self:SetNWInt('eyeframe', 0)
+        
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+           
+        if GetConVar('fnaf_sb_new_djmm_music'):GetBool() then
+            self:EmitSound('whynotboi/securitybreach/base/music/djmm/part1.wav', 100)
+        end
+
+        if GetConVar('fnaf_sb_new_djmm_sleep'):GetBool() then
+            self:SleepEnter(true)
+        end
     end
 
     function ENT:AddCustomThink()
@@ -124,7 +132,7 @@ if SERVER then
             self.SleepTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 1000)) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or (v:IsNPC() or v:IsNextBot() and GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
+                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or (GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
                 self:SetDefaultRelationship(D_LI)
 
                 self:SleepExit()
@@ -139,7 +147,9 @@ if SERVER then
             self.EyeTick = true
 
             if math.random(100) > 50 then
-                self:SetBodygroup(2, 1)
+                if GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool() then
+                    self:SetBodygroup(2, 1)
+                end        
 
                 local skin = math.random(4, 10)
                 
@@ -157,7 +167,10 @@ if SERVER then
             self:SleepExit()
         end
 
-        self:SetBodygroup(2, 1)
+        if GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool() then
+            self:SetBodygroup(2, 1)
+        end
+
         self:SetSkin(1)
 
         self:DrG_Timer(2.5, function()
@@ -278,6 +291,8 @@ if SERVER then
             end
         end
         
+        if not GetConVar('fnaf_sb_new_djmm_music'):GetBool() then return end
+
         self:DrG_Timer(0, function()
             if self.Track == 1 then
                 self:EmitSound('whynotboi/securitybreach/base/music/djmm/partend.wav', 100)
@@ -301,7 +316,11 @@ if SERVER then
         end
 
         if self.Track == 2 then
-            self:SleepEnter()
+            if GetConVar('fnaf_sb_new_djmm_sleep'):GetBool() then
+                self:SleepEnter()
+            else
+                self:SwitchTrack(1)
+            end
         end
 
         if self.Track == 3 then

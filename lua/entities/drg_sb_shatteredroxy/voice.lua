@@ -125,9 +125,11 @@ if SERVER then
         end)
 
         self:DrG_Timer(0.05, function()
+            if self.CanSee then return end
+            
             self:StopVoices(1)
 
-            self.WalkAnimation = 'run'
+            self.ForceRun = true
 
             self.VoiceDisabled = true
         end)

@@ -46,11 +46,21 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self.Type = math.random(3)
-
-        self:SleepMode()
-
+        
         self.WalkSpeed = 0
         self.RunSpeed = 0
+
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+        
+        if GetConVar('fnaf_sb_new_endo_sleep'):GetBool() then
+            self:SleepMode()
+        else
+            self:SetMaxYawRate(250)
+            self:SetSightRange(15000)
+            self:SetSightFOV(150)
+        end
     end
 
     function ENT:SleepMode()
@@ -112,6 +122,8 @@ if SERVER then
     end
 
     function ENT:Frozen()
+        if GetConVar('fnaf_sb_new_endo_chase'):GetBool() then return end
+
         if self.IsFrozen or self.CueFreeze then return end
 
         self.IsFrozen = true

@@ -40,12 +40,26 @@ function ENT:OnChaseEnemy()
 end
 
 function ENT:OnRangeAttack(ent)
-    if not self.CanPounce or self.RangeTick or self.PounceStarted or self.Stunned or self.StunDelay then return end
+    if not (self.CanPounce or self.Voicebox) or self.RangeTick or self.PounceStarted or self.Stunned or self.StunDelay or self.VoiceboxDelay then return end
 
     self.RangeTick = true
 
     if math.random(100) > 60 then
-        self:PounceStart()
+        if self.Voicebox and self.CanPounce then
+            local attack = math.random(1, 100)
+
+            if attack  > 50 then
+                self:UseVoicebox()
+            else
+                self:PounceStart()
+            end
+        else
+            if self.Voicebox then
+                self:UseVoicebox()
+            else
+                self:PounceStart()
+            end
+        end
     else
         self:DrG_Timer(5, function()
             self.RangeTick = false
@@ -61,7 +75,7 @@ function ENT:OnLandOnGround()
             if self.PounceLandSounds then
                 local snd = self.PounceLandSounds[math.random(#self.PounceLandSounds)]
         
-                local path = self.VOPath or self.SFXPath
+                local path = self.VOPath or self.PouncePath or self.SFXPath
 
                 self:EmitSound(path .. snd)
             end
@@ -84,7 +98,12 @@ function ENT:OnLandOnGround()
         self:DrG_Timer(5, function()
             self:CallInCoroutine(function(self,delay)
                 self:PlaySequenceAndMove('pouncestuntoidle')
-                self.IdleAnimation = 'idle'
+                
+                if self.PreAnim then
+                    self.IdleAnimation = 'preidle'
+                else
+                    self.IdleAnimation = 'idle'
+                end
 
                 self.DisableControls = false
                 self.Stunned = false
@@ -99,6 +118,47 @@ function ENT:OnLandOnGround()
             end)
         end)
     end
+end
+
+function ENT:UseVoicebox()
+    self.VoiceboxDelay = true
+
+    self:StopVoices()
+
+    self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/voicebox/sfx_chicaVoicebox_screech_0' .. math.random(3) .. '.wav')
+
+    for k,v in pairs(ents.FindInSphere(self:WorldSpaceCenter(), 600)) do
+        if (v == self) or (v == self:GetPossessor()) or not (v:IsPlayer() or v.IsDrGNextbot) or (GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
+        if v.Stunned or v.PounceStared or v.Luring or v.FoundRecharge then continue end
+
+        if v:IsPlayer() then
+            v:SetNWBool('SBVoiceBoxStun', true)
+
+            timer.Simple(5, function()
+                if not IsValid(v) then return end
+
+                v:SetNWBool('SBVoiceBoxStun', false)
+            end)
+        end
+
+        if v.IsDrGNextbot then
+            if not v:IsInFaction('FACTION_ANIMATRONIC') then continue end
+
+            v:CallInCoroutine(function(self,delay)
+                v.ForceRun = true
+
+                v:GoTo(v:RandomPos(900, 1000))
+
+                if not v.Alerted then
+                    v.ForceRun = false
+                end
+            end)
+        end
+    end
+    
+    self:DrG_Timer(15, function()
+        self.VoiceboxDelay = false
+    end)
 end
 
 function ENT:PounceStart()
@@ -133,7 +193,7 @@ function ENT:PounceStart()
     if self.PounceJumpSounds then
         local snd = self.PounceJumpSounds[math.random(#self.PounceJumpSounds)]
 
-        local path = self.VOPath or self.SFXPath
+        local path = self.VOPath or self.PouncePath or self.SFXPath
         self:EmitSound(path .. snd)
     end
 
@@ -154,4 +214,11 @@ function ENT:PounceStart()
     self:PlaySequence('pouncejumpin')
 
     self.Pouncing = true
+end
+
+function ENT:ShouldRun()
+    if self:HasEnemy() then return true end
+    if self.ForceRun then return true end
+    local patrol = self:GetPatrol()
+    return IsValid(patrol) and patrol:ShouldRun(self)
 end

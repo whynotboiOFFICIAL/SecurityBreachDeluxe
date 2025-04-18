@@ -22,6 +22,9 @@ ENT.PossessionBinds = {
     [IN_ATTACK2] = {{
         coroutine = false,
         onkeydown = function(self)
+            if not self:IsOnGround() or not self.Voicebox or self.Stunned or self.VoiceboxDelay then return end
+
+            self:UseVoicebox()
         end
     }},
 

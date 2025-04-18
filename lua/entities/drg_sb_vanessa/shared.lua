@@ -49,6 +49,10 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self:SpawnLight()
+
+        if GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool() then
+            self:SetSkin(2)
+        end
     end
 
     function ENT:SpawnLight()
@@ -81,7 +85,8 @@ if SERVER then
 
     function ENT:OnRangeAttack(enemy)
         if self.RangeTick or self.Stunned or not enemy:IsPlayer() then return end
-        
+        if not GetConVar('fnaf_sb_new_vanessa_lightstun'):GetBool() then return end
+
         self.RangeTick = true
 
         if math.random(1,100) > 60 then

@@ -94,7 +94,11 @@ if SERVER then
             self:PlaySequenceAndMove('stunout') 
         end)
 
-        self.IdleAnimation = 'idle'
+        if self.PreAnim then
+            self.IdleAnimation = 'preidle'
+        else
+            self.IdleAnimation = 'idle'
+        end
     end
     
     function ENT:StopVoices(mode)

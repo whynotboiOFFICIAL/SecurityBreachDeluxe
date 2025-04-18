@@ -34,9 +34,11 @@ function ENT:SpawnDoor()
     door:SetModel('models/whynotboi/securitybreach/base/props/rechargestation/door.mdl')
     door:SetModelScale(1)
     door:SetParent(self)
-    door:PhysicsInit(SOLID_VPHYSICS)
 
-    door:Fire('SetParentAttachment','Door')
+    door:SetPos(self:GetPos())
+    door:SetAngles(self:GetAngles())
+    
+    door:PhysicsInit(SOLID_VPHYSICS)
 
     door:Spawn()
 

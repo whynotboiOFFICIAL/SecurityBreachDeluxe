@@ -15,6 +15,18 @@ local idlevox = {
     'VANESSA_00031'
 }
 
+local idleoldvox = {
+    'Vanessa_VO_Searching_Gregory_01',
+    'Vanessa_VO_Searching_Gregory_02',
+    'Vanessa_VO_Searching_Hello_01',
+    'Vanessa_VO_Searching_HeretoHelp_01',
+    'Vanessa_VO_Searching_IsThatYou_01',
+    'Vanessa_VO_Searching_KeepUSafe_01',
+    'Vanessa_VO_Searching_PleaseComeOut_01',
+    'Vanessa_VO_Searching_SomeoneThere_01',
+    'Vanessa_VO_Searching_TrustMe_01'
+}
+
 local spotvox = {
     'VANESSA_00010',
     'VANESSA_00011'
@@ -51,7 +63,11 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 5 then
-            self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+            if GetConVar('fnaf_sb_new_vanessa_oldvo'):GetBool() then
+                self:PlayVoiceLine(idleoldvox[math.random(#idleoldvox)], true)   
+            else
+                self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+            end
         end
 
         self:DrG_Timer(timer, function()
@@ -61,7 +77,12 @@ if SERVER then
 
     function ENT:OnStunned()
         self:StopVoices()
-        self:SetSkin(1)
+
+        if GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool() then
+            self:SetSkin(3)
+        else
+            self:SetSkin(1)
+        end
 
         self:CallInCoroutine(function(self,delay)
             self:PlayVoiceLine(stunvox[math.random(#stunvox)], true)
@@ -72,7 +93,11 @@ if SERVER then
     end
 
     function ENT:OnStunExit()
-        self:SetSkin(0)
+        if GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool() then
+            self:SetSkin(2)
+        else
+            self:SetSkin(0)
+        end
         
         self:CallInCoroutine(function(self,delay)
             self:PlaySequenceAndMove('stunout') 
@@ -84,6 +109,10 @@ if SERVER then
     function ENT:StopVoices(mode)
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
+        end
+
+        for i = 1, #idleoldvox do
+            self:StopVoiceLine(idleoldvox[i])
         end
 
         if mode == 1 then return end

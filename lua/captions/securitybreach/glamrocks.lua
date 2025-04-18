@@ -14,7 +14,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00136.wav', '<clr:217, 119, 0>Superstar?...')
     SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00137.wav', '<clr:217, 119, 0>Gregory?...')
     SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00138.wav', '<clr:217, 119, 0>Where are you?')
-    SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00139.wav', '<clr:217, 119, 0>Where do you hide?')
+    SBDELUXE:AddEnglishCaption(path .. 'FREDDY_00139.wav', '<clr:217, 119, 0>Why do you hide?')
 
 
     -- Freddy Stun Voices
@@ -164,7 +164,8 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'SUN_00002.wav', '<clr:255, 183, 0>Hey, hey, are ya having fun yet? Are ya? Are ya?')
     SBDELUXE:AddEnglishCaption(path .. 'SUN_00003.wav', '<clr:255, 183, 0>No, no, no, no! What a mess! Oh, which was the bottom? Where is the top? Clean up! Clean up!')
     SBDELUXE:AddEnglishCaption(path .. 'SUN_00004.wav', '<clr:255, 183, 0>New friend, this- this area is off-limits. You\'re gonna get us in trouble.')
-    SBDELUXE:AddEnglishCaption(path .. 'SUN_00004a.wav', '<clr:255, 183, 0>I\'m putting you in time out!')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_00004a.wav', '<clr:255, 183, 0>Don\'t you want a puppet show? I have glitter glue! Do you like glitter glue? Googly eyes?')
+    SBDELUXE:AddEnglishCaption(path .. 'SUN_00006a.wav', '<clr:255, 183, 0>I\'m putting you in time out!')
     SBDELUXE:AddEnglishCaption(path .. 'SUN_00007_pref.wav', '<clr:255, 183, 0>Security alert! Security alert! Wooo! Woooo!')
     
     SBDELUXE:AddEnglishCaption(path .. 'SUN_HW2_00040.wav', '<clr:255, 183, 0>Ha ha ha ha, very funny.')

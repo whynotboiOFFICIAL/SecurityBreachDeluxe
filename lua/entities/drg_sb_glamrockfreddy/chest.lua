@@ -5,7 +5,7 @@ function ENT:OpenChestHatch()
     self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestclose.wav')
     self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestopen.wav', 75, 100, 0.5)
 
-    self:AddGestureSequence(20, false)
+    self:AddGestureSequence(21, false)
 end
 
 function ENT:CloseChestHatch()
@@ -122,7 +122,7 @@ function ENT:ExitFreddy(ent)
 
     self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/hatch/sfx_char_freddy_chestopen.wav', 75, 100, 0.5)
 
-    self:AddGestureSequence(23, false)
+    self:AddGestureSequence(24, false)
 
     ent:EmitSound('whynotboi/securitybreach/base/gregory/exitfreddy/fly_gregory_freddy_exit_0' .. math.random(1,5) .. '.wav')
 

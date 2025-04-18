@@ -73,7 +73,13 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:EmitSound('whynotboi/securitybreach/base/minimusicman/music.wav',75, 100, 0.4)
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+        
+        if GetConVar('fnaf_sb_new_ldjmm_music'):GetBool() then
+            self:EmitSound('whynotboi/securitybreach/base/minimusicman/music.wav',75, 100, 0.4)
+        end
     end
 
     function ENT:AddCustomThink()

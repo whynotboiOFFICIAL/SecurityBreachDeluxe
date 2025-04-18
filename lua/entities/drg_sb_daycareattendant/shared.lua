@@ -84,6 +84,16 @@ if SERVER then
         self.AttendantType = typeNum
         self.SunAnger = 0
 
+        if GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool() then
+            self.SunAnger = 6
+        else
+            self.SunAnger = 0
+        end
+
+        if GetConVar('fnaf_sb_new_moon_userun'):GetBool() then
+            self.MoonRun = true
+        end
+
         self:StopSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav')
         self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav')
         self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_general_lp.wav')
@@ -104,7 +114,12 @@ if SERVER then
             
             self.IdleAnimation = 'moonidle1'
             self.WalkAnimation = 'moonwalk'
-            self.RunAnimation = 'moonwalk'
+            
+            if self.MoonRun then
+                self.RunAnimation = 'moonrun'
+            else
+                self.RunAnimation = 'moonwalk'
+            end
         end
 
         self:CallOnClient('SetAttendantType', typeNum)
@@ -126,7 +141,11 @@ if SERVER then
         local anim = 'jumpscare'
 
         if self.AttendantType == 1 then
-            anim = 'moonjumpscare'
+            if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+                anim = 'moonjumpscarehw'
+            else
+                anim = 'moonjumpscare'
+            end
         end
 
         self:PlaySequenceAndMove(anim)
@@ -134,8 +153,10 @@ if SERVER then
         if self.AttendantType == 0 then
             self:PlayVoiceLine('SUN_HW2_00067', false)
         end
-        
-        self.SunAnger = 0
+      
+        if not GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool() then
+            self.SunAnger = 0
+        end
     end
 
     function ENT:CustomInitialize()

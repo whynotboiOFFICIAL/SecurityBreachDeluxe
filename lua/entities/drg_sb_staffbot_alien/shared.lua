@@ -2,7 +2,7 @@ if not DrGBase then return end -- return if DrGBase isn't installed
 ENT.Base = 'drg_sb_staffbot' -- DO NOT TOUCH (obviously)
 
 -- Misc --
-ENT.PrintName = 'S.T.A.F.F. Bot (Alien)'
+ENT.PrintName = 'S.T.A.F.F. Bot (Fazerblast)'
 ENT.Category = 'Security Breach'
 ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/alien/alienbot.mdl'}
 ENT.CanBeStunned = true
@@ -44,6 +44,19 @@ if SERVER then
         end
 
         self:SpawnBlaster()
+
+        local skin = GetConVar('fnaf_sb_new_alienbot_skin'):GetInt()
+        
+        if skin == 1 then
+            self:SetSkin(2)
+        elseif skin == 2 then
+            self:SetSkin(0)
+        elseif skin == 3 then
+            self:SetSkin(1)
+        else
+            self:SetSkin(math.random(0, 2))
+        end
+
     end
     
     function ENT:DoStunned()

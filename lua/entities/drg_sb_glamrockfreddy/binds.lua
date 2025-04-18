@@ -1,7 +1,10 @@
 ENT.PossessionBinds = {
     [IN_JUMP] = {{
-        coroutine = false,
-        onkeydown = function(self)
+        coroutine = true,
+        onkeydown = function(self) 
+            if self.PounceStarted or self.DisableControls or not self.CanPounce or self.Inhabited then return end
+
+            self:PounceStart()
         end
     }},
     
@@ -22,6 +25,21 @@ ENT.PossessionBinds = {
     [IN_ATTACK2] = {{
         coroutine = false,
         onkeydown = function(self)
+            if not self:IsOnGround() or not self.Voicebox or self.Stunned or self.VoiceboxDelay then return end
+
+            self:UseVoicebox()
+        end
+    }},
+
+    [IN_SPEED] = {{
+        coroutine = false,
+        onkeydown = function(self)
+        end
+    }},
+
+    [IN_RELOAD] = {{
+        coroutine = true,
+        onkeydown = function(self)
             if not self:IsOnGround() or self:GetNWBool('UseHeadAttach') or self.Stunned or self.ChestDelay then return end
 
             self.ChestDelay = true
@@ -35,18 +53,6 @@ ENT.PossessionBinds = {
             self:DrG_Timer(2, function()
                 self.ChestDelay = false
             end)
-        end
-    }},
-
-    [IN_SPEED] = {{
-        coroutine = false,
-        onkeydown = function(self)
-        end
-    }},
-
-    [IN_RELOAD] = {{
-        coroutine = true,
-        onkeydown = function(self)
         end
     }},
 
@@ -65,7 +71,7 @@ ENT.PossessionBinds = {
 
             self:DoorCode()
             
-            self:DrG_Timer(0.5, function()
+            self:DrG_Timer(1, function()
                 self.InteractDelay = false
             end)
         end
@@ -87,6 +93,8 @@ ENT.PossessionViews = {
 
 if CLIENT then
     local eyesfreddy = Material('ui/securitybreach/freddy/Freddy_HUD_frame_4k.png')
+    local eyesroxy = Material('ui/securitybreach/freddy/Roxy_HUD_Frame_v3_4k.png')
+
     local battery = Material('ui/securitybreach/freddy/Freddy_HUD_Battery.png')
     local batteryslot = Material('ui/securitybreach/freddy/Freddy_HUD_Battery_slot.png')
     local batterypower = Material('ui/securitybreach/freddy/Freddy_HUD_Battery_fill.png')
@@ -99,22 +107,32 @@ if CLIENT then
         -- Eyes --
 
         if self:GetNWBool('UseHeadAttach') then
-            surface.SetMaterial(eyesfreddy)
+            if self:GetNWBool('RoxyEyes') then
+                surface.SetMaterial(eyesroxy)  
+            else
+                surface.SetMaterial(eyesfreddy)
+            end
 
             local w1, h1 = ScreenScale(890), ScreenScale(290)
             local w1 = ScrW() + 800
 
-            surface.DrawTexturedRect(-400, -125, w1, ScrH() / 1.25)
+            surface.DrawTexturedRect(-400, -180, w1, ScrH() / 1.5)
         end
 
         -- Battery --
+
+        if GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 3 then return end
 
         local energy = self:GetNWInt('Energy')
 
         if energy < 20 then
             surface.SetDrawColor(255, 0, 0, 255)
         else
-            surface.SetDrawColor(255, 100, 0, 255)
+            if self:GetNWBool('RoxyEyes') then
+                surface.SetDrawColor(132, 0, 255, 255)
+            else
+                surface.SetDrawColor(255, 100, 0, 255)
+            end
         end
 
         surface.SetMaterial(battery)
@@ -133,7 +151,11 @@ if CLIENT then
         if energy < 20 then
             surface.SetDrawColor(255, 0, 0, 255)
         else
-            surface.SetDrawColor(100, 255, 255, 255)
+            if self:GetNWBool('RoxyEyes') then
+                surface.SetDrawColor(93, 201, 107)
+            else
+                surface.SetDrawColor(100, 255, 255, 255)
+            end
         end
 
         surface.SetMaterial(batteryslot)
@@ -213,7 +235,11 @@ if SERVER then
         self:RemoveAllGestures()
 
         self.OpenChest = false
-        
+
+        if self:GetNWBool('RoxyEyes') then
+            self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/sfx_roxyEyes_hud_lp.wav')
+        end
+
         if not self:GetNWBool('UseHeadAttach') then
             if IsValid(self.Partner) then
                 self.Partner.GlamrockFreddy = nil
@@ -226,6 +252,10 @@ if SERVER then
         self:DrG_Timer(0, function()
             if self:GetNWBool('UseHeadAttach') and self:GetNWInt('Energy') > 1 then
                 self:ExitFreddy(ent)
+            end
+
+            if self:GetNWBool('RoxyEyes') then
+                self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/sfx_roxyEyes_hud_lp.wav')
             end
 
             self:SetNWBool('UseHeadAttach', false)

@@ -92,27 +92,50 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+        
+        if GetConVar('fnaf_sb_new_damaging'):GetBool() then
+            self.GradualDamaging = true
+        end
+
+        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
+            self:SetBodygroup(2, 1)
+        end
+
+        if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
+            self.IdleAnimation = 'preidle'
+            self.WalkAnimation = 'prewalk'
+            self.RunAnimation = 'prerun'
+
+            self.PreAnim = true
+        end
+
+        if GetConVar('fnaf_sb_new_chica_voiceattack'):GetBool() then
+            self.Voicebox = true
+        end
     end
 
     function ENT:AddCustomThink()
-        if self.FoundRecharge and not self.Stunned then
+        if self.Luring and not self.Stunned then
             self:OnPatrolling()
         end
     end
 
     function ENT:CustomAnimEvents(e)
         if e == 'sfx_rummage' then
-            ParticleEffectAttach( 'blood_impact_antlion_01', 3, self, 2 )
+            ParticleEffectAttach( 'fnafsb_chicagrabfood', 4, self, 2 )
         end
         if e == 'sfx_garbageeat' then
-            ParticleEffectAttach( 'blood_impact_antlion_01', 3, self, 3 )
+            ParticleEffectAttach( 'fnafsb_slime_eating', 4, self, 3 )
         end
-    end
-
-    function ENT:OnDeath()
     end
     
     function ENT:Removed()
+        if IsValid(self.LuringTo) then
+            self.LuringTo.BeingDevoured = false
+        end
     end
 
     -- Sounds --

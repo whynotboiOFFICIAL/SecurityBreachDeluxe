@@ -132,6 +132,8 @@ if SERVER then
 
     function ENT:_BaseInitialize()
         self.Width = self:BoundingRadius() * 0.1
+
+        self.DamageTolerance = 0
     end
 
     function ENT:EntityInaccessible(ent)
@@ -184,6 +186,10 @@ if SERVER then
     function ENT:CustomThink()
         if self.AddCustomThink then
             self:AddCustomThink()
+        end
+
+        if self.ForceRun and not self.Stunned then
+            self:OnPatrolling()
         end
 
         if self.VoiceThink then
@@ -321,6 +327,28 @@ if SERVER then
         end)
     end
     
+    function ENT:OnTakeDamage(dmg)
+        self:SpotEntity(dmg:GetAttacker())
+
+        if not self.GradualDamaging or self:GetSkin() == 3 then return end
+
+        local num = dmg:GetDamage()
+        
+        self.DamageTolerance = self.DamageTolerance + num
+
+        if self.DamageTolerance > 400 then
+            self.DamageTolerance = 0 
+
+            self:SetSkin(self:GetSkin() + 1)
+        end
+    end
+
+    function ENT:OnDeath()
+        if not self.GradualDamaging then return end
+
+        self:SetSkin(3)
+    end
+
     function ENT:OnRemove()
         if self.Removed then
             self:Removed()

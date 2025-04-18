@@ -118,8 +118,10 @@ if SERVER then
         self.WalkSpeed = 0
         self.RunSpeed = 0 
 
-        self:PlayVoiceLine(voices[self.AlertPhase])
-
+        if GetConVar('fnaf_sb_new_cleanerbot_voice'):GetBool() then
+            self:PlayVoiceLine(voices[self.AlertPhase])
+        end
+        
         self:PlaySequenceAndMove('alert' .. self.AlertPhase)
 
         self.LockEntity = nil

@@ -1,6 +1,6 @@
 function ENT:DoorCode(door)
     for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
-        if not IsValid(v) or v == self then continue end
+        if not IsValid(v) or v == self or self.DisableControls then continue end
         local classname = v:GetClass()
         
         local propDoor = classname == 'prop_door_rotating'

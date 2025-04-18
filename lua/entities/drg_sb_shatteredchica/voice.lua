@@ -24,6 +24,56 @@ local vox = {
     'sfx_chica_shattered_vox_high_12'
 }
 
+local idlevox = {
+    'CHICA_00005',
+    'CHICA_00005b',
+    'CHICA_00006',
+    'CHICA_00007',
+    'CHICA_00008',
+    'CHICA_00009',
+    'CHICA_00010',
+    'CHICA_00011',
+    'CHICA_00012_01',
+    'CHICA_00012_02',
+    'CHICA_00012_03',
+    'CHICA_00013',
+    'CHICA_00014',
+    'CHICA_00015',
+    'CHICA_00016',
+    'CHICA_00016a',
+    'CHICA_00017',
+    'CHICA_00018'
+}
+
+local spotvox = {
+    'CHICA_00019',
+    'CHICA_00020',
+    'CHICA_00021',
+    'CHICA_00022',
+    'CHICA_00023',
+    'CHICA_00024'
+}
+
+local stunvox = {
+    'CHICA_00001_01',
+    'CHICA_00001_02',
+    'CHICA_00001_03',
+    'CHICA_00001_04',
+    'CHICA_00002_01',
+    'CHICA_00002_02',
+    'CHICA_00002_03',
+    'CHICA_00002_04',
+    'CHICA_00002_05',
+    'CHICA_00003_01',
+    'CHICA_00003_02'
+}
+
+local pizzavox = {
+    'CHICA_00025_01',
+    'CHICA_00025_02',
+    'CHICA_00025_03'
+}
+
 if SERVER then
     function ENT:VoiceThink()
         if self.VoiceTick or self.VoiceDisabled then return end
@@ -33,7 +83,13 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            self:PlayVoiceLine(vox[math.random(#vox)], false)
+            if self.CanSpeak then
+                timer = math.random(5, 10)
+
+                self:EmitSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. math.random(8) .. '.wav') 
+            else
+                self:PlayVoiceLine(vox[math.random(#vox)], false)
+            end
         end
 
         self:DrG_Timer(timer, function()
@@ -41,6 +97,69 @@ if SERVER then
         end)
     end
 
+    function ENT:LuredTo(ent)
+        self:StopVoices() 
+        
+        self:SetDefaultRelationship(D_LI)
+
+        if self.CanSpeak then
+            self:PlayVoiceLine(pizzavox[math.random(#pizzavox)], true)
+        else
+            self:PlayVoiceLine(vox[math.random(#vox)], false)
+        end
+
+        self:CallInCoroutine(function(self,delay)
+            self.Luring = true
+            self.LuringTo = ent
+            self.VoiceDisabled = true
+
+            self:GoTo(ent:GetPos() + ent:GetForward() * 35)
+
+            if not IsValid(ent) then self.Luring = false return end
+
+            ent:SetBodygroup(1, 1)
+
+            self:SetVelocity(vector_origin)
+
+            self:SetPos(ent:GetPos() + ent:GetForward() * 35)
+
+            self:FaceInstant(ent)
+
+            self.DisableControls = true
+            self.Moving = false
+
+            self:SetAIDisabled(true)
+
+            self.IdleAnimation = 'rummageloop'
+
+            self:PlaySequenceAndMove('rummagein')
+
+            self:DrG_Timer(6, function()
+                ParticleEffectAttach( 'fnafsb_drool_chica', 4, self, 3 )
+            end)
+            
+            self:DrG_Timer(10, function()
+                if IsValid(ent) then
+                    ent:SetBodygroup(2, 1)
+                end
+
+                self:CallInCoroutine(function(self,delay)
+                    self.IdleAnimation = 'idle'
+                    self:PlaySequenceAndMove('rummageout')
+
+                    self.DisableControls = false
+                    self.Luring = false
+                    self.VoiceDisabled = false
+
+                    self.LuringTo = nil
+
+                    self:SetAIDisabled(false)
+                    self:SetDefaultRelationship(D_HT)
+                end)
+            end)
+        end)
+    end
+    
     function ENT:OnStunned()
         self:StopVoices()
 
@@ -48,7 +167,11 @@ if SERVER then
             self:PlaySequenceAndMove('stunin') 
         end)
 
-        self:PlayVoiceLine(vox[math.random(#vox)], false)
+        if self.CanSpeak then
+            self:PlayVoiceLine(stunvox[math.random(#stunvox)], true)
+        else
+            self:PlayVoiceLine(vox[math.random(#vox)], false)
+        end
 
         self.IdleAnimation = 'stunloop'
     end
@@ -61,9 +184,60 @@ if SERVER then
         self.IdleAnimation = 'idle'
     end
     
+    function ENT:OnSpotEnemy()
+        if self.Stunned or not self.CanSpeak then return end
+        
+        self:DrG_Timer(0, function()
+            self:PlayVoiceLine(stunvox[math.random(#stunvox)], true)
+        end)
+        
+        self:DrG_Timer(0.05, function()
+            self:StopVoices(1)
+
+            self.VoiceDisabled = true
+        end)
+    end
+
+    function ENT:OnLoseEnemy()
+        if self.Stunned or not self.CanSpeak then return end
+
+        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
+            self.VoiceDisabled = false
+        end
+    end
+
     function ENT:StopVoices(mode)
         for i = 1, #vox do
             self:StopVoiceLine(vox[i])
+        end
+
+        if not self.CanSpeak then return end
+        
+        for i = 1, #idlevox do
+            self:StopVoiceLine(idlevox[i])
+        end
+
+        for i = 1, #pizzavox do
+            self:StopVoiceLine(pizzavox[i])
+        end
+
+        for i = 1, 8 do
+            self:StopSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. i .. '.wav')
+        end
+
+        self:StopVoiceLine('CHICA_EATING_GARBAGE_01')
+        self:StopVoiceLine('CHICA_EATING_GARBAGE_02')
+
+        if mode == 1 then return end
+
+        for i = 1, #spotvox do
+            self:StopVoiceLine(spotvox[i])
+        end
+        
+        if mode == 2 then return end
+
+        for i = 1, #stunvox do
+            self:StopVoiceLine(stunvox[i])
         end
     end
 end

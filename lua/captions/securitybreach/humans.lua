@@ -42,6 +42,18 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00030b.wav', '<clr:255, 255, 255>Come out come out wherever you are!')
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00031.wav', '<clr:255, 255, 255>I can help.')
 
+    -- Vanessa Old Idle Voices
+    
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_Gregory_01.wav', '<clr:255, 255, 255>Gregory?')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_Gregory_02.wav', '<clr:255, 255, 255>Gregory?')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_Hello_01.wav', '<clr:255, 255, 255>Hello?')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_HeretoHelp_01.wav', '<clr:255, 255, 255>I\'m here to help.')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_IsThatYou_01.wav', '<clr:255, 255, 255>Gregory? Is that you?')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_KeepUSafe_01.wav', '<clr:255, 255, 255>Gregory, I can keep you safe.')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_PleaseComeOut_01.wav', '<clr:255, 255, 255>Please come out. I\'m here to help you.')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_SomeoneThere_01.wav', '<clr:255, 255, 255>Is someone there?')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_TrustMe_01.wav', '<clr:255, 255, 255>You\'ve got to trust me!')
+
     -- Vanessa Spot Voices
 
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00010.wav', '<clr:255, 255, 255>Over here!')
@@ -58,4 +70,15 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00003_001.wav', '<clr:255, 0, 0>See you soon!')
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00003_002.wav', '<clr:255, 0, 0>See you soon!')
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00003_003.wav', '<clr:255, 0, 0>See you soon!')
+    
+    -- Vanny Old Voices
+
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_VO_Fun.wav', '<clr:255, 0, 0>Let\'s have some fun.')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_VO_ISeeYou.wav', '<clr:255, 0, 0>I see you.')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_Laugh_01.wav', '<sfx><clr:255, 0, 0>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_Laugh_02.wav', '<sfx><clr:255, 0, 0>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_Laugh_03.wav', '<sfx><clr:255, 0, 0>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_Laugh_04.wav', '<sfx><clr:255, 0, 0>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_Laugh_05.wav', '<sfx><clr:255, 0, 0>*Laughing*<sfx>')
+    SBDELUXE:AddEnglishCaption(path .. 'Vanny_Laugh_06.wav', '<sfx><clr:255, 0, 0>*Laughing*<sfx>')
 end)

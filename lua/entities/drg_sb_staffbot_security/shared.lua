@@ -277,6 +277,10 @@ if SERVER then
         tospawn:SetPos(self:RandomPos(300))
     end
     
+    function ENT:Removed()
+        self:StopSound('whynotboi/securitybreach/base/staffbot/jumpscare/sfx_jumpScare_sewer.wav')
+    end
+
     function ENT:OnDeath()
     end
 

@@ -97,7 +97,9 @@ if SERVER then
             self:StopVoices()
         end
         
-        self:EmitSound('whynotboi/securitybreach/base/staffbot/vo/NoTampering.wav')
+        if GetConVar('fnaf_sb_new_staffbot_stunvoice'):GetBool() then
+            self:EmitSound('whynotboi/securitybreach/base/staffbot/vo/NoTampering.wav')
+        end
 
         if self.OnStunned then
             self:OnStunned()

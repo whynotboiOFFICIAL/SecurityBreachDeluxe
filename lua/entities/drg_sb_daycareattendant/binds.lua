@@ -110,8 +110,12 @@ if SERVER then
     end
 
     function ENT:OnDispossessed()
-        if self.AttendantType == 1 then
-            self.RunAnimation = 'moonwalk'
+        if self.AttendantType == 1 then      
+            if self.MoonRun then
+                self.RunAnimation = 'moonrun'
+            else
+                self.RunAnimation = 'moonwalk'
+            end
         end
     end
 end
