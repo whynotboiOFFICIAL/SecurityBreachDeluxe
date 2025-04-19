@@ -18,6 +18,14 @@ SWEP.SlotPos = 2
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
 
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = -1
+SWEP.Primary.Ammo = "none"
+
+SWEP.Secondary.ClipSize = -1
+SWEP.Secondary.DefaultClip = -1
+SWEP.Secondary.Ammo = "none"
+
 SWEP.UseHands = true
 
 SWEP.Spawnable = true
@@ -59,8 +67,9 @@ function SWEP:PrimaryAttack()
     local effectdata = EffectData()
     local trace = self.Owner:GetEyeTrace()
     local hitpos = trace.HitPos
+    local offset = ( self:GetRight() * 12 ) + ( self:GetUp() * -6.9 ) + ( self:GetForward() * 15 )
 
-    effectdata:SetStart(self.Owner:GetShootPos())
+    effectdata:SetStart(self.Owner:GetShootPos() + offset)
     effectdata:SetOrigin(hitpos)
 
     util.Effect( 'fazlaser', effectdata )
@@ -112,6 +121,7 @@ function SWEP:DrawWeaponSelection( x, y, wide, tall, alpha )
 end
 
 function SWEP:Think()
+    self:SetClip1( self:GetNWInt("BlasterAmmo", 6) )
     if not self.RechargeTick then
         self.RechargeTick = true
 

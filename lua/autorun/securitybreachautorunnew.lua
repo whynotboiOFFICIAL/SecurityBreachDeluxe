@@ -1,4 +1,5 @@
 -- General
+local useplyfov = CreateClientConVar('fnaf_sb_new_fov_camera', 0, true, false, 'Camera Inherits Player FOV', 0, 1)
 
 CreateConVar('fnaf_sb_new_hw2_jumpscares', 0, FCVAR_ARCHIVE, 'Help Wanted 2 Jumpscares', 0, 1)
 CreateConVar('fnaf_sb_new_voicelines', 1, FCVAR_ARCHIVE, 'Use Voice Lines', 0, 1)
@@ -181,6 +182,9 @@ if CLIENT then
             panel:CheckBox('Help Wanted 2 Jumpscares', 'fnaf_sb_new_hw2_jumpscares')
             panel:ControlHelp('Characters that have jumpscares in Help Wanted 2 will switch to those respective jumpscares')
 			panel:ControlHelp('(This will apply model changes to Shattered Roxy)')
+
+			panel:CheckBox('Camera Inherits Player FOV', 'fnaf_sb_new_fov_camera')
+            panel:ControlHelp('Hiding Spots and Jumpscares use the players current FOV instead of using a fixed value of 80 and 70 degrees respectively.')
 
 			panel:CheckBox('Use Voice Lines', 'fnaf_sb_new_voicelines')
             panel:ControlHelp('Characters talk and make vocals as they do ingame')
@@ -505,10 +509,11 @@ if CLIENT then
 			end	
 			local transitionProgress = math.Clamp((RealTime() - transitionStart) / 0.25, 0, 1)
 			local cam = ent:GetAttachment(ent:LookupAttachment('Jumpscare_jnt'))
+			local fovnum = useplyfov:GetBool() and LocalPlayer():GetFOV() or 70
 			return {
 				origin = LerpVector(transitionProgress, pos, cam.Pos),
 				angles = LerpAngle(transitionProgress, angles, cam.Ang + AngleRand(-0.35,0.35)),
-				fov = 70,
+				fov = fovnum,
 				drawviewer = false
 			}
 		end)
@@ -534,10 +539,11 @@ if CLIENT then
 			end	
 			local transitionProgress = math.Clamp((RealTime() - transitionStart) / 0.25, 0, 1)
 			local cam = ent:GetAttachment(ent:LookupAttachment('Cam'))
+			local fovnum = useplyfov:GetBool() and LocalPlayer():GetFOV() or 80
 			return {
 				origin = LerpVector(transitionProgress, pos, cam.Pos),
 				angles = LerpAngle(transitionProgress, angles, cam.Ang),
-				fov = 80,
+				fov = fovnum,
 				drawviewer = false
 			}
 		end)

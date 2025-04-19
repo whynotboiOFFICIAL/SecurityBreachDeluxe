@@ -20,6 +20,14 @@ SWEP.SlotPos = 2
 SWEP.DrawAmmo = false
 SWEP.DrawCrosshair = true
 
+SWEP.Primary.ClipSize = -1
+SWEP.Primary.DefaultClip = -1
+SWEP.Primary.Ammo = "none"
+
+SWEP.Secondary.ClipSize = -1
+SWEP.Secondary.DefaultClip = -1
+SWEP.Secondary.Ammo = "none"
+
 SWEP.UseHands = true
 
 SWEP.Spawnable = true
@@ -111,6 +119,10 @@ function SWEP:PrimaryAttack()
             self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_recharge_0' .. math.random(3) .. '.wav')
         end)
     end)
+end
+
+function SWEP:Think()
+    self:SetClip1( self:GetNWBool("IsCharged", 1) and 1 or 0 )
 end
 
 local color_white = Color(255, 255, 255)
