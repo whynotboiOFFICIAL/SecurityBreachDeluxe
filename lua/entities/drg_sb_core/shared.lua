@@ -39,6 +39,8 @@ ENT.PossessionPrompt = true
 ENT.PossessionCrosshair = false
 ENT.PossessionMovement = POSSESSION_MOVE_CUSTOM
 
+ENT.StoredPlayerWeapon_Freddy = nil
+
 ENT.PossessionBinds = {
     [IN_JUMP] = {{
         coroutine = false,
@@ -497,6 +499,8 @@ if SERVER then
         if ent:IsPlayer() then
             ent:Freeze(true)
             ent:DrawViewModel(false)
+            self.StoredPlayerWeapon_Freddy = IsValid(ent:GetActiveWeapon()) and ent:GetActiveWeapon() or nil
+            ent:CrosshairDisable()
             ent:SetActiveWeapon(nil)
 
             net.Start('SECURITYBREACHFINALLYCINEMATIC')

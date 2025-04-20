@@ -30,6 +30,8 @@ ENT.RunSpeed = 0
 -- Relationships --
 ENT.DefaultRelationship = D_LI
 
+ENT.StoredPlayerWeapon = nil
+
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/glamrockfreddy/jumpscare/sfx_jumpscare_pas_freddy.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/glamrockfreddy'
@@ -455,6 +457,7 @@ if SERVER then
         if ((GetConVar('ai_disabled'):GetBool()) or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) or self.IsSick then return end
 
         if (ent == self.Partner) or (self:IsPossessed() and not IsValid(self.Partner)) then
+            self.StoredPlayerWeapon = IsValid(ent:GetActiveWeapon()) and ent:GetActiveWeapon() or nil
             self:EnterFreddy(ent)
         else
             if IsValid(self.Partner) then return end
