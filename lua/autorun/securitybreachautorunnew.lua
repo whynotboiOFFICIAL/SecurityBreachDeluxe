@@ -169,7 +169,15 @@ if CLIENT then
         spawnmenu.AddToolCategory('wnbfnaftab', 'wnbfnafsb', 'FNaF Security Breach')
     
         spawnmenu.AddToolMenuOption( 'wnbfnaftab', 'wnbfnafsb', 'wnbfnafsbentry', 'Options', '', '', function( panel )
-            panel:ClearControls()			
+            panel:ClearControls()
+			
+			-- Clientsided
+			panel:Help('')
+			panel:Help('Clientside')
+			panel:Help('')
+
+			panel:CheckBox('Camera Inherits Player FOV', 'fnaf_sb_new_fov_camera')
+            panel:ControlHelp('Hiding Spots and Jumpscares use the players current FOV instead of using a fixed value of 80 and 70 degrees respectively.')
 
 			-- General
 
@@ -182,9 +190,6 @@ if CLIENT then
             panel:CheckBox('Help Wanted 2 Jumpscares', 'fnaf_sb_new_hw2_jumpscares')
             panel:ControlHelp('Characters that have jumpscares in Help Wanted 2 will switch to those respective jumpscares')
 			panel:ControlHelp('(This will apply model changes to Shattered Roxy)')
-
-			panel:CheckBox('Camera Inherits Player FOV', 'fnaf_sb_new_fov_camera')
-            panel:ControlHelp('Hiding Spots and Jumpscares use the players current FOV instead of using a fixed value of 80 and 70 degrees respectively.')
 
 			panel:CheckBox('Use Voice Lines', 'fnaf_sb_new_voicelines')
             panel:ControlHelp('Characters talk and make vocals as they do ingame')
