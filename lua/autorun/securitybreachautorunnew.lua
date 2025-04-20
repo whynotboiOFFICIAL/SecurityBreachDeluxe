@@ -173,7 +173,7 @@ if CLIENT then
 			
 			-- Clientsided
 			panel:Help('')
-			panel:Help('Clientside')
+			panel:Help('Personal Settings')
 			panel:Help('')
 
 			panel:CheckBox('Camera Inherits Player FOV', 'fnaf_sb_new_fov_camera')

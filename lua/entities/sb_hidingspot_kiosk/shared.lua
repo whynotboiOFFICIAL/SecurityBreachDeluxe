@@ -10,8 +10,8 @@ ENT.AdminOnly = false
 
 ENT.FrontAdd = 60
 ENT.BackAdd = 60
-ENT.LeftAdd = 70
-ENT.RightAdd = 70
+ENT.LeftAdd = 73
+ENT.RightAdd = 73
 
 ENT.SpotID = 'kiosk'
 

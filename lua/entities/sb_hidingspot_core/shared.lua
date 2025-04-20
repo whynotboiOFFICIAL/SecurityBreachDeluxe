@@ -6,6 +6,7 @@ ENT.SBHidingSpot = true
 ENT.CanEnterLeft = true
 ENT.CanEnterRight = true
 ENT.CanEnterBack = true
+ENT.StoredPlayerWeapon = nil
 
 function ENT:Initialize()
     self:SetModel(self.Model)
@@ -95,7 +96,7 @@ function ENT:EnterSpot(ent, instant)
     if not instant then      
         self:ResetSequence('enter' .. (side))
 
-        animtime = 1.3
+        animtime = 1.2
     end
 
     timer.Simple(animtime, function()
@@ -255,6 +256,8 @@ function ENT:EnterCinematic(ent)
     if ent:IsPlayer() then
         ent:Freeze(true)
         ent:DrawViewModel(false)
+        self.StoredPlayerWeapon = IsValid(ent:GetActiveWeapon()) and ent:GetActiveWeapon() or nil
+        ent:CrosshairDisable()
         ent:SetActiveWeapon(nil)
 
         net.Start('SECURITYBREACHFINALLYCINEMATIC')
@@ -290,6 +293,11 @@ function ENT:ExitCinematic(ent)
         net.Send(ent)
     
         ent:Freeze(false)
+        ent:CrosshairEnable()
+        if IsValid(self.StoredPlayerWeapon) then
+            ent:SelectWeapon(self.StoredPlayerWeapon)
+        end
+        self.StoredPlayerWeapon = nil
         ent:DrawViewModel(true)
     else
         if ent.DoPossessorJumpscare then

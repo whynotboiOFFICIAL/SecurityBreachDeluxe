@@ -57,8 +57,8 @@ function ENT:SpawnStack(id)
     local stackentry = ents.Create('sb_noisemaker_daycare')
     stackentry:SetModel('models/whynotboi/securitybreach/base/props/noisemaker/noisemaker.mdl')
 
-    offsetnum = 4.5 / id
-    offset = ( Vector(0, 0, 20) * id ) + Vector( math.random(-offsetnum, offsetnum), math.random(-offsetnum, offsetnum), 0 )
+    offsetnum = 3 / math.Clamp(id, 1, 3)
+    offset = ( Vector(0, 0, 19.9) * id ) + Vector( math.random(-offsetnum, offsetnum), math.random(-offsetnum, offsetnum), 0 )
     stackentry:SetPos(self:GetPos() + offset)
     stackentry:SetAngles( Angle( 0, math.random(0, 359), 0 ) )
 
@@ -99,6 +99,14 @@ function ENT:Topple()
 end
 
 function ENT:Use(ent)
+    local base = IsValid(self.SBN_NoiseMakerBase) and self.SBN_NoiseMakerBase or nil
+    if ent:IsPlayer() and base.Toppled then
+        ent:PickupObject(self)
+        self:SetMoveType(MOVETYPE_VPHYSICS) 
+        self:SetSolid(SOLID_VPHYSICS)
+        self:PhysWake()
+        self:SetSequence("ref")
+    end
     self:Topple()
 end
 
