@@ -126,14 +126,16 @@ function ENT:ExitFreddy(ent)
 
     ent:EmitSound('whynotboi/securitybreach/base/gregory/exitfreddy/fly_gregory_freddy_exit_0' .. math.random(1,5) .. '.wav')
 
-    timer.Simple(2.5, function()
-        if IsValid(ent) then
-            ent:CrosshairEnable()
-            if IsValid(self.StoredPlayerWeapon_Freddy) then
-                ent:SelectWeapon(self.StoredPlayerWeapon_Freddy)
-            end
-            self.StoredPlayerWeapon_Freddy = nil
+    self:DrG_Timer(2.5, function()
+        if IsValid(ent) or not ent:IsPlayer() then return end
+
+        ent:CrosshairEnable()
+        
+        if IsValid(self.StoredPlayerWeapon_Freddy) then
+            ent:SelectWeapon(self.StoredPlayerWeapon_Freddy)
         end
+
+        self.StoredPlayerWeapon_Freddy = nil
     end)
 
     self:DrG_Timer(2.5, function()
