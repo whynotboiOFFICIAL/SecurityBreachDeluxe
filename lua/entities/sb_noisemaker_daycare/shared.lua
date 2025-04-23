@@ -10,6 +10,7 @@ ENT.AdminOnly = false
 
 ENT.AutomaticFrameAdvance = true
 
+ENT.SBDistraction = true
 ENT.Toppled = false
 ENT.IsPartofStack = false
 ENT.NoiseMakerChildren = {}
