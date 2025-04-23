@@ -525,6 +525,8 @@ if SERVER then
     
     function ENT:ExitCinematic(ent)
         if not IsValid(ent) then return end
+        
+        ent:RemoveFlags(FL_NOTARGET)
 
         if ent:IsPlayer() then
             net.Start('SECURITYBREACHFINALLYCINEMATIC')
@@ -532,7 +534,6 @@ if SERVER then
             net.WriteBool(false)
             net.Send(ent)
         
-            ent:RemoveFlags(FL_NOTARGET)
             ent:Freeze(false)
             ent:DrawViewModel(true)
         else

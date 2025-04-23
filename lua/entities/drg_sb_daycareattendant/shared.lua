@@ -86,6 +86,8 @@ if SERVER then
             if self:EntityInaccessible(ent) then return end
             if IsValid(self.Target) then return end
             
+            self:PlayVoiceLine('SUN_00001')
+
             self.Target = ent
         else
             self.BaseClass.SpotEntity(self, ent)
@@ -309,15 +311,17 @@ if SERVER then
                         if not self.SunGreeted then
                             self.SunGreeted = true
 
+                            self:StopVoiceLine('SUN_00001')
+                            
                             self:PlayVoiceLine('SUN_00001a')
 
                             self:DrG_Timer(8, function()
-                                if self.SunPanicked or self.SunAnger > 0 or self.Stunned then return end
+                                if self.SunPanicked or self.SunAnger > 0 or self.Stunned or not IsValid(self.Target) then return end
 
                                 self:PlayVoiceLine('SUN_00001b')
 
                                 self:DrG_Timer(8, function()
-                                    if self.SunPanicked or self.SunAnger > 0 or self.Stunned then return end
+                                    if self.SunPanicked or self.SunAnger > 0 or self.Stunned or not IsValid(self.Target) then return end
 
                                     self:PlayVoiceLine('SUN_00001c')
                                 end)

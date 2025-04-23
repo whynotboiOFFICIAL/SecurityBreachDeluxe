@@ -112,7 +112,9 @@ if SERVER then
             self:StopVoiceLine(moonstunvox[i])
         end
 
+        self:StopVoiceLine('SUN_00001')
         self:StopVoiceLine('SUN_00004')
+        self:StopVoiceLine('SUN_00004a')
         self:StopVoiceLine('SUN_00001a')
         self:StopVoiceLine('SUN_00001b')
         self:StopVoiceLine('SUN_00001c')
