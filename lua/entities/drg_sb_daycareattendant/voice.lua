@@ -31,7 +31,7 @@ local sunangervox = {
     'SUN_HW2_00040',
     'SUN_HW2_00044',
     'SUN_HW2_00046',
-    'SUN_00004a'
+    'SUN_00006a'
 }
 
 local moonstunvox = {

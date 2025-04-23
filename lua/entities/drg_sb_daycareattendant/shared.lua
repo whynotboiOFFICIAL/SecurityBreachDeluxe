@@ -80,6 +80,26 @@ if SERVER then
 
     -- Basic --
 
+    function ENT:SpotEntity(ent)
+        if self.AttendantType == 0 then
+            if self:IsPossessed() then return end
+            if self:EntityInaccessible(ent) then return end
+            if IsValid(self.Target) then return end
+            
+            self.Target = ent
+        else
+            self.BaseClass.SpotEntity(self, ent)
+        end
+    end
+    
+    function ENT:LoseEntity(ent)
+        if self.Target == ent then
+            self.Target = nil
+        end
+
+        self.BaseClass.LoseEntity(self, ent)
+    end
+
     function ENT:SetAttendantType(typeNum)
         self.AttendantType = typeNum
         self.SunAnger = 0
@@ -100,7 +120,7 @@ if SERVER then
 
         if typeNum == 0 then -- Sun
             self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav', 75, 100, 0.45)
-            self:SetDefaultRelationship(D_LI)
+            self:SetDefaultRelationship(D_HT)
             self:SetSkin(0)
             self:SetBodygroup(1, 0)
         else -- Moon
@@ -161,7 +181,7 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self:Timer(0, function()
-            self.Target = self:GetCreator()
+            self.Target = nil
 
             self.loco:SetAcceleration(3000)
             self.loco:SetDeceleration(0)
@@ -182,7 +202,8 @@ if SERVER then
 	end
 
     function ENT:SunThink()
-        local aiDisabled = self:GetAIDisabled() or self:GetIgnorePlayers()
+        local aiDisabled = self:GetAIDisabled() or self:IsPossessed()
+        local aiIgnorePlayers = self:GetIgnorePlayers()
 
         if self.Holding then
             if aiDisabled then
@@ -201,19 +222,18 @@ if SERVER then
         if aiDisabled then return end
 
         local ply = self.Target
+        
         if not ply then return end
-
-        if not ply:IsValid() then
-            local humans = player.GetHumans()
-
-            ply = humans[math.random(1, #humans)]
-
-            self.Target = ply
-        end
 
         if not ply:IsValid() then return end
 
-        local ang = ply:EyeAngles()
+        if (ply:IsPlayer() and aiIgnorePlayers) or (self:EntityInaccessible(ply)) then return end
+
+        local ang = ply:GetAngles()
+
+        if ply:IsPlayer() then
+            ang = ply:EyeAngles()
+        end
 
         ang.x = 0
 
@@ -230,6 +250,10 @@ if SERVER then
             self.IsBlocking = false
         end
 
+        if IsValid(self.HoldEnt) then
+            self.HoldEnt:SetPos(self:GetPos() + self:GetForward() * 60)
+        end
+
         if plyDist > 100 then
             if self.SunAnger > 5 then
                 self.WalkAnimation = 'moonrun'
@@ -242,6 +266,12 @@ if SERVER then
                     self.SunPanicked = true
     
                     self:PlayVoiceLine('SUN_00004')
+
+                    self:DrG_Timer(7, function()
+                        if self.SunAnger > 0 or self.Stunned or self.Holding or self.IsBlocking then return end
+
+                        self:PlayVoiceLine('SUN_00004a')
+                    end)
                 end
             end
 
@@ -251,6 +281,10 @@ if SERVER then
             return
         else
             if self.IsBlocking then
+                if IsValid(self.HoldEnt) then
+                    self.HoldEnt = nil
+                end
+
                 self.WalkAnimation = 'walkblocking'
             elseif not self.Holding then
                 if self.SunAnger > 5 then
@@ -260,6 +294,8 @@ if SERVER then
                 else
                     self:EnterCinematic(ply)
         
+                    self.HoldEnt = ply
+
                     self.Holding = true
                     self.WalkAnimation = 'walkcarry'
                     self.RunAnimation = 'walkcarry'
@@ -276,12 +312,12 @@ if SERVER then
                             self:PlayVoiceLine('SUN_00001a')
 
                             self:DrG_Timer(8, function()
-                                if self.SunPanicked or self.SunAnger > 0 then return end
+                                if self.SunPanicked or self.SunAnger > 0 or self.Stunned then return end
 
                                 self:PlayVoiceLine('SUN_00001b')
 
                                 self:DrG_Timer(8, function()
-                                    if self.SunPanicked or self.SunAnger > 0 then return end
+                                    if self.SunPanicked or self.SunAnger > 0 or self.Stunned then return end
 
                                     self:PlayVoiceLine('SUN_00001c')
                                 end)
@@ -294,41 +330,29 @@ if SERVER then
 
         if not self.IsBlocking then return end
 
-        self:FaceInstant(Entity(1))
 
-        local radians = self:GetRadians(self.Target)
-        local currentRadian = self.CurrentRadians
-        
-        currentRadian = math.Approach(currentRadian, radians, FrameTime() * 3)
+        self:FaceInstant(ply)
 
-        self.CurrentRadians = currentRadian
+        ang.x = 0
 
-        local x = 75 * math.sin(currentRadian)
-        local y = 75 * math.cos(currentRadian)
-        local z = 0
-
-        local walkPos = self.Target:GetPos() + Vector(x, y)
-
-        local secondPos = (plyPos + forward * 75)
-        local dist = pos:DistToSqr(secondPos)
-        local nside = (secondPos - plyPos):Dot(self:GetRight())
+        local forward = ang:Forward()
+        local walkPos = plyPos + forward * 45;
+        local dist = pos:DistToSqr(walkPos)
+        local nside = (walkPos - plyPos):Dot(self:GetRight())
 
         self:SetPoseParameter("move_y", nside > 1 and 1 or -1)
 
-        --[[if dist > 3000 then
-            local farPos = walkPos + forward * 150
+        if dist > 3000 then
+            local farPos = walkPos + forward * 100;
             local farDist = pos:DistToSqr(farPos)
 
-            if farDist > 3000 then -- use nav mesh to mitigate getting stuck
-                self:SetCollisionGroup(10)
+            if farDist > 3000 then
                 self:AddPatrolPos(farPos)
             else
-                self:SetCollisionGroup(0)
-                self.loco:Approach(walkPos, 1)
-            end]]
-
-        if dist > 800 then
-            self.loco:Approach(walkPos, 1)
+                self.loco:Approach(walkPos, 50)
+            end
+        elseif dist > 300 then
+            self.loco:Approach(walkPos, 50)
         end
     end
 
@@ -542,9 +566,9 @@ if SERVER then
     end
 
     function ENT:OnNewEnemy()
-        if self.OnSpotEnemy then
-            self:OnSpotEnemy(ent)
-        end
+    end
+
+    function ENT:OnLoseEnemy()
     end
 
     function ENT:OnMeleeAttack(ply)
@@ -559,18 +583,31 @@ if SERVER then
                 self.Holding = false
                 self.IsBlocking = true
 
-                self.Target:SetPos(self:GetPos() + self:GetForward() * 80)
-
-                self:ExitCinematic(self.Target)
-
-                local angle = (self:GetPos() - self.Target:GetPos()):Angle()
-
-                self.Target:SetEyeAngles(Angle(0, angle.y, 0))
-                self.CurrentRadians = self:GetRadians(self.Target)
-
                 self.WalkAnimation = 'walk'
                 self.RunAnimation = 'walk'
                 self.IdleAnimation = 'idle'
+
+                local ent = self.Target
+
+                if not IsValid(ent) and IsValid(self.HoldEnt) then
+                    ent = self.HoldEnt  
+                end
+
+                if not IsValid(ent) then return end
+                
+                ent:SetPos(self:GetPos() + self:GetForward() * 60)
+                        
+                self:ExitCinematic(ent)
+
+                local angle = (self:GetPos() - ent:GetPos()):Angle()
+
+                if ent:IsPlayer() then
+                    ent:SetEyeAngles(Angle(0, angle.y, 0))
+                else
+                    ent:SetAngles(Angle(0, angle.y, 0))
+                end
+
+                self.CurrentRadians = self:GetRadians(ent)
             end
         else
             self:Wait(math.random(3, 7))
@@ -624,4 +661,4 @@ list.Set('DrGBaseNextbots', 'drg_sb_moon', moonClass)
 
 -- DO NOT TOUCH --
 AddCSLuaFile()
-DrGBase.AddNextbot(ENT)
+--DrGBase.AddNextbot(ENT)

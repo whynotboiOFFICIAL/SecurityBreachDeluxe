@@ -106,6 +106,12 @@ if SERVER then
     function ENT:OnPossessed()
         if self.AttendantType == 1 then
             self.RunAnimation = 'moonrun'
+        else
+            if self.IsBlocking then
+                self.WalkAnimation = 'walk'
+
+                self.IsBlocking = false
+            end
         end
     end
 
