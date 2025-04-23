@@ -10,6 +10,7 @@ function ENT:DoorCode(door)
         local mapBot = (classname == 'drg_sb_staffbot_map' and v.OfferingMap and self:IsPossessed())
 
         local hidingSpot = (v.SBHidingSpot and self:IsPossessed())
+        local distraction = (v.SBDistraction and self:IsPossessed())
         local rechargeStation = (classname == 'sb_entities_rechargestation' and self:IsPossessed() and self:GetClass() == 'drg_sb_glamrockfreddy')
 
         if (propDoor or funcDoor) then
@@ -75,7 +76,7 @@ function ENT:DoorCode(door)
             end
         end
 
-        if (freddy or mapBot or hidingSpot) then
+        if (freddy or mapBot or hidingSpot or distraction) then
             if self:GetClass() ~= 'drg_sb_gregory' then continue end
 
             v:Use(self)

@@ -214,7 +214,7 @@ if SERVER then
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
                 if v == self or v == self:GetPossessor() then continue end
                 if self.Stunned then continue end
-                if (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool() or GetConVar('ai_ignoreplayers'):GetBool()) then continue end
+                if (v:IsPlayer() and self:GetIgnorePlayers() or self:GetAIDisabled()) then continue end
                 if (v:IsPlayer() and IsValid(v:DrG_GetPossessing())) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or v:Health() < 1 then continue end
                 if IsValid(v:GetNWEntity('2PlayFreddy')) or IsValid(v:GetNWEntity('HidingSpotSB')) then continue end
                 if not (v:IsPlayer() or v:IsNextBot() or v:IsNPC()) then continue end
