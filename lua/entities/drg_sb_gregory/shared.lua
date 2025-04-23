@@ -184,6 +184,10 @@ if SERVER then
         self.CurrentItem = 1
     end
 
+    function ENT:OnAvoidAfraidOf()
+        self:DoorCode() 
+    end
+
     function ENT:OnMeleeAttack()
     end
 
