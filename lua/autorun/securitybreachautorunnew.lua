@@ -34,6 +34,11 @@ CreateConVar('fnaf_sb_new_monty_enablestun', 0, FCVAR_ARCHIVE, 'Montgomery Gator
 
 CreateConVar('fnaf_sb_new_roxy_pounceattack', 1, FCVAR_ARCHIVE, 'Roxanne Wolf Pounce', 0, 1)
 
+-- Daycare Attendant
+
+CreateConVar('fnaf_sb_new_sun_alwayshostile', 0, FCVAR_ARCHIVE, 'Sun Always Hostile', 0, 1)
+CreateConVar('fnaf_sb_new_moon_userun', 0, FCVAR_ARCHIVE, 'Moon Run Animation', 0, 1)
+
 -- Shattered Chica
 
 CreateConVar('fnaf_sb_new_shatteredchica_hasvoice', 0, FCVAR_ARCHIVE, 'Shattered Chica Has Voice', 0, 1)
@@ -50,15 +55,26 @@ CreateConVar('fnaf_sb_new_shatteredmonty_pounceattack', 1, FCVAR_ARCHIVE, 'Shatt
 CreateConVar('fnaf_sb_new_shatteredroxy_haseyes', 0, FCVAR_ARCHIVE, 'Shattered Roxy Has Eyes', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredroxy_pounceattack', 1, FCVAR_ARCHIVE, 'Shattered Roxy Pounce', 0, 1)
 
--- Daycare Attendant
-
-CreateConVar('fnaf_sb_new_sun_alwayshostile', 0, FCVAR_ARCHIVE, 'Sun Always Hostile', 0, 1)
-CreateConVar('fnaf_sb_new_moon_userun', 0, FCVAR_ARCHIVE, 'Moon Run Animation', 0, 1)
-
 -- Glamrock Endo
 
 CreateConVar('fnaf_sb_new_endo_sleep', 1, FCVAR_ARCHIVE, 'Glamrock Endo Sleeping', 0, 1)
 CreateConVar('fnaf_sb_new_endo_chase', 0, FCVAR_ARCHIVE, 'Glamrock Endo Chase', 0, 1)
+
+-- Vanessa
+
+CreateConVar('fnaf_sb_new_vanessa_oldvo', 0, FCVAR_ARCHIVE, 'Vanessa Old Voicelines', 0, 1)
+CreateConVar('fnaf_sb_new_vanessa_oldface', 0, FCVAR_ARCHIVE, 'Vanessa Old Textures', 0, 1)
+CreateConVar('fnaf_sb_new_vanessa_lightstun', 0, FCVAR_ARCHIVE, 'Vanessa Light Stun', 0, 1)
+
+-- Vanny
+
+CreateConVar('fnaf_sb_new_vanny_oldvo', 0, FCVAR_ARCHIVE, 'Vanny Old Voicelines', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_spotps5', 0, FCVAR_ARCHIVE, 'Vanny Wave Spot Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_preidle', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Idle Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_prewalk', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Walk Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_prerun', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Run Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_prespot', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Run Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_prejumpscare', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Jumpscare Animation', 0, 1)
 
 -- STAFF Bots
 
@@ -76,22 +92,6 @@ CreateConVar('fnaf_sb_new_ldjmm_music', 1, FCVAR_ARCHIVE, 'Wind-Up Music Man Mus
 CreateConVar('fnaf_sb_new_djmm_music', 1, FCVAR_ARCHIVE, 'DJ Music Man Music', 0, 1)
 CreateConVar('fnaf_sb_new_djmm_sleep', 1, FCVAR_ARCHIVE, 'DJ Music Man Sleeping', 0, 1)
 CreateConVar('fnaf_sb_new_djmm_animeyes', 0, FCVAR_ARCHIVE, 'DJ Music Man Animated Eyes', 0, 1)
-
--- Vanessa
-
-CreateConVar('fnaf_sb_new_vanessa_oldvo', 0, FCVAR_ARCHIVE, 'Vanessa Old Voicelines', 0, 1)
-CreateConVar('fnaf_sb_new_vanessa_oldface', 0, FCVAR_ARCHIVE, 'Vanessa Old Textures', 0, 1)
-CreateConVar('fnaf_sb_new_vanessa_lightstun', 0, FCVAR_ARCHIVE, 'Vanessa Light Stun', 0, 1)
-
--- Vanny
-
-CreateConVar('fnaf_sb_new_vanny_oldvo', 0, FCVAR_ARCHIVE, 'Vanny Old Voicelines', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_spotps5', 0, FCVAR_ARCHIVE, 'Vanny Wave Spot Animation', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_preidle', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Idle Animation', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_prewalk', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Walk Animation', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_prerun', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Run Animation', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_prespot', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Run Animation', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_prejumpscare', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Jumpscare Animation', 0, 1)
 
 -- The Blob
 
@@ -161,6 +161,9 @@ if SERVER then
 end
 
 if CLIENT then
+	list.Set( 'ContentCategoryIcons', 'Security Breach', 'ui/sbico.png' )
+	list.Set( 'DrGBaseIcons', 'Security Breach', 'ui/sbico.png' )
+
 	hook.Add( 'AddToolMenuTabs', 'SBNEWCONFIGOPTIONSFNAF', function()
         spawnmenu.GetToolMenu('wnbfnaftab', 'FNaF', 'ui/fnafico.png')
     
@@ -282,6 +285,20 @@ if CLIENT then
 
 			panel:CheckBox('Roxanne Wolf Pounce', 'fnaf_sb_new_roxy_pounceattack')
             panel:ControlHelp('Roxanne Wolf will leap through the air to try and kill you')
+						
+			-- Daycare Attendant
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Daycare Attendant')
+			panel:Help('')
+
+			panel:CheckBox('Sun Always Hostile', 'fnaf_sb_new_sun_alwayshostile')
+            panel:ControlHelp('Sun will chase and kill you instead of being protective')
+			
+			panel:CheckBox('Moon Run Animation', 'fnaf_sb_new_moon_userun')
+            panel:ControlHelp('Moon will run when chasing you instead of walking')
+			panel:ControlHelp('(This will stop Moon from crawling when he is chasing you)')
 			
 			-- Shattered Chica
 			
@@ -324,21 +341,7 @@ if CLIENT then
 			
 			panel:CheckBox('Shattered Roxy Pounce', 'fnaf_sb_new_shatteredroxy_pounceattack')
             panel:ControlHelp('Shattered Roxy will leap through the air to try and kill you')
-			
-			-- Daycare Attendant
 
-			panel:Help('')
-			panel:Help('')
-			panel:Help('Daycare Attendant')
-			panel:Help('')
-
-			panel:CheckBox('Sun Always Hostile', 'fnaf_sb_new_sun_alwayshostile')
-            panel:ControlHelp('Sun will chase and kill you instead of being protective')
-			
-			panel:CheckBox('Moon Run Animation', 'fnaf_sb_new_moon_userun')
-            panel:ControlHelp('Moon will run when chasing you instead of walking')
-			panel:ControlHelp('(This will stop Moon from crawling when he is chasing you)')
-			
 			-- Glamrock Endo
 
 			panel:Help('')
@@ -351,7 +354,51 @@ if CLIENT then
 
 			panel:CheckBox('Glamrock Endo Chase', 'fnaf_sb_new_endo_chase')
             panel:ControlHelp('Glamrock Endo will chase you even if you are staring')
-													
+														
+			-- Vanessa
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Vanessa')
+			panel:Help('')
+
+			panel:CheckBox('Vanesssa Old Voicelines', 'fnaf_sb_new_vanessa_oldvo')
+            panel:ControlHelp('Vanessa uses old versions of her search lines')
+
+			panel:CheckBox('Vanesssa Old Textures', 'fnaf_sb_new_vanessa_oldface')
+            panel:ControlHelp('Vanessa uses old versions of her face textures')
+
+			panel:CheckBox('Vanessa Light Stun', 'fnaf_sb_new_vanessa_lightstun')
+            panel:ControlHelp('Vanessa glares her light at players blinding them')
+															
+			-- Vanny
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Vanny')
+			panel:Help('')
+
+			panel:CheckBox('Vanny Old Voicelines', 'fnaf_sb_new_vanny_oldvo')
+            panel:ControlHelp('Vanny uses old versions of her voicelines')
+
+			panel:CheckBox('Vanny Wave Spot Animation', 'fnaf_sb_new_vanny_spotps5')
+            panel:ControlHelp('Vanny uses her wave animation when she spots something')
+
+			panel:CheckBox('Vanny Prerelease Idle Animation', 'fnaf_sb_new_vanny_preidle')
+            panel:ControlHelp('Vanny uses her prerelease idle animation')
+
+			panel:CheckBox('Vanny Prerelease Walk Animation', 'fnaf_sb_new_vanny_prewalk')
+            panel:ControlHelp('Vanny uses her prerelease walk animation')
+
+			panel:CheckBox('Vanny Prerelease Run Animation', 'fnaf_sb_new_vanny_prerun')
+            panel:ControlHelp('Vanny uses her prerelease run animation')
+			
+			panel:CheckBox('Vanny Prerelease Spot Animation', 'fnaf_sb_new_vanny_prespot')
+            panel:ControlHelp('Vanny uses her prerelease cartwheel animation when she spots something')
+				
+			panel:CheckBox('Vanny Trailer Jumpscare Animation', 'fnaf_sb_new_vanny_prejumpscare')
+            panel:ControlHelp('Vanny uses her jumpscare animation from the trailer')
+															
 			-- STAFFBOTS
 
 			panel:Help('')
@@ -400,51 +447,7 @@ if CLIENT then
 
 			panel:CheckBox('DJ Music Man Animated Eyes', 'fnaf_sb_new_djmm_animeyes')
             panel:ControlHelp('DJ Music Man plays animations on his eyes from Help Wanted 2')
-												
-			-- Vanessa
-
-			panel:Help('')
-			panel:Help('')
-			panel:Help('Vanessa')
-			panel:Help('')
-
-			panel:CheckBox('Vanesssa Old Voicelines', 'fnaf_sb_new_vanessa_oldvo')
-            panel:ControlHelp('Vanessa uses old versions of her search lines')
-
-			panel:CheckBox('Vanesssa Old Textures', 'fnaf_sb_new_vanessa_oldface')
-            panel:ControlHelp('Vanessa uses old versions of her face textures')
-
-			panel:CheckBox('Vanessa Light Stun', 'fnaf_sb_new_vanessa_lightstun')
-            panel:ControlHelp('Vanessa glares her light at players blinding them')
-															
-			-- Vanny
-
-			panel:Help('')
-			panel:Help('')
-			panel:Help('Vanny')
-			panel:Help('')
-
-			panel:CheckBox('Vanny Old Voicelines', 'fnaf_sb_new_vanny_oldvo')
-            panel:ControlHelp('Vanny uses old versions of her voicelines')
-
-			panel:CheckBox('Vanny Wave Spot Animation', 'fnaf_sb_new_vanny_spotps5')
-            panel:ControlHelp('Vanny uses her wave animation when she spots something')
-
-			panel:CheckBox('Vanny Prerelease Idle Animation', 'fnaf_sb_new_vanny_preidle')
-            panel:ControlHelp('Vanny uses her prerelease idle animation')
-
-			panel:CheckBox('Vanny Prerelease Walk Animation', 'fnaf_sb_new_vanny_prewalk')
-            panel:ControlHelp('Vanny uses her prerelease walk animation')
-
-			panel:CheckBox('Vanny Prerelease Run Animation', 'fnaf_sb_new_vanny_prerun')
-            panel:ControlHelp('Vanny uses her prerelease run animation')
-			
-			panel:CheckBox('Vanny Prerelease Spot Animation', 'fnaf_sb_new_vanny_prespot')
-            panel:ControlHelp('Vanny uses her prerelease cartwheel animation when she spots something')
-				
-			panel:CheckBox('Vanny Trailer Jumpscare Animation', 'fnaf_sb_new_vanny_prejumpscare')
-            panel:ControlHelp('Vanny uses her jumpscare animation from the trailer')
-																	
+													
 			-- The Blob
 
 			panel:Help('')

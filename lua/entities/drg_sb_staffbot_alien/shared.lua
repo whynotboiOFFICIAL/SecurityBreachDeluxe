@@ -265,4 +265,4 @@ end
 
 -- DO NOT TOUCH --
 AddCSLuaFile()
-DrGBase.AddNextbot(ENT)
+FNaF_AddNextBot(ENT, 'Security Breach', 19)

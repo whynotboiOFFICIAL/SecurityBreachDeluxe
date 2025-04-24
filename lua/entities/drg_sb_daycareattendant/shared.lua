@@ -647,7 +647,7 @@ local sunClass = {
     Class = 'drg_sb_daycareattendant',
     Category = ENT.Category,
     AttendantType = 0,
-    SwitchingEnabled = false
+    SwitchingEnabled = false,
 }
 
 local moonClass = {
@@ -655,13 +655,15 @@ local moonClass = {
     Class = 'drg_sb_daycareattendant',
     Category = ENT.Category,
     AttendantType = 1,
-    SwitchingEnabled = false
+    SwitchingEnabled = false,
 }
 
 list.Set('NPC', 'drg_sb_sun', sunClass)
 list.Set('NPC', 'drg_sb_moon', moonClass)
 list.Set('DrGBaseNextbots', 'drg_sb_sun', sunClass)
 list.Set('DrGBaseNextbots', 'drg_sb_moon', moonClass)
+list.Set('FNaF', 'drg_sb_sun', {'drg_sb_sun', 'Sun', 'Security Breach', 6})
+list.Set('FNaF', 'drg_sb_moon', {'drg_sb_moon', 'Moon', 'Security Breach', 7})
 
 -- DO NOT TOUCH --
 AddCSLuaFile()
