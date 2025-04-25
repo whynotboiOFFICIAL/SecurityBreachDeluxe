@@ -116,6 +116,8 @@ if SERVER then
         
         if GetConVar('fnaf_sb_new_freddy_roxyeyes'):GetBool() then
             eyes = 2
+
+            self:SetNWBool('RoxyEyes', true)
         end
 
         if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
