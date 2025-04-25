@@ -127,13 +127,15 @@ if SERVER then
     end
 
     function ENT:FlashlightToggle()
-        self:EmitSound('whynotboi/securitybreach/base/props/flashlight/Gregory_Flashlight_On.wav')
-
         if self.LightOn then
+            self:EmitSound('whynotboi/securitybreach/base/props/flashlight/sfx_general_flashlight_off_03.wav', 75, 100, 0.5)
+
             self.Light:Fire('TurnOff')
 
             self.LightOn = false
         else
+            self:EmitSound('whynotboi/securitybreach/base/props/flashlight/Gregory_Flashlight_On.wav')
+
             self.Light:Fire('TurnOn')
 
             self.LightOn = true
