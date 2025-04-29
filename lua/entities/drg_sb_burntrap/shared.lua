@@ -209,6 +209,10 @@ if SERVER then
     end
 
     function ENT:OnDeath()
+        self:StopVoices()
+
+        self.VoiceDisabled = true
+        
         self:PlaySequenceAndMove('death')
     end
     
