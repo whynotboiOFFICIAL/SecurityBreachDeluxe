@@ -10,6 +10,15 @@ local idlevox = {
     'MONTY_00023'
 }
 
+local growlvox = {
+    'MONTY_00001_01',
+    'MONTY_00001_02',
+    'MONTY_00001_03',
+    'MONTY_00001_04',
+    'MONTY_00001_05',
+    'MONTY_00001_06'
+}
+
 local spotvox = {
     'MONTY_00013',
     'MONTY_00014',
@@ -69,11 +78,39 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+            self.Talking = true
+
+            local snd = idlevox[math.random(#idlevox)]
+
+            local path = self.SFXPath
+
+            self:StopGrowls()
+        
+            self:PlayVoiceLine(snd, true)
+
+            local dur = SoundDuration(path .. '/vo/' .. snd .. '.wav')
+                
+            self:DrG_Timer(dur, function()
+                self.Talking = false
+            end)
         end
 
         self:DrG_Timer(timer, function()
             self.VoiceTick = false
+        end)
+    end
+
+    function ENT:GrowlThink()
+        if self.Talking or self.VoiceDisabled or self.GrowlTick then return end
+        
+        self.GrowlTick = true
+
+        local timer = 4
+
+        self:PlayVoiceLine(growlvox[math.random(#growlvox)])    
+
+        self:DrG_Timer(timer, function()
+            self.GrowlTick = false
         end)
     end
 
@@ -106,6 +143,8 @@ if SERVER then
             self:StopVoiceLine(idlevox[i])
         end
 
+        self:StopGrowls()
+
         if mode == 1 then return end
 
         for i = 1, #spotvox do
@@ -116,6 +155,12 @@ if SERVER then
 
         for i = 1, #stunvox do
             self:StopVoiceLine(stunvox[i])
+        end
+    end
+    
+    function ENT:StopGrowls()
+        for i = 1, #growlvox do
+            self:StopVoiceLine(growlvox[i])
         end
     end
 

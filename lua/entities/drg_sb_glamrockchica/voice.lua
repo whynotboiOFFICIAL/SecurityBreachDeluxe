@@ -56,15 +56,39 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
-        else
-            timer = math.random(5, 15)
+            self.Talking = true
 
-            self:EmitSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. math.random(8) .. '.wav')     
+            local snd = idlevox[math.random(#idlevox)]
+
+            local path = self.SFXPath
+
+            self:StopBreaths()
+        
+            self:PlayVoiceLine(snd, true)
+
+            local dur = SoundDuration(path .. '/vo/' .. snd .. '.wav')
+                
+            self:DrG_Timer(dur, function()
+                self.Talking = false
+            end)
         end
 
         self:DrG_Timer(timer, function()
             self.VoiceTick = false
+        end)
+    end
+
+    function ENT:BreathThink()
+        if self.Talking or self.VoiceDisabled or self.BreathTick then return end
+        
+        self.BreathTick = true
+
+        local timer = math.random(5, 10)
+
+        self:EmitSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. math.random(8) .. '.wav')  
+
+        self:DrG_Timer(timer, function()
+            self.BreathTick = false
         end)
     end
 
@@ -168,9 +192,7 @@ if SERVER then
             self:StopVoiceLine(pizzavox[i])
         end
 
-        for i = 1, 8 do
-            self:StopSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. i .. '.wav')
-        end
+        self:StopBreaths()
 
         self:StopVoiceLine('CHICA_EATING_GARBAGE_01')
         self:StopVoiceLine('CHICA_EATING_GARBAGE_02')
@@ -185,6 +207,12 @@ if SERVER then
 
         for i = 1, #stunvox do
             self:StopVoiceLine(stunvox[i])
+        end
+    end
+
+    function ENT:StopBreaths()
+        for i = 1, 8 do
+            self:StopSound('whynotboi/securitybreach/base/glamrockchica/breaths/sfx_chica_creepy_breaths_' .. i .. '.wav')
         end
     end
 

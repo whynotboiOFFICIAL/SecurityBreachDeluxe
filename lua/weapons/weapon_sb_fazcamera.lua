@@ -36,7 +36,7 @@ SWEP.AdminSpawnable = true
 SWEP.ViewModelFlip = true
 
 function SWEP:Initialize()
-    self.Weapon:SetWeaponHoldType( self.HoldType )
+    self:SetWeaponHoldType( self.HoldType )
 
     self:SetNWBool('IsCharged', true)
 
@@ -77,7 +77,10 @@ function SWEP:PrimaryAttack()
         self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/activate/sfx_fazcam_activate_0' .. math.random(3) .. '.wav', 75, 100, 1, CHAN_STATIC)
 
         self:LightFlash()
-        self:SetNWBool('IsCharged', false)
+
+        if not GetConVar('fnaf_sb_new_fazcam_infiniteammo'):GetBool() then
+            self:SetNWBool('IsCharged', false)
+        end
 
         local size = 350
         local dir = self:GetForward()
@@ -103,21 +106,33 @@ function SWEP:PrimaryAttack()
         timer.Simple( 0.2, function()
             if not IsValid(self)  then return end
             vm:SendViewModelMatchingSequence(self:LookupSequence('idle'))
+
+            if GetConVar('fnaf_sb_new_fazcam_infiniteammo'):GetBool() then return end
+            
             self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_0' .. math.random(3) .. '.wav', 75, 100, 0.3)
         end)
 
-        timer.Simple( 29.8, function()
-            if not IsValid(self) then return end
+        if not GetConVar('fnaf_sb_new_fazcam_infiniteammo'):GetBool() then
+            timer.Simple( 29.8, function()
+                if not IsValid(self) then return end
 
-            self.FireDelay = false
-            self:SetNWBool('IsCharged', true)
+                self.FireDelay = false
+                self:SetNWBool('IsCharged', true)
 
-            self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_01.wav')
-            self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_02.wav')
-            self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_03.wav')
+                self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_01.wav')
+                self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_02.wav')
+                self:StopSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_charging_lp_03.wav')
 
-            self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_recharge_0' .. math.random(3) .. '.wav')
-        end)
+                self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_recharge_0' .. math.random(3) .. '.wav')
+            end)
+        else
+            timer.Simple( 2, function()
+                if not IsValid(self) then return end
+                self.FireDelay = false
+
+                self:EmitSound('whynotboi/securitybreach/base/props/fazcamera/recharge/sfx_fazcam_recharge_0' .. math.random(3) .. '.wav')
+            end)
+        end
     end)
 end
 

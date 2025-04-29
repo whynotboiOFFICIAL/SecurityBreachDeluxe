@@ -32,7 +32,7 @@ SWEP.Spawnable = true
 SWEP.AdminSpawnable = true
 
 function SWEP:Initialize()
-    self.Weapon:SetWeaponHoldType( self.HoldType )
+    self:SetWeaponHoldType( self.HoldType )
 
     self:SetNWInt('BlasterAmmo', 6)
 
@@ -45,6 +45,12 @@ function SWEP:Deploy()
     local vm = self.Owner:GetViewModel()
 
     vm:ResetSequence('equip')
+    
+    if GetConVar('fnaf_sb_new_fazerblaster_gold'):GetBool() then
+        vm:SetSkin(1)
+
+        self:SetSkin(1)
+    end
 end
 
 function SWEP:PrimaryAttack()
@@ -54,12 +60,14 @@ function SWEP:PrimaryAttack()
 
     self.Recharge = 0
     
-    local ammo = self:GetNWInt('BlasterAmmo') - 1
+    if not GetConVar('fnaf_sb_new_fazerblaster_infiniteammo'):GetBool() then
+        local ammo = self:GetNWInt('BlasterAmmo') - 1
 
-    self.LaserAmmo = ammo
+        self.LaserAmmo = ammo
 
-    self:SetNWInt('BlasterAmmo', ammo)
-    
+        self:SetNWInt('BlasterAmmo', ammo)
+    end
+
     local vm = self.Owner:GetViewModel()
 
     vm:SendViewModelMatchingSequence(self:LookupSequence('fire'))

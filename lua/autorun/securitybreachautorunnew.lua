@@ -20,18 +20,21 @@ CreateConVar('fnaf_sb_new_freddy_batteryconfig', 1, FCVAR_ARCHIVE, 'Glamrock Fre
 
 -- Glamrock Chica
 
+CreateConVar('fnaf_sb_new_chica_breaths', 1, FCVAR_ARCHIVE, 'Glamrock Chica Breathing', 0, 1)
 CreateConVar('fnaf_sb_new_chica_voiceattack', 0, FCVAR_ARCHIVE, 'Glamrock Chica Voicebox', 0, 1)
 CreateConVar('fnaf_sb_new_chica_canlure', 1, FCVAR_ARCHIVE, 'Glamrock Chica Eating', 0, 1)
 CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Possession Eating', 0, 1)
 
 -- Montgomery Gator
 
+CreateConVar('fnaf_sb_new_monty_growls', 1, FCVAR_ARCHIVE, 'Montgomery Gator Growling', 0, 1)
 CreateConVar('fnaf_sb_new_monty_transglass', 0, FCVAR_ARCHIVE, 'Montgomery Gator Transparent Shades', 0, 1)
 CreateConVar('fnaf_sb_new_monty_pounceattack', 1, FCVAR_ARCHIVE, 'Montgomery Gator Pounce', 0, 1)
 CreateConVar('fnaf_sb_new_monty_enablestun', 0, FCVAR_ARCHIVE, 'Montgomery Gator Stun', 0, 1)
 
 -- Roxanne Wolf
 
+CreateConVar('fnaf_sb_new_roxy_montywalk', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Alt Walk', 0, 1)
 CreateConVar('fnaf_sb_new_roxy_pounceattack', 1, FCVAR_ARCHIVE, 'Roxanne Wolf Pounce', 0, 1)
 
 -- Daycare Attendant
@@ -57,6 +60,7 @@ CreateConVar('fnaf_sb_new_shatteredroxy_pounceattack', 1, FCVAR_ARCHIVE, 'Shatte
 
 -- Glamrock Endo
 
+CreateConVar('fnaf_sb_new_endo_appearance', 1, FCVAR_ARCHIVE, 'Glamrock Endo Apperance', 1, 4)
 CreateConVar('fnaf_sb_new_endo_sleep', 1, FCVAR_ARCHIVE, 'Glamrock Endo Sleeping', 0, 1)
 CreateConVar('fnaf_sb_new_endo_chase', 0, FCVAR_ARCHIVE, 'Glamrock Endo Chase', 0, 1)
 
@@ -102,6 +106,12 @@ CreateConVar('fnaf_sb_new_blob_proxjumpscare', 1, FCVAR_ARCHIVE, 'Blob Hostile',
 
 CreateConVar('fnaf_sb_new_burntrap_jumpscare', 1, FCVAR_ARCHIVE, 'Burntrap Jumpscare', 0, 1)
 CreateConVar('fnaf_sb_new_burntrap_hacksfreddy', 1, FCVAR_ARCHIVE, 'Burntrap Hacks Freddy', 0, 1)
+
+-- Weapons
+
+CreateClientConVar('fnaf_sb_new_fazerblaster_gold', 0, true, false, 'Golden FazerBlaster', 0, 1)
+CreateConVar('fnaf_sb_new_fazerblaster_infiniteammo', 0, FCVAR_ARCHIVE, 'FazerBlaster Infinite Ammo', 0, 1)
+CreateConVar('fnaf_sb_new_fazcam_infiniteammo', 0, FCVAR_ARCHIVE, 'FazCamera Infinite Ammo', 0, 1)
 
 game.AddParticles( 'particles/jummyyummy_fnafsb.pcf')
 
@@ -175,6 +185,7 @@ if CLIENT then
             panel:ClearControls()
 			
 			-- Clientsided
+			
 			panel:Help('')
 			panel:Help('Personal Settings')
 			panel:Help('')
@@ -251,6 +262,9 @@ if CLIENT then
 			panel:Help('Glamrock Chica')
 			panel:Help('')
 
+			panel:CheckBox('Glamrock Chica Breathing', 'fnaf_sb_new_chica_breaths')
+            panel:ControlHelp('Glamrock Chica breaths when she isn\'t speaking')
+			
 			panel:CheckBox('Glamrock Chica Voicebox', 'fnaf_sb_new_chica_voiceattack')
             panel:ControlHelp('Glamrock Chica will be use her vocals to slow enemies and scare animatronics')
 			
@@ -266,6 +280,9 @@ if CLIENT then
 			panel:Help('')
 			panel:Help('Montgomery Gator')
 			panel:Help('')
+
+			panel:CheckBox('Montgomery Gator Growling', 'fnaf_sb_new_monty_growls')
+            panel:ControlHelp('Montgomery Gator growls when he isn\'t speaking')
 
 			panel:CheckBox('Montgomery Gator Transparent Shades', 'fnaf_sb_new_monty_transglass')
             panel:ControlHelp('Montgomery Gator has see through glasses')
@@ -283,6 +300,9 @@ if CLIENT then
 			panel:Help('Roxanne Wolf')
 			panel:Help('')
 
+			panel:CheckBox('Roxanne Wolf Alt Walk', 'fnaf_sb_new_roxy_montywalk')
+            panel:ControlHelp('Roxanne Wolf will use Monty\'s walk animation like in game')
+						
 			panel:CheckBox('Roxanne Wolf Pounce', 'fnaf_sb_new_roxy_pounceattack')
             panel:ControlHelp('Roxanne Wolf will leap through the air to try and kill you')
 						
@@ -348,6 +368,13 @@ if CLIENT then
 			panel:Help('')
 			panel:Help('Glamrock Endo')
 			panel:Help('')
+
+            local endoconfig = panel:ComboBox('Glamrock Endo Apperance', 'fnaf_sb_new_endo_appearance')
+
+            endoconfig:AddChoice( 'Default Glamrock Endo', 1 )
+            endoconfig:AddChoice( 'Frost Glamrock Endo', 2 )
+            endoconfig:AddChoice( 'Cake Glamrock Endo', 3 )
+			endoconfig:AddChoice( 'Randomized', 4 )
 
 			panel:CheckBox('Glamrock Endo Sleeping', 'fnaf_sb_new_endo_sleep')
             panel:ControlHelp('Glamrock Endo will spawn in asleep')
@@ -473,6 +500,22 @@ if CLIENT then
 
 			panel:CheckBox('Burntrap Hacks Freddy', 'fnaf_sb_new_burntrap_hacksfreddy')
             panel:ControlHelp('Burntrap will attempt to hack Glamrock Freddy in an attempt to kill you')
+																			
+			-- Weapons
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Weapons')
+			panel:Help('')
+
+			panel:CheckBox('Golden FazerBlaster', 'fnaf_sb_new_fazerblaster_gold')
+            panel:ControlHelp('The FazerBlaster will be golden like the one Gregory earns')
+
+			panel:CheckBox('FazerBlaster Infinite Ammo', 'fnaf_sb_new_fazerblaster_infiniteammo')
+            panel:ControlHelp('The FazerBlaster will have infinite ammo')
+
+			panel:CheckBox('FazCamera Infinite Ammo', 'fnaf_sb_new_fazcam_infiniteammo')
+            panel:ControlHelp('The FazCamera will have infinite ammo')
 		end)
 	end)
 

@@ -166,6 +166,9 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
+        if GetConVar('fnaf_sb_new_monty_growls'):GetBool() then
+            self:GrowlThink()
+        end
     end
 
     function ENT:Removed()

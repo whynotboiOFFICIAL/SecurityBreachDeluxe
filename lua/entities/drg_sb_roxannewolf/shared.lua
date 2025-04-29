@@ -90,6 +90,10 @@ if SERVER then
             self:SetBodygroup(3, 1)
         end
 
+        if GetConVar('fnaf_sb_new_roxy_montywalk'):GetBool() then
+            self.WalkAnimation = 'walkalt'
+        end
+
         if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
             self.IdleAnimation = 'preidle'
             self.WalkAnimation = 'prewalk'

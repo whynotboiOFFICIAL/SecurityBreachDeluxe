@@ -121,6 +121,10 @@ if SERVER then
         if self.Luring and not self.Stunned then
             self:OnPatrolling()
         end
+
+        if GetConVar('fnaf_sb_new_chica_breaths'):GetBool() then
+            self:BreathThink()
+        end
     end
 
     function ENT:CustomAnimEvents(e)

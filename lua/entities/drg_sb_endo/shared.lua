@@ -54,6 +54,14 @@ if SERVER then
             self.HW2Jumpscare = true
         end
         
+        local appearance = GetConVar('fnaf_sb_new_endo_appearance'):GetInt()
+
+        if appearance == 4 then
+            appearance = math.random(3)
+        end
+
+        self:SetAppearance(appearance)
+
         if GetConVar('fnaf_sb_new_endo_sleep'):GetBool() then
             self:SleepMode()
         else
@@ -61,6 +69,21 @@ if SERVER then
             self:SetSightRange(15000)
             self:SetSightFOV(150)
         end
+    end
+
+    local models = {
+        [2] = 'models/whynotboi/securitybreach/base/animatronics/endo/frostendo.mdl',
+        [3] = 'models/whynotboi/securitybreach/base/animatronics/endo/cakeendo.mdl',  
+    }
+
+    function ENT:SetAppearance(a)
+        if a == 1 then return end
+
+        self:SetModel(models[a])
+
+        self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
+
+        self.Appearance = a
     end
 
     function ENT:SleepMode()
@@ -109,8 +132,14 @@ if SERVER then
             self:SetSightFOV(150)
 
             self.IdleAnimation = 'idle' .. self.Type
-            self.WalkAnimation = 'walk' .. self.Type
-            self.RunAnimation = 'run' .. self.Type
+
+            if self.Appearance == 3 then
+                self.WalkAnimation = 'crawl'
+                self.RunAnimation = 'crawl'
+            else
+                self.WalkAnimation = 'walk' .. self.Type
+                self.RunAnimation = 'run' .. self.Type
+            end
         end)
     end
 
@@ -130,9 +159,15 @@ if SERVER then
 
         self.Cycle = math.Rand(0, 1)
 
-        self.IdleAnimation = 'endowalk' .. self.Type
-        self.WalkAnimation = 'endowalk' .. self.Type
-        self.RunAnimation = 'endowalk' .. self.Type
+        if self.Appearance == 3 then
+            self.IdleAnimation = 'endocrawl'
+            self.WalkAnimation = 'endocrawl'
+            self.RunAnimation = 'endocrawl'
+        else
+            self.IdleAnimation = 'endowalk' .. self.Type
+            self.WalkAnimation = 'endowalk' .. self.Type
+            self.RunAnimation = 'endowalk' .. self.Type
+        end
 
         self.IdleAnimRate = 0
         self.WalkAnimRate = 0
@@ -155,8 +190,14 @@ if SERVER then
         self.UseWalkframes = true
 
         self.IdleAnimation = 'idle' .. self.Type
-        self.WalkAnimation = 'walk' .. self.Type
-        self.RunAnimation = 'run' .. self.Type
+
+        if self.Appearance == 3 then
+            self.WalkAnimation = 'crawl'
+            self.RunAnimation = 'crawl'
+        else
+            self.WalkAnimation = 'walk' .. self.Type
+            self.RunAnimation = 'run' .. self.Type
+        end
 
         self.IdleAnimRate = 1
         self.WalkAnimRate = 1
@@ -196,6 +237,12 @@ if SERVER then
     end
 
     -- Sounds --
+
+    function ENT:CustomAnimEvents(e)
+        if e == 'handtouch' then
+            self:EmitSound('whynotboi/securitybreach/base/endo/footsteps/handtouch/fly_endo_handTouch_0' .. math.random(6) .. '.wav')
+        end
+    end
 
     function ENT:OnNewEnemy()
         self:EmitSound('whynotboi/securitybreach/base/endo/mode/sfx_endo_mode_hunt.wav', 75, 100, 0.5)
