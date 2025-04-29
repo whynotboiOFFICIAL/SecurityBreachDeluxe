@@ -77,6 +77,8 @@ if SERVER then
                     timer = 130
 
                     self:Hack(v)
+
+                    break
                 end
             end
         end

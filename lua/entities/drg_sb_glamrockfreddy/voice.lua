@@ -42,6 +42,8 @@ if SERVER then
         self:StopVoiceLine('FREDDY_00083') 
         self:StopVoiceLine('FREDDY_00094')
         self:StopVoiceLine('FREDDY_00122a')
+        self:StopVoiceLine('FREDDY_00160')
+        self:StopVoiceLine('FREDDY_00161')
 
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
@@ -179,6 +181,8 @@ if SERVER then
 
         self.IdleAnimation = 'idle'
 
+        self:StopVoices()
+        
         if IsValid(self.Hacker) then
             self.Hacker:CallInCoroutine(function(self,delay)
                 self:HackExit()

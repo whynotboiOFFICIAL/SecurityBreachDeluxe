@@ -126,6 +126,12 @@ if SERVER then
         if path == nil then return end
 
         self:StopSound(path .. '/vo/' .. vo .. '.wav')
+
+        for i = 0, 5 do
+            self:SetLayerWeight(i, 0)
+        end
+
+        self:RemoveAllGestures()
     end
 
     local EnableHearing = CreateConVar("drgbase_ai_hearing", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED})
