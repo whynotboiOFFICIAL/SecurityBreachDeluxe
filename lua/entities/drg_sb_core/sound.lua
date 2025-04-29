@@ -105,13 +105,20 @@ if SERVER then
         if not GetConVar('fnaf_sb_new_voicelines'):GetBool() then return end
 
         local path = self.VOPath or self.SFXPath
+
         if path == nil then return end
 
-        self:EmitSound(path .. '/vo/' .. vo .. '.wav')
+        local snd = path .. '/vo/' .. vo .. '.wav'
+
+        self:EmitSound(snd)
 
         if not anim then return end
 
-        self:PlaySequence(vo)
+        local anim = self:AddGestureSequence(self:LookupSequence(vo))
+        self:SetLayerWeight(anim, 0)
+
+        self:SetLayerBlendIn(anim, 0.1)
+        self:SetLayerBlendOut(anim, 0.2)
     end
 
     function ENT:StopVoiceLine(vo)
