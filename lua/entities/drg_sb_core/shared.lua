@@ -8,6 +8,8 @@ ENT.RagdollOnDeath = true
 
 -- Speed --
 ENT.UseWalkframes = true
+ENT.WalkSpeed = 0
+ENT.RunSpeed = 0
 
 -- AI --
 ENT.Omniscient = false
@@ -316,16 +318,24 @@ if SERVER then
     
         return timname
     end
-    
-    function ENT:LayerBlend(id, rate)
-        self:SetLayerWeight(id, 0)
+     
+    function ENT:LayerBlend(id, rate, out)
+        if out then
+            self:SetLayerWeight(id, 1)
+        else
+            self:SetLayerWeight(id, 0)
+        end
 
         local name = self:timerName('drgblendin')
 
         timer.Create( name, 0, rate, function()  
             if not IsValid(self) then return end
             
-            self:SetLayerWeight(id, self:GetLayerWeight(id) + (1 / rate))
+            if out then
+                self:SetLayerWeight(id, self:GetLayerWeight(id) - (1 / rate))
+            else
+                self:SetLayerWeight(id, self:GetLayerWeight(id) + (1 / rate))
+            end
         end)
     end
     

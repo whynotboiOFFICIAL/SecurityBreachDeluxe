@@ -107,8 +107,11 @@ function ENT:OnLandOnGround()
 
                 self.DisableControls = false
                 self.Stunned = false
-                self.VoiceDisabled = false
 
+                if not self:HasEnemy() then
+                    self.VoiceDisabled = false
+                end
+                
                 self:SetAIDisabled(false)
                 self:SetMaxYawRate(250)
                 

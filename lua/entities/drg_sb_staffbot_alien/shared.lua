@@ -201,7 +201,7 @@ if SERVER then
             local timer = math.random(5, 10)
     
             if math.random(1,10) > 3 then
-                self:PlayVoiceLine(voices[math.random(#voices)], true)
+                self:PlayVoiceLine(voices[math.random(#voices)])
             end
     
             self:DrG_Timer(timer, function()

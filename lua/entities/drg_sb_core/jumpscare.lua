@@ -1,9 +1,11 @@
-function ENT:JumpscareEntity(entity)
+function ENT:JumpscareEntity(entity, alt)
     if not IsValid(entity) or entity:Health() < 0.1 then return end
 
     if self.StopVoices then
         self:StopVoices()
     end
+    
+    self:RemoveAllGestures()
     
     entity:SetPos(self:GetPos() + self:GetForward() * 35)
     
@@ -35,7 +37,11 @@ function ENT:JumpscareEntity(entity)
         end
     end
 
-    self:Jumpscare()
+    if alt and self.Jumpscare2 then
+        self:Jumpscare2()
+    else
+        self:Jumpscare()
+    end
 
     if !IsValid(self.CurrentVictim) then return end
     

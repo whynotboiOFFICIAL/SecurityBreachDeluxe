@@ -28,9 +28,9 @@ if SERVER then
 
         if math.random(1,10) > 3 then
             if GetConVar('fnaf_sb_new_vanny_oldvo'):GetBool() then
-                self:PlayVoiceLine(oldidlevox[math.random(#oldidlevox)], true)
+                self:PlayVoiceLine(oldidlevox[math.random(#oldidlevox)])
             else
-                self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+                self:PlayVoiceLine(idlevox[math.random(#idlevox)])
             end
         end
 

@@ -173,7 +173,7 @@ if SERVER then
         self:PlaySequenceAndMove(anim)
 
         if self.AttendantType == 0 then
-            self:PlayVoiceLine('SUN_HW2_00067', false)
+            self:PlayVoiceLine('SUN_HW2_00067')
         end
       
         if not GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool() then
@@ -208,7 +208,7 @@ if SERVER then
         local aiIgnorePlayers = self:GetIgnorePlayers()
 
         if self.Holding then
-            if aiDisabled then
+            if aiDisabled and not self:IsPossessed() then
                 self:OnReachedPatrol()
                 return
             end
@@ -294,15 +294,8 @@ if SERVER then
                         self:JumpscareEntity(ply)
                     end)
                 else
-                    self:EnterCinematic(ply)
-        
-                    self.HoldEnt = ply
-
-                    self.Holding = true
-                    self.WalkAnimation = 'walkcarry'
-                    self.RunAnimation = 'walkcarry'
-                    self.IdleAnimation = 'walkcarry'
-
+                    self:GrabEntity(ply)
+                    
                     if self.SunAnger > 0 then
                         if not self.SunWarned then
                             self:SunAngerResponse()
@@ -389,6 +382,17 @@ if SERVER then
                 self:SetVelocity(currentVelocity)
             end
         end
+    end
+
+    function ENT:GrabEntity(ply)
+        self:EnterCinematic(ply)
+        
+        self.HoldEnt = ply
+
+        self.Holding = true
+        self.WalkAnimation = 'walkcarry'
+        self.RunAnimation = 'walkcarry'
+        self.IdleAnimation = 'walkcarry'
     end
 
     function ENT:SpawnHook(pos)
@@ -595,6 +599,8 @@ if SERVER then
 
                 if not IsValid(ent) and IsValid(self.HoldEnt) then
                     ent = self.HoldEnt  
+
+                    self.HoldEnt = nil
                 end
 
                 if not IsValid(ent) then return end

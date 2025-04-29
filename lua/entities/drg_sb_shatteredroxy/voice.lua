@@ -121,7 +121,7 @@ if SERVER then
         end
 
         self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
+            self:PlayVoiceLine(spotvox[math.random(#spotvox)])
         end)
 
         self:DrG_Timer(0.05, function()

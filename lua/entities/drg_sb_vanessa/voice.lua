@@ -64,9 +64,9 @@ if SERVER then
 
         if math.random(1,10) > 5 then
             if GetConVar('fnaf_sb_new_vanessa_oldvo'):GetBool() then
-                self:PlayVoiceLine(idleoldvox[math.random(#idleoldvox)], true)   
+                self:PlayVoiceLine(idleoldvox[math.random(#idleoldvox)])   
             else
-                self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+                self:PlayVoiceLine(idlevox[math.random(#idlevox)])
             end
         end
 
@@ -85,7 +85,7 @@ if SERVER then
         end
 
         self:CallInCoroutine(function(self,delay)
-            self:PlayVoiceLine(stunvox[math.random(#stunvox)], true)
+            self:PlayVoiceLine(stunvox[math.random(#stunvox)])
             self:PlaySequenceAndMove('stunin') 
         end)
 
@@ -132,7 +132,7 @@ if SERVER then
         if self.Stunned then return end
 
         self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
+            self:PlayVoiceLine(spotvox[math.random(#spotvox)])
         end)
         
         self:DrG_Timer(0.05, function()

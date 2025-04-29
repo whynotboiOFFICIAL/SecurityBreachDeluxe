@@ -201,11 +201,32 @@ if SERVER then
             self:SickMode()
         end
 
+        if self.BeingHacked and not self.HackTick then
+            self.HackTick = true
+
+            if not IsValid(self.Hacker) then
+                self:HackInterrupted()
+            end
+
+            if self.HackProgress < 99 then
+                self.HackProgress = self.HackProgress + 1
+                if self.HackProgress == 70 then
+                    self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/leadin/sfx_burntrap_hackFreddy_complete_leadIn_0' .. math.random(3) .. '.wav')
+                end
+            else
+                self:HackComplete()
+            end
+            
+            self:DrG_Timer(0.2, function()
+                self.HackTick = false
+            end)
+        end
+
         if IsValid(self.HoldEntity) then
             self.HoldEntity:SetPos(self:GetPos() + self:GetForward() * 10)
         end
 
-        if self.Inhabited then return end
+        if self.Inhabited or self.BeingHacked then return end
         
         if self.Partner then
             if not IsValid(self.Partner) or self.Partner.GlamrockFreddy ~= self then
@@ -403,34 +424,6 @@ if SERVER then
         self.RunAnimation = 'run'
     end
 
-    function ENT:SickMode()
-        self.Inhabited = false
-        self.Moving = false
-        self.IsSick = true
-        
-        self.PossessionMovement = POSSESSION_MOVE_CUSTOM
-
-        self.IdleAnimation = 'idlesick'
-        self.WalkAnimation = 'walksick'
-        self.RunAnimation = 'runsick'
-        
-        if self.OpenChest then
-            self:CloseChestHatch()
-        end
-
-        if not IsValid(self.Partner) then return end
-
-        local partner = self.Partner
-        local pos = partner:GetPos()
-        local dist = pos:DistToSqr(self:GetPos())/ 1000
-
-        partner:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/alerts/sfx_freddy_alert_outOfPower.wav')
-
-        if dist < 50 then
-            self:DialogueTrigger(1, partner)
-        end
-    end
-
     function ENT:SummonFreddy(ent)
         if self.IsSick then 
             ent:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/call/sfx_freddy_call_unsuccesful.wav')
@@ -456,7 +449,7 @@ if SERVER then
     end
 
     function ENT:Use(ent)
-        if ((GetConVar('ai_disabled'):GetBool()) or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) or self.IsSick then return end
+        if ((GetConVar('ai_disabled'):GetBool()) or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) or self.IsSick or self.BeingHacked then return end
 
         if (ent == self.Partner) or (self:IsPossessed() and not IsValid(self.Partner)) then
             self.StoredPlayerWeapon = IsValid(ent:GetActiveWeapon()) and ent:GetActiveWeapon() or nil
@@ -490,6 +483,7 @@ if SERVER then
     
     function ENT:Removed()
         self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/sfx_roxyEyes_hud_lp.wav')
+        self:StopSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_lp.wav')
         
         if self.Partner then
             self.Partner.GlamrockFreddy = nil

@@ -103,6 +103,8 @@ if SERVER then
             self.LuringTo = ent
             self.VoiceDisabled = true
 
+            if not IsValid(ent) then return end
+
             self:GoTo(ent:GetPos() + ent:GetForward() * 35)
 
             if not IsValid(ent) then self.Luring = false return end
@@ -124,7 +126,7 @@ if SERVER then
 
             self:PlaySequenceAndMove('rummagein')
 
-            self:PlayVoiceLine('CHICA_EATING_GARBAGE_0' .. math.random(2), true)
+            self:PlayVoiceLine('CHICA_EATING_GARBAGE_0' .. math.random(2))
 
             self:DrG_Timer(6, function()
                 ParticleEffectAttach( 'fnafsb_drool_chica', 4, self, 3 )

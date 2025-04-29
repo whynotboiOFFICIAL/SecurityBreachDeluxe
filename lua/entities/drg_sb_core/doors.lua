@@ -20,7 +20,7 @@ function ENT:DoorCode(door)
                 if v:GetInternalVariable('m_eDoorState') == 0 then
                     if v:GetInternalVariable('m_bLocked') then
                         if self.BreakDoor then
-                            self:FaceInstant(v)
+                            self:FaceInstant(v:WorldSpaceCenter())
                             self.Breaking = v
                             self:BreakDoor(v)
                         end
@@ -36,7 +36,7 @@ function ENT:DoorCode(door)
                 if v:GetInternalVariable('m_toggle_state') == 1 then
                     if v:GetInternalVariable('m_bLocked') then
                         if self.BreakDoor then
-                            self:FaceInstant(v)
+                            self:FaceInstant(v:WorldSpaceCenter())
                             self.Breaking = v
                             self:BreakDoor(v)
                         end

@@ -8,17 +8,29 @@ ENT.PossessionBinds = {
     [IN_ATTACK] = {{
         coroutine = true,
         onkeydown = function(self)
-            if not self:IsOnGround() or self.Stunned then return end
+            if not self:IsOnGround() or self.Stunned or self.GrabDelay then return end
 
-            if self.AttendantType == 1 then
+            self.GrabDelay = true
+
+            if IsValid(self.HoldEnt) then
+                self:OnReachedPatrol()
+            else
                 for k,v in pairs(ents.FindInSphere(self:LocalToWorld(Vector(0,0,50)), 50)) do
                     if v ~= self and v ~= self:GetPossessor() then
                         if v:IsPlayer() or v:IsNextBot() or v:IsNPC() then
-                            self:JumpscareEntity(v)
+                            if self.AttendantType == 1 then
+                                self:JumpscareEntity(v)
+                            else
+                                self:GrabEntity(v)
+                            end
                         end
                     end
-                end   
+                end
             end
+
+            self:DrG_Timer(0.5, function()
+                self.GrabDelay = false
+            end)
         end
     }},
 
