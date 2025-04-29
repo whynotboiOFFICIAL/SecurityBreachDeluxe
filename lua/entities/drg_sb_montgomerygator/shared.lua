@@ -102,6 +102,69 @@ if SERVER then
         end
     end
 
+    function ENT:BreakDoor(d)
+        self.DisableControls = true
+        self.UseWalkframes = false
+        self.Moving = false
+
+        self:DrG_Timer(0.3, function()
+            if not IsValid(d) then return end
+            local phys = self:GetPhysicsObject()
+
+            if (phys:IsValid()) then
+                self:SpawnDoorProp(d)
+            else
+                d:Fire('Unlock')
+
+                d:Fire('Open')
+            end
+
+            self:DrG_Timer(0.5, function()
+                self.DisableControls = false
+                self.UseWalkframes = true
+            end)
+        end)
+
+        self:CallInCoroutine(function(self,delay)
+            self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/claws/swing/sfx_montyClaws_swing_0' .. math.random(3) .. '.wav')
+
+            self:DrG_Timer(0.3, function()
+                self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/claws/impact/sfx_montyClaws_fence_impact_0' .. math.random(3) .. '.wav')
+            end)
+
+            self:PlaySequenceAndMove('fencebreak')
+        end)
+    end
+
+    function ENT:SpawnDoorProp(ent)
+        local pos = ent:GetPos()
+        local ang = ent:GetAngles()
+        local model = ent:GetModel()
+        local mats = ent:GetMaterials()
+        local skin = ent:GetSkin()
+        ent:Remove()
+
+        local door = ents.Create('prop_physics')
+        
+        door:SetModel(model)
+        door:SetModelScale(1)
+        door:SetSkin(skin)
+        
+        door:SetPos(pos)
+        door:SetAngles(ang)
+        door:SetSolid(SOLID_NONE)
+
+        for i, matName in ipairs(mats) do
+            door:SetSubMaterial(i - 1, matName)
+        end
+
+        door:Spawn()
+
+        local aim = self:GetPos() + self:GetForward() * 300 + Vector(0, 0, 50)
+
+        door:DrG_AimAt(aim, 300)	 
+    end
+
     function ENT:AddCustomThink()
     end
 
