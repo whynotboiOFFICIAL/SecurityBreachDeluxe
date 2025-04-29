@@ -455,12 +455,12 @@ if CLIENT then
 			panel:Help('The Blob')
 			panel:Help('')
 
-			panel:CheckBox('Blob Tendril Attack', 'fnaf_sb_new_blob_tendrils')
-            panel:ControlHelp('The Blob uses its tendrils to search and attack you around the map')
-
 			panel:CheckBox('Blob Hostile', 'fnaf_sb_new_blob_proxjumpscare')
             panel:ControlHelp('The Blob will jumpscare you when too close')
-																				
+				
+			panel:CheckBox('Blob Tendril Attack', 'fnaf_sb_new_blob_tendrils')
+            panel:ControlHelp('The Blob uses its tendrils to search and attack you around the map')
+																
 			-- Burntrap
 
 			panel:Help('')
@@ -468,8 +468,8 @@ if CLIENT then
 			panel:Help('Burntrap')
 			panel:Help('')
 
-			panel:CheckBox('Burntrap Jumpscare', 'fnaf_sb_new_burntrap_jumpscare')
-            panel:ControlHelp('Burntrap uses a custom jumpscare whenever you get cloes')
+			panel:CheckBox('Burntrap Hostile', 'fnaf_sb_new_burntrap_jumpscare')
+            panel:ControlHelp('Burntrap will chase after players and jumpscare them')
 
 			panel:CheckBox('Burntrap Hacks Freddy', 'fnaf_sb_new_burntrap_hacksfreddy')
             panel:ControlHelp('Burntrap will attempt to hack Glamrock Freddy in an attempt to kill you')
