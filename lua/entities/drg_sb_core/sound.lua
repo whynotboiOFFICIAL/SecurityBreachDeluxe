@@ -128,10 +128,8 @@ if SERVER then
         self:StopSound(path .. '/vo/' .. vo .. '.wav')
 
         for i = 0, 5 do
-            self:SetLayerWeight(i, 0)
+            self:SetLayerCycle(i, 1)
         end
-
-        self:RemoveAllGestures()
     end
 
     local EnableHearing = CreateConVar("drgbase_ai_hearing", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED})
