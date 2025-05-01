@@ -97,6 +97,10 @@ if SERVER then
             self.CanPounce = false
         end
 
+        if GetConVar('fnaf_sb_new_monty_jumpattack'):GetBool() and navmesh.IsLoaded() then
+            self.CanJump = true
+        end
+
         if GetConVar('fnaf_sb_new_monty_enablestun'):GetBool() then
             self.CanBeStunned = true
         end
@@ -175,6 +179,19 @@ if SERVER then
     end
 
     -- Sounds --
+
+    function ENT:CustomAnimEvents(e)
+        if e == 'jump' then
+            self:EmitSound('whynotboi/securitybreach/base/montgomerygator/leap/fly_monty_leap_0' .. math.random(4) .. '.wav')
+
+            self:PlayVoiceLine(self.PounceJumpVox[math.random(#self.PounceJumpVox)])
+        end
+        if e == 'land' then
+            self:EmitSound('whynotboi/securitybreach/base/montgomerygator/land/fly_monty_land_0' .. math.random(3) .. '.wav')
+
+            self:PlayVoiceLine(self.PounceLandVox[math.random(#self.PounceLandVox)])
+        end
+    end
 
     function ENT:StepSFX()
         local shake = 0.8

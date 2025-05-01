@@ -112,8 +112,57 @@ if SERVER then
             self.PreAnim = true
         end
 
+        if GetConVar('fnaf_sb_new_chica_shred'):GetBool() then
+            self.CanShred = true
+
+            self.FreePatrols = 0
+        end
+
+        if GetConVar('fnaf_sb_new_chica_valley'):GetBool() then
+            self.Valley = true
+        end
+
         if GetConVar('fnaf_sb_new_chica_voiceattack'):GetBool() then
             self.Voicebox = true
+        end
+    end
+
+    function ENT:SpawnGuitar()
+        local guitar = ents.Create('prop_dynamic')
+        
+        guitar:SetModel('models/whynotboi/securitybreach/base/animatronics/glamrockchica/guitar.mdl')
+        guitar:SetModelScale(1)
+        guitar:SetParent(self)
+        guitar:SetSolid(SOLID_NONE)
+
+        guitar:Fire('SetParentAttachment','World_Prop_jnt')
+
+        guitar:Spawn()
+
+        self:DeleteOnRemove(guitar)
+
+        self.Guitar = guitar
+    end
+
+    function ENT:ShredGuitar()
+        self:StopVoices()
+
+        self.VoiceDisabled = true
+
+        self:EmitSound('whynotboi/securitybreach/base/glamrockchica/sfx_chicajam_guitarsolo_loop_b.wav')
+
+        self:SpawnGuitar()
+
+        self:PlaySequenceAndMove('shredding')
+
+        self:StopSound('whynotboi/securitybreach/base/glamrockchica/sfx_chicajam_guitarsolo_loop_b.wav')
+        
+        self.VoiceDisabled = false
+
+        self.Guitar:Remove()
+
+        if math.random(1, 100) > 50 then
+            self.FreePatrols = 0
         end
     end
 
@@ -135,8 +184,26 @@ if SERVER then
             ParticleEffectAttach( 'fnafsb_slime_eating', 4, self, 3 )
         end
     end
-    
+        
+    function ENT:OnReachedPatrol()
+        if self.FreePatrols then
+            self.FreePatrols = self.FreePatrols + 1
+        end
+
+        self.BaseClass.OnReachedPatrol(self)
+    end
+
+    function ENT:OnIdle()
+        if (self.CanShred and not self.ShredDelay) and (self.FreePatrols > 5 and math.random(100) > 50) then
+            self:ShredGuitar()
+        else
+            self.BaseClass.OnIdle(self)
+        end
+    end
+
     function ENT:Removed()
+        self:StopSound('whynotboi/securitybreach/base/glamrockchica/sfx_chicajam_guitarsolo_loop_b.wav')
+
         if IsValid(self.LuringTo) then
             self.LuringTo.BeingDevoured = false
         end

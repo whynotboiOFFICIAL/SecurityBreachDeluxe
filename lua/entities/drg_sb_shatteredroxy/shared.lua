@@ -89,6 +89,10 @@ if SERVER then
             self:SetSightFOV(0)
         end
 
+        if GetConVar('fnaf_sb_new_shatteredroxy_weep'):GetBool() then
+            self.CanWeep = true
+        end
+
         if not GetConVar('fnaf_sb_new_shatteredroxy_pounceattack'):GetBool() then
             self.CanPounce = false
         end

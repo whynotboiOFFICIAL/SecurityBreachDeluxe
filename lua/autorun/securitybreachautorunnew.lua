@@ -21,6 +21,8 @@ CreateConVar('fnaf_sb_new_freddy_batteryconfig', 1, FCVAR_ARCHIVE, 'Glamrock Fre
 -- Glamrock Chica
 
 CreateConVar('fnaf_sb_new_chica_breaths', 1, FCVAR_ARCHIVE, 'Glamrock Chica Breathing', 0, 1)
+CreateConVar('fnaf_sb_new_chica_shred', 0, FCVAR_ARCHIVE, 'Glamrock Chica Guitar Shredding', 0, 1)
+CreateConVar('fnaf_sb_new_chica_valley', 0, FCVAR_ARCHIVE, 'Glamrock Chica Valley', 0, 1)
 CreateConVar('fnaf_sb_new_chica_voiceattack', 0, FCVAR_ARCHIVE, 'Glamrock Chica Voicebox', 0, 1)
 CreateConVar('fnaf_sb_new_chica_canlure', 1, FCVAR_ARCHIVE, 'Glamrock Chica Eating', 0, 1)
 CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Possession Eating', 0, 1)
@@ -30,12 +32,15 @@ CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Po
 CreateConVar('fnaf_sb_new_monty_growls', 1, FCVAR_ARCHIVE, 'Montgomery Gator Growling', 0, 1)
 CreateConVar('fnaf_sb_new_monty_transglass', 0, FCVAR_ARCHIVE, 'Montgomery Gator Transparent Shades', 0, 1)
 CreateConVar('fnaf_sb_new_monty_pounceattack', 1, FCVAR_ARCHIVE, 'Montgomery Gator Pounce', 0, 1)
+CreateConVar('fnaf_sb_new_monty_jumpattack', 1, FCVAR_ARCHIVE, 'Montgomery Gator Jump', 0, 1)
 CreateConVar('fnaf_sb_new_monty_enablestun', 0, FCVAR_ARCHIVE, 'Montgomery Gator Stun', 0, 1)
 
 -- Roxanne Wolf
 
 CreateConVar('fnaf_sb_new_roxy_montywalk', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Alt Walk', 0, 1)
+CreateConVar('fnaf_sb_new_roxy_peptalk', 1, FCVAR_ARCHIVE, 'Roxanne Wolf Pep Talks', 0, 1)
 CreateConVar('fnaf_sb_new_roxy_pounceattack', 1, FCVAR_ARCHIVE, 'Roxanne Wolf Pounce', 0, 1)
+CreateConVar('fnaf_sb_new_roxy_jumpattack', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Jump', 0, 1)
 
 -- Daycare Attendant
 
@@ -56,6 +61,7 @@ CreateConVar('fnaf_sb_new_shatteredmonty_pounceattack', 1, FCVAR_ARCHIVE, 'Shatt
 -- Shattered Roxy
 
 CreateConVar('fnaf_sb_new_shatteredroxy_haseyes', 0, FCVAR_ARCHIVE, 'Shattered Roxy Has Eyes', 0, 1)
+CreateConVar('fnaf_sb_new_shatteredroxy_weep', 1, FCVAR_ARCHIVE, 'Shattered Roxy Weep', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredroxy_pounceattack', 1, FCVAR_ARCHIVE, 'Shattered Roxy Pounce', 0, 1)
 
 -- Glamrock Endo
@@ -265,8 +271,14 @@ if CLIENT then
 			panel:CheckBox('Glamrock Chica Breathing', 'fnaf_sb_new_chica_breaths')
             panel:ControlHelp('Glamrock Chica breaths when she isn\'t speaking')
 			
+			panel:CheckBox('Glamrock Chica Guitar Shredding', 'fnaf_sb_new_chica_shred')
+            panel:ControlHelp('Glamrock Chica can randomly shred on her guitar when she\'s patrolling')
+			
 			panel:CheckBox('Glamrock Chica Voicebox', 'fnaf_sb_new_chica_voiceattack')
             panel:ControlHelp('Glamrock Chica will be use her vocals to slow enemies and scare animatronics')
+			
+			panel:CheckBox('Glamrock Chica Valley', 'fnaf_sb_new_chica_valley')
+            panel:ControlHelp('Glamrock Chica uses her really annoying valley voice lines')
 			
 			panel:CheckBox('Glamrock Chica Eating', 'fnaf_sb_new_chica_canlure')
             panel:ControlHelp('Glamrock Chica will be forced to eat Monty Mix during AI')
@@ -290,6 +302,9 @@ if CLIENT then
 			panel:CheckBox('Montgomery Gator Pounce', 'fnaf_sb_new_monty_pounceattack')
             panel:ControlHelp('Montgomery Gator will leap through the air to try and kill you')
 
+			panel:CheckBox('Montgomery Gator Jump', 'fnaf_sb_new_monty_jumpattack')
+            panel:ControlHelp('Montgomery Gator will jump around the map at random')
+
 			panel:CheckBox('Montgomery Gator Stun', 'fnaf_sb_new_monty_enablestun')
             panel:ControlHelp('Montgomery Gator will be stunned like the other animatronics')	
 
@@ -302,10 +317,16 @@ if CLIENT then
 
 			panel:CheckBox('Roxanne Wolf Alt Walk', 'fnaf_sb_new_roxy_montywalk')
             panel:ControlHelp('Roxanne Wolf will use Monty\'s walk animation like in game')
+					
+			panel:CheckBox('Roxanne Wolf Pep Talks', 'fnaf_sb_new_roxy_peptalk')
+            panel:ControlHelp('Roxanne Wolf when near a mirror will talk to herself')
 						
 			panel:CheckBox('Roxanne Wolf Pounce', 'fnaf_sb_new_roxy_pounceattack')
             panel:ControlHelp('Roxanne Wolf will leap through the air to try and kill you')
-						
+					
+			panel:CheckBox('Roxanne Wolf Jump', 'fnaf_sb_new_roxy_jumpattack')
+            panel:ControlHelp('Roxanne Wolf will jump around the map at random')
+	
 			-- Daycare Attendant
 
 			panel:Help('')
@@ -358,6 +379,9 @@ if CLIENT then
 
 			panel:CheckBox('Shattered Roxy Has Eyes', 'fnaf_sb_new_shatteredroxy_haseyes')
             panel:ControlHelp('Shattered Roxy will be able to see again')
+			
+			panel:CheckBox('Shattered Roxy Weep', 'fnaf_sb_new_shatteredroxy_weep')
+            panel:ControlHelp('Shattered Roxy can weep when patrolling')
 			
 			panel:CheckBox('Shattered Roxy Pounce', 'fnaf_sb_new_shatteredroxy_pounceattack')
             panel:ControlHelp('Shattered Roxy will leap through the air to try and kill you')

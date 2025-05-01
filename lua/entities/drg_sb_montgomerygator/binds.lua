@@ -62,8 +62,11 @@ ENT.PossessionBinds = {
     }},
 
     [IN_DUCK] = {{
-        coroutine = false,
+        coroutine = true,
         onkeydown = function(self)
+            if self.Stunned or self.DisableControls or not self.CanJump then return end
+            
+            self:JumpAttack()
         end
     }}
 }

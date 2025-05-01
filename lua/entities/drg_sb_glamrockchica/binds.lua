@@ -37,6 +37,9 @@ ENT.PossessionBinds = {
     [IN_RELOAD] = {{
         coroutine = true,
         onkeydown = function(self)
+            if self.ShredDelay or not self.CanShred then return end
+            
+            self:ShredGuitar()
         end
     }},
 

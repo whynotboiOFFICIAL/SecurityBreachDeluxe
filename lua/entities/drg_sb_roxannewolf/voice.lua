@@ -54,6 +54,15 @@ ENT.PounceJumpVox = {
     'ROXY_00043_07'
 }
 
+ENT.LandVox = {
+    'ROXY_00041_01',
+    'ROXY_00041_02',
+    'ROXY_00041_03',
+    'ROXY_00041_04',
+    'ROXY_00041_05',
+    'ROXY_00041_06'
+}
+
 if SERVER then
     function ENT:VoiceThink()
         if self.VoiceTick or self.VoiceDisabled then return end
@@ -75,6 +84,9 @@ if SERVER then
         for i = 1, #idlevox do
             self:StopVoiceLine(idlevox[i])
         end
+
+        self:StopVoiceLine('ROXY_00001')
+        self:StopVoiceLine('ROXY_00002')
 
         if mode == 1 then return end
 

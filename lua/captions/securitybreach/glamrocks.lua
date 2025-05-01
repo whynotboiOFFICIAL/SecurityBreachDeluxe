@@ -68,14 +68,35 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00025_02.wav', '<clr:255, 177, 255>I smell pizza!')
     SBDELUXE:AddEnglishCaption(path .. 'CHICA_00025_03.wav', '<clr:255, 177, 255>I smell pizza!')
 
-    -- Chica Spot Voices
+    -- Valley Chica Idle Voices
+    
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00005.wav', '<clr:255, 177, 255>Are you lost?')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00005b.wav', '<clr:255, 177, 255>I\'ll take you to your parents...')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00006.wav', '<clr:255, 177, 255>Let me take you to your parents...')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00007.wav', '<clr:255, 177, 255>Your family is looking for you!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00008.wav', '<clr:255, 177, 255>Your parents like want you to follow me!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00009.wav', '<clr:255, 177, 255>Don\'t worry! You\'re safe with me...')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00010.wav', '<clr:255, 177, 255>Gregory?')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00011.wav', '<clr:255, 177, 255>Like where are you?')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00012.wav', '<clr:255, 177, 255>No more games.')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00013.wav', '<clr:255, 177, 255>Our friendly security staff can help!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00014.wav', '<clr:255, 177, 255>Like come out come out wherever you are!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00015_01.wav', '<clr:255, 177, 255>This area is like off limits.')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00015_02.wav', '<clr:255, 177, 255>This area is totally off limits.')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00016a.wav', '<clr:255, 177, 255>Staff only.')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00017.wav', '<clr:255, 177, 255>Like I am just trying to help.')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00018.wav', '<clr:255, 177, 255>Who wants candy?')
 
-    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00019.wav', '<clr:255, 177, 255>I found you!')
-    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00020.wav', '<clr:255, 177, 255>There you are!')
-    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00021.wav', '<clr:255, 177, 255>Tag! You\'re it!')
-    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00022.wav', '<clr:255, 177, 255>Stop!')
-    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00023.wav', '<clr:255, 177, 255>Gregory!')
-    SBDELUXE:AddEnglishCaption(path .. 'CHICA_00024.wav', '<clr:255, 177, 255>Lost boy over here!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00025.wav', '<clr:255, 177, 255>Like I smell pizza!')
+
+    -- Valley Chica Spot Voices
+
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00019.wav', '<clr:255, 177, 255>I found you!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00020.wav', '<clr:255, 177, 255>There you are!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00021.wav', '<clr:255, 177, 255>Tag! You\'re it!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00022.wav', '<clr:255, 177, 255>Like stop it!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00023.wav', '<clr:255, 177, 255>Gregory!')
+    SBDELUXE:AddEnglishCaption(path .. 'CHICA_VALLEY_00024.wav', '<clr:255, 177, 255>Lost boy over here!')
 
     path = 'whynotboi/securitybreach/base/montgomerygator/vo/'
     
@@ -136,6 +157,11 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_GLAMROCKCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00019.wav', '<clr:200, 0, 255>I found him!')
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00020.wav', '<clr:200, 0, 255>Over here!')
  
+    -- Roxy Misc Voices
+
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00001.wav', '<clr:200, 0, 255>Your performance was perfect tonight. Thank you. Your hair is beautiful. Your tail is beautiful. Everyone was watching you. Everyone loves you. Everyone wants to be you. You are the best. Thank you. I am the best. I am the best.')
+    SBDELUXE:AddEnglishCaption(path .. 'ROXY_00002.wav', '<clr:200, 0, 255>Your fans are watching you right now... I know.')
+
     -- Shattered Roxy Idle Voices
 
     SBDELUXE:AddEnglishCaption(path .. 'ROXY_00021.wav', '<clr:200, 0, 255>I heard that.')

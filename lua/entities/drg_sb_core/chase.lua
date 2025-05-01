@@ -219,6 +219,56 @@ function ENT:PounceStart()
     self.Pouncing = true
 end
 
+function ENT:SkyTrace()
+    local startpS = self:WorldSpaceCenter()
+    local endpos = Vector(0, 0, 1e9)
+    local tr = util.QuickTrace(startpS, endpos, self)
+    --debugoverlay.Line( startpS, startpS + endpos, 1, Color( 255, 255, 255 ), false )
+    
+    if tr.HitSky then
+        return true
+    end
+end
+
+function ENT:GetRandomPosUnderSky(min, max)
+    while true do
+        local pos = self:RandomPos(min, max)
+        local tr = util.QuickTrace(pos, pos + vector_up * 1e9, self)
+
+        if tr and tr.HitSky then
+            return pos
+        end
+    end
+
+    return self:RandomPos(min, max)
+end
+
+function ENT:JumpAttack()
+    if not self:SkyTrace() then return end
+
+    local toland = self:GetRandomPosUnderSky(2000, 4000)
+
+    self:StopVoices()
+
+    self.VoiceDisabled = true
+
+    self:FaceInstant(toland)
+
+    self:PlaySequenceAndMove('jump')
+
+    self:SetPos(toland)
+
+    self:ClearPatrols()
+    
+    self:AddPatrolPos(self:RandomPos(1500))
+
+    self.Moving = false
+    
+    self:PlaySequenceAndMove('land')
+
+    self.VoiceDisabled = false
+end
+
 function ENT:ShouldRun()
     if self:HasEnemy() then return true end
     if self.ForceRun then return true end

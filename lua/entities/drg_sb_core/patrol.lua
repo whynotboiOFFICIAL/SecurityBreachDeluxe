@@ -47,5 +47,9 @@ function ENT:OnIdle()
         self.InvestigatingSpot = nil
     end
     
-    self:AddPatrolPos(self:RandomPos(1500))
+    if self.CanJump and math.random(1,100) > 60 then
+        self:JumpAttack()
+    else
+        self:AddPatrolPos(self:RandomPos(1500))
+    end
 end

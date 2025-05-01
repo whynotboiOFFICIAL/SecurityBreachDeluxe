@@ -47,6 +47,39 @@ local pizzavox = {
     'CHICA_00025_02',
     'CHICA_00025_03'
 }
+
+local valleyidlevox = {
+    'CHICA_VALLEY_00005',
+    'CHICA_VALLEY_00005b',
+    'CHICA_VALLEY_00006',
+    'CHICA_VALLEY_00007',
+    'CHICA_VALLEY_00008',
+    'CHICA_VALLEY_00009',
+    'CHICA_VALLEY_00010',
+    'CHICA_VALLEY_00011',
+    'CHICA_VALLEY_00012',
+    'CHICA_VALLEY_00013',
+    'CHICA_VALLEY_00014',
+    'CHICA_VALLEY_00015_01',
+    'CHICA_VALLEY_00015_02', 
+    'CHICA_VALLEY_00016a',
+    'CHICA_VALLEY_00017',
+    'CHICA_VALLEY_00018'
+}
+
+local valleyspotvox = {
+    'CHICA_VALLEY_00019',
+    'CHICA_VALLEY_00020',
+    'CHICA_VALLEY_00021',
+    'CHICA_VALLEY_00022',
+    'CHICA_VALLEY_00023',
+    'CHICA_VALLEY_00024'
+}
+
+local valleypizzavox = {
+    'CHICA_VALLEY_00025'
+}
+
 if SERVER then
     function ENT:VoiceThink()
         if self.VoiceTick or self.VoiceDisabled then return end
@@ -57,8 +90,12 @@ if SERVER then
 
         if math.random(1,10) > 3 then
             self.Talking = true
-
+    
             local snd = idlevox[math.random(#idlevox)]
+        
+            if self.Valley then
+                snd = valleyidlevox[math.random(#valleyidlevox)]
+            end
 
             local path = self.SFXPath
 
@@ -121,7 +158,14 @@ if SERVER then
         self:SetDefaultRelationship(D_LI)
 
         self:CallInCoroutine(function(self,delay)
-            self:PlayVoiceLine(pizzavox[math.random(#pizzavox)], true) 
+            
+            local snd = pizzavox[math.random(#pizzavox)]
+        
+            if self.Valley then
+                snd = valleypizzavox[math.random(#valleypizzavox)]
+            end
+
+            self:PlayVoiceLine(snd, true) 
 
             self.Luring = true
             self.LuringTo = ent
@@ -192,6 +236,14 @@ if SERVER then
             self:StopVoiceLine(pizzavox[i])
         end
 
+        for i = 1, #valleyidlevox do
+            self:StopVoiceLine(valleyidlevox[i])
+        end
+
+        for i = 1, #valleypizzavox do
+            self:StopVoiceLine(valleypizzavox[i])
+        end
+
         self:StopBreaths()
 
         self:StopVoiceLine('CHICA_EATING_GARBAGE_01')
@@ -201,6 +253,10 @@ if SERVER then
 
         for i = 1, #spotvox do
             self:StopVoiceLine(spotvox[i])
+        end
+        
+        for i = 1, #valleyspotvox do
+            self:StopVoiceLine(valleyspotvox[i])
         end
         
         if mode == 2 then return end
@@ -220,7 +276,17 @@ if SERVER then
         if self.Stunned then return end
         
         self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
+            if self.FreePatrols then
+                self.FreePatrols = 0
+            end
+
+            local snd = spotvox[math.random(#pizzavox)]
+        
+            if self.Valley then
+                snd = valleyspotvox[math.random(#valleyspotvox)]
+            end
+
+            self:PlayVoiceLine(snd, true) 
         end)
         
         self:DrG_Timer(0.05, function()

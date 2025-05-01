@@ -64,7 +64,7 @@ if SERVER then
             end
         else
             if math.random(1,10) > 3 then
-                if math.random(1, 100) > 60 then
+                if math.random(1, 100) > 60 and self.CanWeep then
                     timer = 20
 
                     self:StartWeeping()
@@ -82,6 +82,8 @@ if SERVER then
     end
 
     function ENT:StartWeeping()
+        if not self.CanWeep then return end
+
         self.IdleAnimation = 'weepidle'
         self.WalkAnimation = 'weepwalk'
         self.RunAnimation = 'weepwalk'

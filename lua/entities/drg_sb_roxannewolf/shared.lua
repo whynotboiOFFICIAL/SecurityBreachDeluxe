@@ -102,18 +102,43 @@ if SERVER then
             self.PreAnim = true
         end
 
+        if GetConVar('fnaf_sb_new_roxy_peptalk'):GetBool() then
+            self.DoPepTalks = true
+        end
+        
         if not GetConVar('fnaf_sb_new_roxy_pounceattack'):GetBool() then
             self.CanPounce = false
         end
+        
+        if GetConVar('fnaf_sb_new_roxy_jumpattack'):GetBool() and navmesh.IsLoaded() then
+            self.CanJump = true
+        end
+
     end
 
     function ENT:AddCustomThink()
+        if self.Luring then
+            self:DoorCode()
+        end
     end
 
     function ENT:Removed()
     end
 
     -- Sounds --
+
+    function ENT:CustomAnimEvents(e)
+        if e == 'jump' then
+            self:EmitSound('whynotboi/securitybreach/base/roxannewolf/leap/fly_roxy_leap_0' .. math.random(4) .. '.wav')
+
+            self:PlayVoiceLine(self.PounceJumpVox[math.random(#self.PounceJumpVox)])
+        end
+        if e == 'land' then
+            self:EmitSound('whynotboi/securitybreach/base/roxannewolf/land/fly_roxy_land_0' .. math.random(3) .. '.wav')
+
+            self:PlayVoiceLine(self.LandVox[math.random(#self.LandVox)])
+        end
+    end
 
     function ENT:StepSFX()
         local shake = 0.7
@@ -129,6 +154,123 @@ if SERVER then
         util.ScreenShake( self:GetPos(), shake, 1, 1, 500 )
     end
 
+    function ENT:InitiatePepTalk(mirror)
+        self:DrG_Timer(2, function()  
+            self.Luring = false
+
+            self.UseWalkframes = false
+
+            self.DisableControls = true
+            
+            self.IdleAnimation = 'peptalkidle'
+        end)
+
+        self:DrG_Timer(3, function()     
+            self:CallInCoroutine(function(self,delay) 
+                self:PlayVoiceLine('ROXY_00001')
+                self:PlaySequenceAndMove('peptalk1', nil, function()
+                    if self:HasEnemy() then 
+                        return true 
+                    end
+                end)
+
+                self:PlayVoiceLine('ROXY_00002')
+
+                self:PlaySequenceAndMove('peptalk2', nil, function()
+                    if self:HasEnemy() then 
+                        return true 
+                    end
+                end)
+                    
+                if self:HasEnemy() then self:EndTalk() return end
+
+                self:DrG_Timer(5, function()
+                    self:EndTalk()
+                end)
+            end)
+        end)
+    end
+
+    function ENT:EndTalk()
+        self.Admiring = false
+                
+        if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
+            self.IdleAnimation = 'preidle'
+        else
+            self.IdleAnimation = 'idle'
+        end
+
+        self.UseWalkframes = true
+
+        self.DisableControls = false
+        
+        self:DrG_Timer(50, function()
+            self.AdmireDelay = false
+        end)
+    end
+
+    local function getMirrorForward(ent)
+        local _, normal = ent:GetBrushPlane(0)
+    
+        return normal
+    end
+    
+    function ENT:MirrorCheck()
+        local mirror = nil
+
+        for k,v in pairs(ents.FindInSphere(self:WorldSpaceCenter(), 400)) do
+            if v:GetClass() ~= 'func_reflective_glass' then continue end
+
+            mirror = v
+            break
+        end
+
+        if IsValid(mirror) then
+            self.VoiceDisabled = true
+            self.AdmireDelay = true
+            self.Admiring = true
+            self.Luring = true
+
+            self:StopVoices()
+
+            local mirrorpos = mirror:GetPos()
+            local mypos = self:GetPos()
+            local mirrorforward = getMirrorForward(mirror) * 50
+
+            mirrorpos.z = mypos.z
+
+            self:GoTo(mirrorpos + mirrorforward, 30, function()
+                if self:HasEnemy() then 
+                    return true 
+                end
+            end)
+
+            if self:HasEnemy() then
+                self.VoiceDisabled = false
+                self.AdmireDelay = false
+                self.Admiring = false
+                self.Luring = false
+            return end
+
+            self:SetAngles(mirrorforward:Angle() * -1)
+
+            self:InitiatePepTalk(mirror)
+        else
+            self.BaseClass.OnIdle(self)
+        end
+    end
+    
+    function ENT:OnIdle()
+        if self.Admiring then return end
+
+        if self.DoPepTalks and not self.AdmireDelay and math.random(1, 100) > 40 then
+            self:ClearPatrols()
+
+            self:MirrorCheck()
+        else
+            self.BaseClass.OnIdle(self)
+        end
+    end
 else
 
 end
