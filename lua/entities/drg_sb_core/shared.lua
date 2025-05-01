@@ -105,31 +105,15 @@ ENT.HidingSpotOffsets = {
 }
 
 include('sound.lua')
-
-if CLIENT then
-    function ENT:PossessorView()
-        local pos, ang = self.BaseTable.PossessorView(self)
-
-        if self:GetNWBool('UseHeadAttach') then
-            local head = self:GetAttachment(self:LookupAttachment('HeadCam'))
-
-            pos = head.Pos + Vector(0, 0, 3)
-            ang = head.Ang + Angle(ang.p, 0, 0)
-        end
-
-        return pos, ang
-    end
-end
+include('possession.lua')
 
 if SERVER then
 
-    include('possession.lua')
     include('walkframe.lua')
     include('footsteps.lua')
     include('patrol.lua')
     include('chase.lua')
-    include('doors.lua')
-    --include('crawling.lua')
+    include('interaction.lua')
     include('jumpscare.lua')
 
     -- Basic
@@ -138,53 +122,6 @@ if SERVER then
         self.Width = self:BoundingRadius() * 0.1
 
         self.DamageTolerance = 0
-    end
-
-    function ENT:EntityInaccessible(ent)
-        if ent == self or ent == self:GetPossessor() then return true end
-        if self.Stunned or self.PounceStarted or self:IsPossessed() then return true end
-        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return true end
-        if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return true end
-        if IsValid(ent:GetNWEntity('2PlayFreddy')) or IsValid(ent:GetNWEntity('HidingSpotSB')) then return true end
-        if not (ent:IsPlayer() or ent:IsNextBot() or ent:IsNPC()) then return true end
-    end
-
-    function ENT:IsBeingLookedAt()
-        local players = player.GetHumans()
-        local isBeingLookedAt = false
-    
-        for i = 1, #players do
-            local ply = players[i]
-    
-            if self:GetPossessor() ~= ply then
-                local tr = util.TraceLine{
-                    start = self:GetPos(),
-                    endpos = ply:WorldSpaceCenter(),
-                    mask = 1,
-                    filter = function(self)
-                        return not self:IsNextBot() and not self:IsNPC()
-                    end
-                }
-                
-                if tr.Fraction < 1 or tr.Fraction > 0.1 then
-                    local viewEntity = ply:GetViewEntity()
-    
-                    if viewEntity:IsValid() then
-                        local fov = ply:GetFOV()
-                        local disp = (self:GetPos() - viewEntity:GetPos())
-                        local dist = disp:Length()
-                        local maxcos = math.abs(math.cos(math.acos(dist / math.sqrt(dist * dist + self.Width * self.Width)) + fov * (math.pi / 180)))
-                        
-                        if disp:GetNormalized():Dot(ply:EyeAngles():Forward()) > maxcos then
-                            isBeingLookedAt = true
-                            break
-                        end
-                    end
-                end
-            end
-        end
-    
-        return isBeingLookedAt
     end
 
     function ENT:CustomThink()
@@ -253,49 +190,51 @@ if SERVER then
         end
     end
     
-    function ENT:DoStunned()
-        if self.Stunned or self.StunDelay or self.PounceStarted or self.Luring then return end
-        
-        self.Moving = false
+    function ENT:EntityInaccessible(ent)
+        if ent == self or ent == self:GetPossessor() then return true end
+        if self.Stunned or self.PounceStarted or self:IsPossessed() then return true end
+        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return true end
+        if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return true end
+        if IsValid(ent:GetNWEntity('2PlayFreddy')) or IsValid(ent:GetNWEntity('HidingSpotSB')) then return true end
+        if not (ent:IsPlayer() or ent:IsNextBot() or ent:IsNPC()) then return true end
+    end
 
-        if self.OnStunned then
-            self:OnStunned()
+    function ENT:IsBeingLookedAt()
+        local players = player.GetHumans()
+        local isBeingLookedAt = false
+    
+        for i = 1, #players do
+            local ply = players[i]
+    
+            if self:GetPossessor() ~= ply then
+                local tr = util.TraceLine{
+                    start = self:GetPos(),
+                    endpos = ply:WorldSpaceCenter(),
+                    mask = 1,
+                    filter = function(self)
+                        return not self:IsNextBot() and not self:IsNPC()
+                    end
+                }
+                
+                if tr.Fraction < 1 or tr.Fraction > 0.1 then
+                    local viewEntity = ply:GetViewEntity()
+    
+                    if viewEntity:IsValid() then
+                        local fov = ply:GetFOV()
+                        local disp = (self:GetPos() - viewEntity:GetPos())
+                        local dist = disp:Length()
+                        local maxcos = math.abs(math.cos(math.acos(dist / math.sqrt(dist * dist + self.Width * self.Width)) + fov * (math.pi / 180)))
+                        
+                        if disp:GetNormalized():Dot(ply:EyeAngles():Forward()) > maxcos then
+                            isBeingLookedAt = true
+                            break
+                        end
+                    end
+                end
+            end
         end
-
-        self.DisableControls = true
-        self.VoiceDisabled = true
-        self.Stunned = true
-
-        self:SetAIDisabled(true)
-        
-        if not self.CustomStunSFX then
-            self:EmitSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. math.random(4) .. '.wav', 75, 100, 0.5)
-        end
-
-        self:DrG_Timer(10, function()
-            for i = 1, 4 do
-                self:StopSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. i .. '.wav')
-            end
-
-            if self.OnStunExit then
-                self:OnStunExit()
-            end
-
-            self.DisableControls = false
-            self.Stunned = false
-
-            if not self:HasEnemy() then
-                self.VoiceDisabled = false
-            end
-
-            self:SetAIDisabled(false)
-
-            self.StunDelay = true
-
-            self:DrG_Timer(1, function()
-                self.StunDelay = false
-            end)
-        end)
+    
+        return isBeingLookedAt
     end
 
     local ai_ignoreplayers = GetConVar('ai_ignoreplayers')
@@ -337,56 +276,6 @@ if SERVER then
                 self:SetLayerWeight(id, self:GetLayerWeight(id) + (1 / rate))
             end
         end)
-    end
-    
-    function ENT:OnTakeDamage(dmg)
-        self:SpotEntity(dmg:GetAttacker())
-
-        if not self.GradualDamaging or self:GetSkin() == 3 then return end
-
-        local num = dmg:GetDamage()
-        
-        self.DamageTolerance = self.DamageTolerance + num
-
-        if self.DamageTolerance > 400 then
-            self.DamageTolerance = 0 
-
-            self:SetSkin(self:GetSkin() + 1)
-        end
-    end
-
-    function ENT:OnDeath()
-        if not self.GradualDamaging then return end
-
-        self:SetSkin(3)
-    end
-
-    function ENT:OnRemove()
-        if self.Removed then
-            self:Removed()
-        end
-
-        if self.StopVoices then
-            self:StopVoices()
-        end
-
-        if self.CinTarget then
-            self:ExitCinematic(self.CinTarget)
-        end
-
-        for i = 1, 4 do
-            self:StopSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. i .. '.wav')
-        end
-
-        local soundDictionary = self.AnimEventSounds
-
-        if soundDictionary then
-            for name in pairs(soundDictionary) do
-                self:StopAnimSounds(name, false)
-            end
-        end
-
-        self:CancelJumpscare()
     end
 
     -- EventFrames
@@ -559,6 +448,104 @@ if SERVER then
 
         self.CinTarget = nil
     end
+
+    -- Damage
+       
+    function ENT:DoStunned()
+        if self.Stunned or self.StunDelay or self.PounceStarted or self.Luring then return end
+        
+        self.Moving = false
+
+        if self.OnStunned then
+            self:OnStunned()
+        end
+
+        self.DisableControls = true
+        self.VoiceDisabled = true
+        self.Stunned = true
+
+        self:SetAIDisabled(true)
+        
+        if not self.CustomStunSFX then
+            self:EmitSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. math.random(4) .. '.wav', 75, 100, 0.5)
+        end
+
+        self:DrG_Timer(10, function()
+            for i = 1, 4 do
+                self:StopSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. i .. '.wav')
+            end
+
+            if self.OnStunExit then
+                self:OnStunExit()
+            end
+
+            self.DisableControls = false
+            self.Stunned = false
+
+            if not self:HasEnemy() then
+                self.VoiceDisabled = false
+            end
+
+            self:SetAIDisabled(false)
+
+            self.StunDelay = true
+
+            self:DrG_Timer(1, function()
+                self.StunDelay = false
+            end)
+        end)
+    end
+
+    function ENT:OnTakeDamage(dmg)
+        self:SpotEntity(dmg:GetAttacker())
+
+        if not self.GradualDamaging or self:GetSkin() == 3 then return end
+
+        local num = dmg:GetDamage()
+        
+        self.DamageTolerance = self.DamageTolerance + num
+
+        if self.DamageTolerance > 400 then
+            self.DamageTolerance = 0 
+
+            self:SetSkin(self:GetSkin() + 1)
+        end
+    end
+
+    function ENT:OnDeath()
+        if not self.GradualDamaging then return end
+
+        self:SetSkin(3)
+    end
+
+    function ENT:OnRemove()
+        if self.Removed then
+            self:Removed()
+        end
+
+        if self.StopVoices then
+            self:StopVoices()
+        end
+
+        if self.CinTarget then
+            self:ExitCinematic(self.CinTarget)
+        end
+
+        for i = 1, 4 do
+            self:StopSound('whynotboi/securitybreach/base/bot/stunned/sfx_bot_status_stunned_lp_0' .. i .. '.wav')
+        end
+
+        local soundDictionary = self.AnimEventSounds
+
+        if soundDictionary then
+            for name in pairs(soundDictionary) do
+                self:StopAnimSounds(name, false)
+            end
+        end
+
+        self:CancelJumpscare()
+    end
+
 else
     function ENT:CustomInitialize() 
         self.BaseTable = scripted_ents.GetStored("drgbase_nextbot").t

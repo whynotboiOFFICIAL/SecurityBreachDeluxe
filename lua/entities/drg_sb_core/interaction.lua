@@ -1,5 +1,13 @@
 function ENT:DoorCode(door)
-    for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 60)) do
+    if self.DoorDelay then return end
+    
+    local range = 40
+
+    if self:IsPossessed() then
+        range = 60 
+    end
+
+    for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), range)) do
         if not IsValid(v) or v == self or self.DisableControls then continue end
         local classname = v:GetClass()
         
@@ -55,7 +63,6 @@ function ENT:DoorCode(door)
                     if self:IsPossessed() then
                         v:Fire('Close')
                     end
-                elseif not self.Charging then
                 end
                 
                 if not v:GetInternalVariable('m_bLocked') then

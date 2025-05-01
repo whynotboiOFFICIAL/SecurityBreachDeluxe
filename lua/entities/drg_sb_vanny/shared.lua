@@ -23,10 +23,6 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
 ENT.JumpAnimRate = 1
 
--- Speed -- 
-ENT.WalkSpeed = 0
-ENT.RunSpeed = 0
-
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/vanny/jumpscare/sfx_jumpScare_vanny.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/vanny'

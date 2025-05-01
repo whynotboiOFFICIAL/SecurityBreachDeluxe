@@ -22,7 +22,7 @@ CreateConVar('fnaf_sb_new_freddy_batteryconfig', 1, FCVAR_ARCHIVE, 'Glamrock Fre
 
 CreateConVar('fnaf_sb_new_chica_breaths', 1, FCVAR_ARCHIVE, 'Glamrock Chica Breathing', 0, 1)
 CreateConVar('fnaf_sb_new_chica_shred', 0, FCVAR_ARCHIVE, 'Glamrock Chica Guitar Shredding', 0, 1)
-CreateConVar('fnaf_sb_new_chica_valley', 0, FCVAR_ARCHIVE, 'Glamrock Chica Valley', 0, 1)
+CreateConVar('fnaf_sb_new_chica_valley', 0, FCVAR_ARCHIVE, 'Glamrock Chica Valley Voice', 0, 1)
 CreateConVar('fnaf_sb_new_chica_voiceattack', 0, FCVAR_ARCHIVE, 'Glamrock Chica Voicebox', 0, 1)
 CreateConVar('fnaf_sb_new_chica_canlure', 1, FCVAR_ARCHIVE, 'Glamrock Chica Eating', 0, 1)
 CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Possession Eating', 0, 1)
@@ -277,7 +277,7 @@ if CLIENT then
 			panel:CheckBox('Glamrock Chica Voicebox', 'fnaf_sb_new_chica_voiceattack')
             panel:ControlHelp('Glamrock Chica will be use her vocals to slow enemies and scare animatronics')
 			
-			panel:CheckBox('Glamrock Chica Valley', 'fnaf_sb_new_chica_valley')
+			panel:CheckBox('Glamrock Chica Valley Voice', 'fnaf_sb_new_chica_valley')
             panel:ControlHelp('Glamrock Chica uses her really annoying valley voice lines')
 			
 			panel:CheckBox('Glamrock Chica Eating', 'fnaf_sb_new_chica_canlure')
@@ -306,7 +306,7 @@ if CLIENT then
             panel:ControlHelp('Montgomery Gator will jump around the map at random')
 
 			panel:CheckBox('Montgomery Gator Stun', 'fnaf_sb_new_monty_enablestun')
-            panel:ControlHelp('Montgomery Gator will be stunned like the other animatronics')	
+            panel:ControlHelp('Montgomery Gator can be stunned like the other animatronics')	
 
 			-- Roxanne Wolf
 

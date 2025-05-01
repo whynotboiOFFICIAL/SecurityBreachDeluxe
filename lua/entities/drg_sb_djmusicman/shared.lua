@@ -359,16 +359,6 @@ if SERVER then
     end
 
 else
-	matproxy.Add( {
-		name = 'SBDELUXEDJMMEYEFRAME',
-	
-		init = function( self, mat, values )
-			self.ResultTO = values.resultvar
-		end,
-		bind = function( self, mat, ent )
-            mat:SetInt( self.ResultTO, ent:GetNWInt('eyeframe') )
-	   end 
-	} )
 end
 
 -- DO NOT TOUCH --
