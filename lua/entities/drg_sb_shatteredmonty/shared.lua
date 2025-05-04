@@ -9,7 +9,6 @@ ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(15, 15, 25)
 ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
-ENT.PounceNerf = 1.3
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.DynamicListening = true

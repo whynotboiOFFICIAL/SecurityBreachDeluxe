@@ -77,60 +77,6 @@ function ENT:OnRangeAttack(ent)
     end
 end
 
-function ENT:OnLandOnGround()
-    if self.PounceStarted then
-        self.Pouncing = false
-
-        self:CallInCoroutine(function(self,delay)
-            if self.PounceLandSounds then
-                local snd = self.PounceLandSounds[math.random(#self.PounceLandSounds)]
-        
-                local path = self.VOPath or self.PouncePath or self.SFXPath
-
-                self:EmitSound(path .. snd)
-            end
-
-            if self.PounceLandVox then
-                self:StopVoices()
-                self:PlayVoiceLine(self.PounceLandVox[math.random(#self.PounceLandVox)])
-            end
-
-            self:PlaySequenceAndMove('pounceland')
-        end)
-
-        self.PounceStarted = false
-        self.Moving = false
-        self.Stunned = true
-
-        self.JumpAnimation = 'idle'
-        self.IdleAnimation = 'pouncestunloop'
-
-        self:DrG_Timer(5, function()
-            self:CallInCoroutine(function(self,delay)
-                self:PlaySequenceAndMove('pouncestuntoidle')
-                
-                if self.PreAnim then
-                    self.IdleAnimation = 'preidle'
-                else
-                    self.IdleAnimation = 'idle'
-                end
-
-                self.DisableControls = false
-                self.Stunned = false
-                
-                self.VoiceDisabled = false
-
-                self:SetAIDisabled(false)
-                self:SetMaxYawRate(250)
-                
-                self:DrG_Timer(5, function()
-                    self.RangeTick = false
-                end)
-            end)
-        end)
-    end
-end
-
 -- Returns
 
 function ENT:SkyTrace()
@@ -199,19 +145,77 @@ function ENT:PounceStart()
 
     self:SetMaxYawRate(0)
 
-    self:SetPos(self:GetPos() + Vector(0, 0, 30))
+    timer.Simple(0.1, function()
+        self:SetPos(self:GetPos() + Vector(0, 0, 30))
 
-    local nerf = self.PounceNerf or 1
-
-    local fnerfed = 800 / nerf
-
-    local znerfed = 300 / nerf
-
-    self:SetVelocity(self:GetForward() * fnerfed + Vector(0, 0, znerfed))
+        self:SetVelocity(self:GetForward() * 1000 + Vector(0, 0, 150))
+    end)
     
-    self:PlaySequence('pouncejumpin')
-
     self.Pouncing = true
+
+    self:PlaySequenceAndMove('pouncejumpin', function()
+        if self._InterruptSeq then
+            return true
+        end
+    end)
+end
+
+function ENT:OnLandOnGround()
+    if self.PounceStarted then
+        self.Pouncing = false
+
+        self:CallInCoroutine(function(self,delay)
+            if self.PounceLandSounds then
+                local snd = self.PounceLandSounds[math.random(#self.PounceLandSounds)]
+        
+                local path = self.VOPath or self.PouncePath or self.SFXPath
+
+                self:EmitSound(path .. snd)
+            end
+
+            if self.PounceLandVox then
+                self:StopVoices()
+                self:PlayVoiceLine(self.PounceLandVox[math.random(#self.PounceLandVox)])
+            end
+
+            self._InterruptSeq = true
+
+            self:PlaySequenceAndMove('pounceland')
+            
+            self._InterruptSeq = false
+        end)
+
+        self.PounceStarted = false
+        self.Moving = false
+        self.Stunned = true
+
+        self.JumpAnimation = 'idle'
+        self.IdleAnimation = 'pouncestunloop'
+
+        self:DrG_Timer(5, function()
+            self:CallInCoroutine(function(self,delay)
+                self:PlaySequenceAndMove('pouncestuntoidle')
+                
+                if self.PreAnim then
+                    self.IdleAnimation = 'preidle'
+                else
+                    self.IdleAnimation = 'idle'
+                end
+
+                self.DisableControls = false
+                self.Stunned = false
+                
+                self.VoiceDisabled = false
+
+                self:SetAIDisabled(false)
+                self:SetMaxYawRate(250)
+                
+                self:DrG_Timer(5, function()
+                    self.RangeTick = false
+                end)
+            end)
+        end)
+    end
 end
 
 function ENT:JumpAttack()

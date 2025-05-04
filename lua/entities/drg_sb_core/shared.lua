@@ -14,7 +14,7 @@ ENT.RunSpeed = 200
 -- AI --
 ENT.Omniscient = false
 ENT.SpotDuration = 30
-ENT.RangeAttackRange = 600
+ENT.RangeAttackRange = 150
 ENT.MeleeAttackRange = 60
 ENT.ReachEnemyRange = 60
 ENT.AvoidEnemyRange = 0
