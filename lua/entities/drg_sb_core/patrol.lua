@@ -94,6 +94,11 @@ function ENT:RespondToSound(pos)
 
         self:DrG_Timer(0.1, function()
             local vox = self.ListeningVox or self.HighVox
+            
+            if self.CanSpeak then
+                vox = self.ScroakVox
+            end
+            
             if vox then
                 self:PlayVoiceLine(vox[math.random(#vox)])
             end
