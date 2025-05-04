@@ -50,13 +50,15 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self.Type = math.random(3)
-        
-        self.WalkSpeed = 0
-        self.RunSpeed = 0
-
+       
         self.HW2Jumpscare =  GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
         self.DisableFreezeOnSight = GetConVar('fnaf_sb_new_endo_chase'):GetBool()
 
+        if not self.DisableFreezeOnSight then     
+            self.WalkSpeed = 0
+            self.RunSpeed = 0
+        end
+        
         local appearance = GetConVar('fnaf_sb_new_endo_appearance'):GetInt()
 
         if appearance == 4 then
