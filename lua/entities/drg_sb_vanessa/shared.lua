@@ -11,7 +11,6 @@ ENT.BloodColor = BLOOD_COLOR_RED
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.CustomStunSFX = true
-ENT.DynamicListening = true
 
 -- Stats --
 ENT.SpawnHealth = 100
@@ -52,6 +51,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
+
         self.OldFace = GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool()
         self.OldVox = GetConVar('fnaf_sb_new_vanessa_oldvo'):GetBool()
         self.CanStun = GetConVar('fnaf_sb_new_vanessa_lightstun'):GetBool()

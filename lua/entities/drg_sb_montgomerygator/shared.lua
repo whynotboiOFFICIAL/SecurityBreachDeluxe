@@ -10,7 +10,6 @@ ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.CanBeSummoned = true
-ENT.DynamicListening = true
 ENT.HidingSpotSearch = true
 ENT.SearchID = 'monty'
 
@@ -75,6 +74,7 @@ if SERVER then
     function ENT:CustomInitialize()
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
         self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         self.PreAnim = GetConVar('fnaf_sb_new_traileranims'):GetBool()
 
         self.GrowlEnabled = GetConVar('fnaf_sb_new_monty_growls'):GetBool()

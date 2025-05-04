@@ -3,6 +3,7 @@ local useplyfov = CreateClientConVar('fnaf_sb_new_fov_camera', 0, true, false, '
 
 CreateConVar('fnaf_sb_new_voicelines', 1, FCVAR_ARCHIVE, 'Use Voice Lines', 0, 1)
 CreateConVar('fnaf_sb_new_damaging', 1, FCVAR_ARCHIVE, 'Gradual Damging', 0, 1)
+CreateConVar('fnaf_sb_new_sounddetect', 1, FCVAR_ARCHIVE, 'Dynamic Sound Detection', 0, 1)
 CreateConVar('fnaf_sb_new_hw2_jumpscares', 0, FCVAR_ARCHIVE, 'Help Wanted 2 Jumpscares', 0, 1)
 CreateConVar('fnaf_sb_new_betaeyes', 0, FCVAR_ARCHIVE, 'Beta Eye Glows', 0, 1)
 CreateConVar('fnaf_sb_new_traileranims', 0, FCVAR_ARCHIVE, 'Gameplay Trailer Animations', 0, 1)
@@ -213,6 +214,10 @@ if CLIENT then
 			panel:CheckBox('Gradual Damaging', 'fnaf_sb_new_damaging')
 			panel:ControlHelp('Characters get dirtier the more they take damage')
 			panel:ControlHelp('(This will only apply to the main 4 Glamrocks)')
+
+			panel:CheckBox('Dynamic Sound Detecion', 'fnaf_sb_new_sounddetect')
+			panel:ControlHelp('Characters will respond to sound instead of immediately spotting you')
+			panel:ControlHelp('(This won\'t apply to every NPC)')
 
             panel:CheckBox('Help Wanted 2 Jumpscares', 'fnaf_sb_new_hw2_jumpscares')
             panel:ControlHelp('Characters that have jumpscares in Help Wanted 2 will switch to those respective jumpscares')

@@ -9,7 +9,6 @@ ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(8, 8, 75)
 ENT.BloodColor = BLOOD_COLOR_RED
 ENT.CanBeSummoned = true
-ENT.DynamicListening = true
 
 -- Stats --
 ENT.SpawnHealth = 150
@@ -51,6 +50,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
+        
         self.PreJumpscare = GetConVar('fnaf_sb_new_vanny_prejumpscare'):GetBool()
         self.OldVox = GetConVar('fnaf_sb_new_vanny_oldvo'):GetBool()
         self.SpotAnim = GetConVar('fnaf_sb_new_vanny_spotanim'):GetInt()

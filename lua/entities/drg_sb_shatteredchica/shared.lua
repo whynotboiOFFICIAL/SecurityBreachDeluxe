@@ -11,7 +11,6 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.HidingSpotSearch = true
-ENT.DynamicListening = true
 ENT.SearchID = 'chica'
 
 -- Stats --
@@ -86,6 +85,7 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
         self.CanSpeak = GetConVar('fnaf_sb_new_shatteredchica_hasvoice'):GetBool()

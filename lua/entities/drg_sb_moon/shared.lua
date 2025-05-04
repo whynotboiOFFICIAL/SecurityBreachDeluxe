@@ -9,7 +9,6 @@ ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
 ENT.CanBeStunned = true
-ENT.DynamicListening = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -101,6 +100,7 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self:Timer(0, function()
+            self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
             self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
             self.MoonRun = GetConVar('fnaf_sb_new_moon_userun'):GetBool()
@@ -233,7 +233,7 @@ if SERVER then
         if self.Stunned then return end
 
         if self.CanFlashStun then
-            if self:BeingFlashed() and not self.Shaking then
+            if self:BeingFlashed() and not self.Shaking and not IsValid(self.CurrentVictim) then
                 self.Shaking = true
 
                 self:AddGestureSequence(self:LookupSequence('shake'), false)

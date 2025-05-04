@@ -92,7 +92,7 @@ if SERVER then
 
             self.Hostile = true
             self.CanBeSummoned = true
-            self.DynamicListening = true
+            self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         end
     end
 
@@ -521,6 +521,8 @@ if SERVER then
             self:PlaySequenceAndMove('stunin') 
         end)
 
+        self.Moving = false
+
         self.IdleAnimation = 'stunloop'
     end
 
@@ -614,7 +616,7 @@ if SERVER then
         end)
 
         self.Hostile = true
-        self.DynamicListening = true
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
 
         self:SetDefaultRelationship(D_HT)
         

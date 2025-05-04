@@ -145,7 +145,7 @@ function ENT:PounceStart()
 
     self:SetMaxYawRate(0)
 
-    timer.Simple(0.1, function()
+    self:DrG_Timer(0.1, function()
         self:SetPos(self:GetPos() + Vector(0, 0, 30))
 
         self:SetVelocity(self:GetForward() * 1000 + Vector(0, 0, 150))

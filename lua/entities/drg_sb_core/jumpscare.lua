@@ -10,6 +10,7 @@ function ENT:JumpscareEntity(entity, alt)
     entity:SetPos(self:GetPos() + self:GetForward() * 35)
     
     self.ForceCycle = false
+    self._InterruptSeq = true
     
     self.CurrentVictim = entity
     entity:AddFlags(FL_NOTARGET)
@@ -42,6 +43,8 @@ function ENT:JumpscareEntity(entity, alt)
     else
         self:Jumpscare()
     end
+
+    self._InterruptSeq = false
 
     if !IsValid(self.CurrentVictim) then return end
     

@@ -11,7 +11,6 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
-ENT.DynamicListening = true
 ENT.HidingSpotSearch = true
 ENT.SearchID = 'roxy'
 
@@ -81,6 +80,7 @@ if SERVER then
     function ENT:CustomInitialize()
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
         self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         self.PreAnim = GetConVar('fnaf_sb_new_traileranims'):GetBool()
 
         self.DoPepTalks = GetConVar('fnaf_sb_new_roxy_peptalk'):GetBool()

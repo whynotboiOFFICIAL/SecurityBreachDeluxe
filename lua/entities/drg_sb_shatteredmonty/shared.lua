@@ -11,7 +11,6 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanPounce = true
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
-ENT.DynamicListening = true
 ENT.HidingSpotSearch = true
 
 -- Stats --
@@ -74,6 +73,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
+        
         self.CanPounce = GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool()
 
         if GetConVar('fnaf_sb_new_shatteredmonty_haslegs'):GetBool() then
