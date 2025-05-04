@@ -1,38 +1,39 @@
-local idlevox = {
+ENT.SearchingVox = {
     'MONTY_00005',
     'MONTY_00006',
     'MONTY_00007',
-    'MONTY_00008',
     'MONTY_00009',
-    'MONTY_00010',
-    'MONTY_00011',
-    'MONTY_00012',
-    'MONTY_00023'
+    'MONTY_00010'
 }
 
-local growlvox = {
-    'MONTY_00001_01',
-    'MONTY_00001_02',
-    'MONTY_00001_03',
-    'MONTY_00001_04',
-    'MONTY_00001_05',
-    'MONTY_00001_06'
+ENT.ListeningVox = {
+    'MONTY_00015'
 }
 
-local spotvox = {
+ENT.SpotVox = {
     'MONTY_00013',
     'MONTY_00014',
-    'MONTY_00015',
     'MONTY_00016',
     'MONTY_00017',
     'MONTY_00018',
-    'MONTY_00019',
     'MONTY_00020',
-    'MONTY_00021',
-    'MONTY_00022'
+    'MONTY_00021'
 }
 
-local stunvox = {
+ENT.PursuitVox = {
+    'MONTY_00017',
+    'MONTY_00018',
+    'MONTY_00019',
+    'MONTY_00020'
+}
+
+ENT.LostVox = {
+    'MONTY_00008',
+    'MONTY_00011',
+    'MONTY_00012'
+}
+
+ENT.StunVox = {
     'MONTY_00025_01',
     'MONTY_00025_02',
     'MONTY_00025_03'
@@ -69,6 +70,15 @@ ENT.PounceLandVox = {
     'MONTY_00026_12'
 }
 
+local growlvox = {
+    'MONTY_00001_01',
+    'MONTY_00001_02',
+    'MONTY_00001_03',
+    'MONTY_00001_04',
+    'MONTY_00001_05',
+    'MONTY_00001_06'
+}
+
 if SERVER then
     function ENT:VoiceThink()
         if self.VoiceTick or self.VoiceDisabled then return end
@@ -78,21 +88,19 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            self.Talking = true
+            local table = self.SearchingVox
 
-            local snd = idlevox[math.random(#idlevox)]
+            --[[if self.Chasing then
+                table = self.PursuitVox
+            end]]--
 
+            local snd = table[math.random(#table)]
+  
             local path = self.SFXPath
 
             self:StopGrowls()
         
             self:PlayVoiceLine(snd, true)
-
-            local dur = SoundDuration(path .. '/vo/' .. snd .. '.wav')
-                
-            self:DrG_Timer(dur, function()
-                self.Talking = false
-            end)
         end
 
         self:DrG_Timer(timer, function()
@@ -107,7 +115,7 @@ if SERVER then
 
         local timer = 4
 
-        self:PlayVoiceLine(growlvox[math.random(#growlvox)])    
+        self:PlayVoiceLine(growlvox[math.random(#growlvox)])   
 
         self:DrG_Timer(timer, function()
             self.GrowlTick = false
@@ -139,50 +147,40 @@ if SERVER then
     end
     
     function ENT:StopVoices(mode)
-        for i = 1, #idlevox do
-            self:StopVoiceLine(idlevox[i])
+        for i = 1, #self.SearchingVox do
+            self:StopVoiceLine(self.SearchingVox[i])
         end
 
+        for i = 1, #self.ListeningVox do
+            self:StopVoiceLine(self.ListeningVox[i])
+        end
+
+        for i = 1, #self.LostVox do
+            self:StopVoiceLine(self.LostVox[i])
+        end
+        
         self:StopGrowls()
 
         if mode == 1 then return end
 
-        for i = 1, #spotvox do
-            self:StopVoiceLine(spotvox[i])
+        for i = 1, #self.SpotVox do
+            self:StopVoiceLine(self.SpotVox[i])
+        end
+        
+        for i = 1, #self.PursuitVox do
+            self:StopVoiceLine(self.PursuitVox[i])
         end
         
         if mode == 2 then return end
 
-        for i = 1, #stunvox do
-            self:StopVoiceLine(stunvox[i])
+        for i = 1, #self.StunVox do
+            self:StopVoiceLine(self.StunVox[i])
         end
     end
     
     function ENT:StopGrowls()
         for i = 1, #growlvox do
             self:StopVoiceLine(growlvox[i])
-        end
-    end
-
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-
-        self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
-        end)
-
-        self:DrG_Timer(0.05, function()
-            self:StopVoices(1)
-
-            self.VoiceDisabled = true
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
-        
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceDisabled = false
         end
     end
 end

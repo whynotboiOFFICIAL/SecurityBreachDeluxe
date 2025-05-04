@@ -1,8 +1,13 @@
+-- Enemy Stuff
+
 function ENT:OnNewEnemy(ent)
     if self.OnSpotEnemy then
         self:OnSpotEnemy(ent)
     end
 
+    self.Chasing = true
+    self.Luring = false
+    
     if (ent.IsDrGNextbot and ent:IsPossessed()) then
         ent = ent:GetPossessor()
     end
@@ -14,6 +19,8 @@ function ENT:OnLastEnemy(ent)
     if self.OnLoseEnemy then
         self:OnLoseEnemy(ent)
     end
+
+    self.Chasing = false
 
     if self.Stunned or not self.HidingSpotSearch then return end
 
@@ -40,7 +47,10 @@ function ENT:OnChaseEnemy()
 end
 
 function ENT:OnRangeAttack(ent)
-    if not (self.CanPounce or self.Voicebox) or self.RangeTick or self.PounceStarted or self.Stunned or self.StunDelay or self.VoiceboxDelay then return end
+    if not (self.CanPounce or self.Voicebox) then return end
+    if self.RangeTick or self.PounceStarted then return end
+    if self.Stunned or self.Luring then return end
+    if self.StunDelay or self.VoiceboxDelay then return end
 
     self.RangeTick = true
 
@@ -107,11 +117,9 @@ function ENT:OnLandOnGround()
 
                 self.DisableControls = false
                 self.Stunned = false
-
-                if not self:HasEnemy() then
-                    self.VoiceDisabled = false
-                end
                 
+                self.VoiceDisabled = false
+
                 self:SetAIDisabled(false)
                 self:SetMaxYawRate(250)
                 
@@ -123,46 +131,33 @@ function ENT:OnLandOnGround()
     end
 end
 
-function ENT:UseVoicebox()
-    self.VoiceboxDelay = true
+-- Returns
 
-    self:StopVoices()
+function ENT:SkyTrace()
+    local startpS = self:WorldSpaceCenter()
+    local endpos = Vector(0, 0, 1e9)
+    local tr = util.QuickTrace(startpS, endpos, self)
+    --debugoverlay.Line( startpS, startpS + endpos, 1, Color( 255, 255, 255 ), false )
+    
+    if tr.HitSky then
+        return true
+    end
+end
 
-    self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/voicebox/sfx_chicaVoicebox_screech_0' .. math.random(3) .. '.wav')
+function ENT:GetRandomPosUnderSky(min, max)
+    while true do
+        local pos = self:RandomPos(min, max)
+        local tr = util.QuickTrace(pos, pos + vector_up * 1e9, self)
 
-    for k,v in pairs(ents.FindInSphere(self:WorldSpaceCenter(), 600)) do
-        if (v == self) or (v == self:GetPossessor()) or not (v:IsPlayer() or v.IsDrGNextbot) or (GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
-        if v.Stunned or v.PounceStared or v.Luring or v.FoundRecharge then continue end
-
-        if v:IsPlayer() then
-            v:SetNWBool('SBVoiceBoxStun', true)
-
-            timer.Simple(5, function()
-                if not IsValid(v) then return end
-
-                v:SetNWBool('SBVoiceBoxStun', false)
-            end)
-        end
-
-        if v.IsDrGNextbot then
-            if not v:IsInFaction('FACTION_ANIMATRONIC') then continue end
-
-            v:CallInCoroutine(function(self,delay)
-                v.ForceRun = true
-
-                v:GoTo(v:RandomPos(900, 1000))
-
-                if not v.Alerted then
-                    v.ForceRun = false
-                end
-            end)
+        if tr and tr.HitSky then
+            return pos
         end
     end
-    
-    self:DrG_Timer(15, function()
-        self.VoiceboxDelay = false
-    end)
+
+    return self:RandomPos(min, max)
 end
+
+-- Attacks
 
 function ENT:PounceStart()
     self:EmitSound('whynotboi/securitybreach/base/bot/leap/fly_bot_leap_prep_0' .. math.random(3) .. '.wav', 75, 100, 0.5)
@@ -219,30 +214,6 @@ function ENT:PounceStart()
     self.Pouncing = true
 end
 
-function ENT:SkyTrace()
-    local startpS = self:WorldSpaceCenter()
-    local endpos = Vector(0, 0, 1e9)
-    local tr = util.QuickTrace(startpS, endpos, self)
-    --debugoverlay.Line( startpS, startpS + endpos, 1, Color( 255, 255, 255 ), false )
-    
-    if tr.HitSky then
-        return true
-    end
-end
-
-function ENT:GetRandomPosUnderSky(min, max)
-    while true do
-        local pos = self:RandomPos(min, max)
-        local tr = util.QuickTrace(pos, pos + vector_up * 1e9, self)
-
-        if tr and tr.HitSky then
-            return pos
-        end
-    end
-
-    return self:RandomPos(min, max)
-end
-
 function ENT:JumpAttack()
     if not self:SkyTrace() then return end
 
@@ -269,9 +240,43 @@ function ENT:JumpAttack()
     self.VoiceDisabled = false
 end
 
-function ENT:ShouldRun()
-    if self:HasEnemy() then return true end
-    if self.ForceRun then return true end
-    local patrol = self:GetPatrol()
-    return IsValid(patrol) and patrol:ShouldRun(self)
+function ENT:UseVoicebox()
+    self.VoiceboxDelay = true
+
+    self:StopVoices()
+
+    self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/voicebox/sfx_chicaVoicebox_screech_0' .. math.random(3) .. '.wav')
+
+    for k,v in pairs(ents.FindInSphere(self:WorldSpaceCenter(), 600)) do
+        if (v == self) or (v == self:GetPossessor()) or not (v:IsPlayer() or v.IsDrGNextbot) or (self:GetAIDisabled()) or v:Health() < 1 then continue end
+        if v.Stunned or v.PounceStared or v.Luring or v.FoundRecharge or v.NullifyVoicebox then continue end
+
+        if v:IsPlayer() then
+            v:SetNWBool('SBVoiceBoxStun', true)
+
+            timer.Simple(5, function()
+                if not IsValid(v) then return end
+
+                v:SetNWBool('SBVoiceBoxStun', false)
+            end)
+        end
+
+        if v.IsDrGNextbot then
+            if not v:IsInFaction('FACTION_ANIMATRONIC') then continue end
+
+            v:CallInCoroutine(function(self,delay)
+                v.ForceRun = true
+
+                v:GoTo(v:RandomPos(900, 1000))
+
+                if not v.Alerted then
+                    v.ForceRun = false
+                end
+            end)
+        end
+    end
+    
+    self:DrG_Timer(15, function()
+        self.VoiceboxDelay = false
+    end)
 end

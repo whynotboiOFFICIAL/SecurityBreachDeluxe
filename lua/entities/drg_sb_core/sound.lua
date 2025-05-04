@@ -102,7 +102,7 @@ if SERVER then
     -- Voice 
 
     function ENT:PlayVoiceLine(vo, anim)
-        if not GetConVar('fnaf_sb_new_voicelines'):GetBool() then return end
+        if not GetConVar('fnaf_sb_new_voicelines'):GetBool() or self.Talking then return end
 
         local path = self.VOPath or self.SFXPath
 
@@ -112,6 +112,8 @@ if SERVER then
 
         self:EmitSound(snd)
 
+        local dur = SoundDuration(snd)
+        
         if not anim then return end
 
         local anim = self:AddGestureSequence(self:LookupSequence(vo))
@@ -127,9 +129,20 @@ if SERVER then
 
         self:StopSound(path .. '/vo/' .. vo .. '.wav')
 
-        for i = 0, 5 do
-            self:SetLayerCycle(i, 1)
+        local layer = 0
+
+        local seq = self:LookupSequence(vo)
+
+        local layer0seq = self:GetLayerSequence(0)
+        local layer1seq = self:GetLayerSequence(1)
+
+        if (layer0seq or layer1seq) ~= seq then return end
+        
+        if layer1seq == seq then
+            layer = 1
         end
+
+        self:SetLayerCycle(layer, 1)
     end
 
     local EnableHearing = CreateConVar("drgbase_ai_hearing", "1", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED})

@@ -21,6 +21,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.HasVoice = GetConVar('fnaf_sb_new_cleanerbot_voice'):GetBool()
+        
         self.CurrentPath = 1
         self.AlertPhase = 1
 
@@ -68,7 +70,7 @@ if SERVER then
     end
     
     function ENT:AddCustomThink()
-        if self.Stunned or GetConVar('ai_disabled'):GetBool() then return end
+        if self.Stunned or self:GetAIDisabled() then return end
 
         if IsValid(self.LockEntity) then
             self:FaceInstant(self.LockEntity)
@@ -118,7 +120,7 @@ if SERVER then
         self.WalkSpeed = 0
         self.RunSpeed = 0 
 
-        if GetConVar('fnaf_sb_new_cleanerbot_voice'):GetBool() then
+        if self.HasVoice then
             self:PlayVoiceLine(voices[self.AlertPhase])
         end
         

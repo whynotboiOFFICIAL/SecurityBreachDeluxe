@@ -1,10 +1,10 @@
-local vox = {
+ENT.SearchingVox = {
     'MONTY_00002_01',
     'MONTY_00002_02',
     'MONTY_00002_03'
 }
 
-local stunvox = {
+ENT.StunVox = {
     'MONTY_00025_01',
     'MONTY_00025_02',
     'MONTY_00025_03'
@@ -49,42 +49,32 @@ if SERVER then
 
         local timer = math.random(15, 30)
 
-        self:PlayVoiceLine(vox[math.random(#vox)], false)
+        if math.random(1,10) > 3 then
+            local table = self.SearchingVox
+
+            --[[if self.Chasing then
+                table = self.PursuitVox
+            end]]--
+
+            local snd = table[math.random(#table)]
+  
+            self:PlayVoiceLine(snd, true)
+        end
 
         self:DrG_Timer(timer, function()
             self.VoiceTick = false
         end)
     end
 
-    function ENT:OnStunned()
-        self:StopVoices()
-
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunin') 
-        end)
-
-        self:PlayVoiceLine(stunvox[math.random(#stunvox)], false)
-
-        self.IdleAnimation = 'stunloop'
-    end
-
-    function ENT:OnStunExit()
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunout') 
-        end)
-
-        self.IdleAnimation = 'idle'
-    end
-    
     function ENT:StopVoices(mode)
-        for i = 1, #vox do
-            self:StopVoiceLine(vox[i])
+        for i = 1, #self.SearchingVox do
+            self:StopVoiceLine(self.SearchingVox[i])
         end
 
         if mode == 1 then return end
 
-        for i = 1, #stunvox do
-            self:StopVoiceLine(stunvox[i])
+        for i = 1, #self.StunVox do
+            self:StopVoiceLine(self.StunVox[i])
         end
     end
 

@@ -40,11 +40,22 @@ end
 
 local canlure = {
     drg_sb_glamrockchica = true,
-    drg_sb_shatteredchica = true
+    drg_sb_shatteredchica = true,
+    drg_sb_ruin_chica = true
 }
 
 local function CanLure(ent)
-    return canlure[ent:GetClass()] == true
+    local lurable = canlure[ent:GetClass()]
+    
+    if lurable and IsValid(ent) then
+        if ent:IsPossessed() and ent.PlayerEating then
+            return true
+        end
+
+        if not ent:IsPossessed() and ent.AIEating then
+            return true
+        end
+    end
 end
 
 function ENT:LureCheck()
@@ -54,11 +65,9 @@ function ENT:LureCheck()
 
     for k,v in pairs(ents.FindInSphere(self:WorldSpaceCenter(), 600)) do
         if (v == self) or not (v:IsNPC() or v:IsNextBot()) or (v:IsNPC() or v:IsNextBot() and GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
-        if v:GetClass() == 'drg_sb_glamrockchica' and (not v:IsPossessed() and not GetConVar('fnaf_sb_new_chica_canlure'):GetBool()) or (v:IsPossessed() and not GetConVar('fnaf_sb_new_chica_playereat'):GetBool()) then continue end
-        if v:GetClass() == 'drg_sb_shatteredchica' and (not v:IsPossessed() and not GetConVar('fnaf_sb_new_shatteredchica_canlure'):GetBool()) or (v:IsPossessed() and not GetConVar('fnaf_sb_new_shatteredchica_playereat'):GetBool()) then continue end
 
         if CanLure(v) and not v.Luring and not v.Stunned then
-            v:LuredTo(self)
+            v:LuredToMix(self)
 
             self.BeingDevoured = true
             break

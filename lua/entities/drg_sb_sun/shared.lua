@@ -23,7 +23,9 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
 ENT.JumpAnimRate = 1
 
-ENT.UseWalkframes = true
+-- Speed --
+ENT.WalkSpeed = 150
+ENT.RunSpeed = 150
 
 -- Sounds --
 ENT.DisableMat = true
@@ -80,58 +82,6 @@ if SERVER then
 
     -- Basic --
 
-    function ENT:SpotEntity(ent)
-        if self:IsPossessed() then return end
-        if self:EntityInaccessible(ent) then return end
-        if IsValid(self.Target) then return end
-        
-        self:PlayVoiceLine('SUN_00001')
-
-        self.Target = ent
-    end
-    
-    function ENT:LoseEntity(ent)
-        if self.Target == ent then
-            self.Target = nil
-        end
-
-        self.BaseClass.LoseEntity(self, ent)
-    end
-
-    function ENT:JumpscareEntity(ent)
-        if (self.AttendantType == 0 and self.SunAnger > 5) or self.AttendantType == 1 then
-            self.BaseClass.JumpscareEntity(self, ent)
-        end
-    end
-
-    function ENT:Jumpscare()
-        if self.JumpscareSound then
-            self:EmitSound(self.JumpscareSound)
-        end
-    
-        self:RemoveAllGestures()
-    
-        local anim = 'jumpscare'
-
-        if self.AttendantType == 1 then
-            if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-                anim = 'moonjumpscarehw'
-            else
-                anim = 'moonjumpscare'
-            end
-        end
-
-        self:PlaySequenceAndMove(anim)
-
-        if self.AttendantType == 0 then
-            self:PlayVoiceLine('SUN_HW2_00067')
-        end
-      
-        if not GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool() then
-            self.SunAnger = 0
-        end
-    end
-
     function ENT:CustomInitialize()
         self:Timer(0, function()
             self.Target = nil
@@ -139,12 +89,12 @@ if SERVER then
             self.loco:SetAcceleration(3000)
             self.loco:SetDeceleration(0)
 
+            self.AlwaysAngry = GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool()
+            
             self.SunAnger = 0
 
-            if GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool() then
+            if self.AlwaysAngry then
                 self.SunAnger = 6
-            else
-                self.SunAnger = 0
             end
     
             self:EmitSound('whynotboi/securitybreach/base/sun/mech/sfx_sunman_mech_lp.wav', 75, 100, 0.45)
@@ -159,8 +109,53 @@ if SERVER then
         self.IdleCycles = 0
     end
 
-    function ENT:OnReachedPatrol()
-	end
+    function ENT:SpotEntity(ent)
+        if self:IsPossessed() then return end
+        if self:EntityInaccessible(ent) then return end
+        if IsValid(self.Target) then return end
+        
+        if self.AlwaysAngry then
+            self:PlayVoiceLine(self.AngerVox[math.random(7,9)], false)
+        else
+            self:PlayVoiceLine('SUN_00001')
+        end
+        
+        self.Target = ent
+    end
+    
+    function ENT:LoseEntity(ent)
+        if self.Target == ent then
+            self.Target = nil
+        end
+
+        self.BaseClass.LoseEntity(self, ent)
+    end
+
+    function ENT:JumpscareEntity(ent)
+        if self.SunAnger > 5 then
+            self.BaseClass.JumpscareEntity(self, ent)
+        end
+    end
+
+    function ENT:Jumpscare()
+        if self.JumpscareSound then
+            self:EmitSound(self.JumpscareSound)
+        end
+    
+        self:RemoveAllGestures()
+    
+        local anim = 'jumpscare'
+
+        self:PlaySequenceAndMove(anim)
+
+        self:PlayVoiceLine('SUN_HW2_00067')
+
+        if not self.AlwaysAngry then
+            self.SunAnger = 0
+
+            self.ForceRun = false
+        end
+    end
 
     function ENT:GrabEntity(ply)
         self:EnterCinematic(ply)
@@ -220,7 +215,7 @@ if SERVER then
 
         local plyDist = plyPos:Distance(pos)
 
-        if plyPos:Distance(self.SpawnPosition) > 180 then
+        if plyPos:Distance(self.SpawnPosition) > 120 then
             self.IsBlocking = false
         end
 
@@ -230,7 +225,11 @@ if SERVER then
 
         if plyDist > 100 then
             if self.SunAnger > 5 then
-                self.WalkAnimation = 'moonrun'
+                self:SetMovement(150, 230)
+                
+                self.ForceRun = true
+                
+                self.RunAnimation = 'moonrun'
             else
                 self.WalkAnimation = 'walk'
 
@@ -335,6 +334,28 @@ if SERVER then
         return radians
     end
 
+    function ENT:OnStunned()
+        self:StopVoices()
+        
+        self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)], false)
+
+        if self.SunWarned then
+            self.SunWarned = false
+        end
+
+        self.SunAnger = self.SunAnger + 1
+
+        self.IdleAnimation = 'idlesad'
+    end
+
+    function ENT:OnStunExit()
+        self.IdleAnimation = 'idle'
+
+        if self.SunAnger > 5 then
+            self:PlayVoiceLine(self.AngerVox[math.random(7,9)], false)
+        end
+    end
+    
     function ENT:OnDeath()
     end
     
@@ -362,7 +383,7 @@ if SERVER then
 
             local ent = self.Target
 
-            if not IsValid(ent) and IsValid(self.HoldEnt) then
+            if (not IsValid(ent) and IsValid(self.HoldEnt)) or self:IsPossessed() then
                 ent = self.HoldEnt  
 
                 self.HoldEnt = nil

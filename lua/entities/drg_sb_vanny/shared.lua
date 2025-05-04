@@ -9,9 +9,14 @@ ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(8, 8, 75)
 ENT.BloodColor = BLOOD_COLOR_RED
 ENT.CanBeSummoned = true
+ENT.DynamicListening = true
 
 -- Stats --
 ENT.SpawnHealth = 150
+
+-- Speed --
+ENT.WalkSpeed = 80
+ENT.RunSpeed = 280
 
 -- Animations --
 ENT.WalkAnimation = 'skip'
@@ -46,6 +51,10 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.PreJumpscare = GetConVar('fnaf_sb_new_vanny_prejumpscare'):GetBool()
+        self.OldVox = GetConVar('fnaf_sb_new_vanny_oldvo'):GetBool()
+        self.SpotAnim = GetConVar('fnaf_sb_new_vanny_spotanim'):GetInt()
+        
         if GetConVar('fnaf_sb_new_vanny_preidle'):GetBool() then
             self.IdleAnimation = 'idlepre'
         end
@@ -57,10 +66,40 @@ if SERVER then
         if GetConVar('fnaf_sb_new_vanny_prerun'):GetBool() then
             self.RunAnimation = 'runpre'
         end
+
+        if self.OldVox then          
+            self.SearchingVox = {
+                'Vanny_Laugh_01',
+                'Vanny_Laugh_02',
+                'Vanny_Laugh_03',
+                'Vanny_Laugh_04'
+            }
+
+            self.ListeningVox = {
+                'Vanny_Laugh_05',
+                'Vanny_Laugh_06'
+            }
+
+            self.SpotVox = {
+                'Vanny_VO_Fun',
+                'Vanny_VO_ISeeYou'
+            }
+
+            self.LostVox = {
+                'Vanny_Laugh_01',
+                'Vanny_Laugh_02'
+            }
+        end
+    end
+
+    function ENT:AddCustomThink()
+        if IsValid(self.LockEntity) then
+            self:FaceInstant(self.LockEntity)
+        end
     end
 
     function ENT:Jumpscare()
-        if GetConVar('fnaf_sb_new_vanny_prejumpscare'):GetBool() then
+        if self.PreJumpscare then
             self:EmitSound('whynotboi/securitybreach/base/vanny/jumpscare/sfx_jumpScare_vanny_pre.wav')
 
             self:RemoveAllGestures()
@@ -69,6 +108,65 @@ if SERVER then
         else
             self.BaseClass.Jumpscare(self)
         end
+    end
+
+    function ENT:OnSpotEnemy(enemy)
+        if self.SpotAnim == 1 then
+            if self.IdleAnimation ~= 'wave' then
+                self:SetMovement(0, 0, 0, true)
+
+                self.LockEntity = enemy
+
+                self.IdleAnimation = 'wave'
+
+                self:DrG_Timer(3, function()
+                    self:SetMovement(60, 280, 250)
+
+                    self.LockEntity = nil
+
+                    self.DisableControls = false
+
+                    self.IdleAnimation = 'idle'
+                end)
+            end
+        elseif self.SpotAnim == 2 then
+            self:CallInCoroutine(function(self,delay)
+                self.LockEntity = enemy
+                self:PlaySequenceAndMove('cartwheelpre')
+                self.LockEntity = nil
+            end)
+        end
+
+        if self.VoiceCancel then
+            self:VoiceCancel()
+        end
+
+        self:DrG_Timer(0.1, function()
+            self:PlayVoiceLine(self.SpotVox[math.random(#self.SpotVox)])
+            self.VoiceDisabled = false
+        end)
+        
+        self:DrG_Timer(0.05, function()
+            self:StopVoices(1)
+
+            self.VoiceDisabled = true
+        end)
+    end
+
+    function ENT:OnLoseEnemy()
+        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
+            self.VoiceCancel = self:SBTimer(4, function()
+                self.VoiceDisabled = false
+            end)
+        end
+
+        self:StopVoices(2)
+
+        if IsValid(self.CurrentVictim) then return end
+        
+        self:DrG_Timer(0.05, function()
+            self:PlayVoiceLine(self.LostVox[math.random(#self.LostVox)], true)
+        end)
     end
 
     function ENT:OnDeath()

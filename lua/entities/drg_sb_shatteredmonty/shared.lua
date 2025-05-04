@@ -12,10 +12,14 @@ ENT.CanPounce = true
 ENT.PounceNerf = 1.3
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
+ENT.DynamicListening = true
 ENT.HidingSpotSearch = true
 
 -- Stats --
 ENT.SpawnHealth = 600
+
+-- Speed --
+ENT.RunSpeed = 160
 
 -- Animations --
 ENT.WalkAnimation = 'crawl'
@@ -71,19 +75,15 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.CanPounce = GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool()
+
         if GetConVar('fnaf_sb_new_shatteredmonty_haslegs'):GetBool() then
             self:SetModel('models/whynotboi/securitybreach/base/animatronics/shatteredmonty/shatteredmontywithlegs.mdl')
             
             self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
         end
 
-        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
-            self:SetBodygroup(1, 1)
-        end
-
-        if not GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool() then
-            self.CanPounce = false
-        end
+        self:SetBodygroup(1, GetConVar('fnaf_sb_new_shattereds_redeyes'):GetInt())
     end
 
     function ENT:AddCustomThink()
@@ -95,6 +95,26 @@ if SERVER then
     function ENT:Removed()
     end
 
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)], false)
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        self.IdleAnimation = 'idle'
+    end
+    
     -- Sounds --
 
     function ENT:StepSFX()

@@ -1,11 +1,6 @@
-local idlevox = {
-    'ROXY_00021',
+ENT.SearchingVox = {
     'ROXY_00023',
-    'ROXY_00024',
-    'ROXY_00025',
-    'ROXY_00026',
     'ROXY_00027',
-    'ROXY_00028',
     'ROXY_00046',
     'ROXY_00047',
     'ROXY_00048',
@@ -14,7 +9,14 @@ local idlevox = {
     'ROXY_00051'
 }
 
-local spotvox = {
+ENT.ListeningVox = {
+    'ROXY_00021',
+    'ROXY_00024',
+    'ROXY_00025',
+    'ROXY_00028'
+}
+
+ENT.SpotVox = {
     'ROXY_00007_01',
     'ROXY_00007_02',
     'ROXY_00007_03'
@@ -71,7 +73,11 @@ if SERVER then
 
                     self:PlayVoiceLine('ROXY_00050', false)
                 else
-                    self:PlayVoiceLine(idlevox[math.random(#idlevox)], false)
+                    local table = self.SearchingVox
+
+                    local snd = table[math.random(#table)]
+          
+                    self:PlayVoiceLine(snd, true)
                 end
             end
         end
@@ -84,6 +90,8 @@ if SERVER then
     function ENT:StartWeeping()
         if not self.CanWeep then return end
 
+        self:SetMovement(70, 70, 250)
+
         self.IdleAnimation = 'weepidle'
         self.WalkAnimation = 'weepwalk'
         self.RunAnimation = 'weepwalk'
@@ -94,6 +102,8 @@ if SERVER then
     end
 
     function ENT:StopWeeping()
+        self:SetMovement(60, 200, 250)
+
         self.IdleAnimation = 'idle'
         self.WalkAnimation = 'walk'
         self.RunAnimation = 'run'
@@ -102,46 +112,20 @@ if SERVER then
     end
 
     function ENT:StopVoices(mode)
-        for i = 1, #idlevox do
-            self:StopVoiceLine(idlevox[i])
+        for i = 1, #self.SearchingVox do
+            self:StopVoiceLine(self.SearchingVox[i])
+        end
+
+        for i = 1, #self.ListeningVox do
+            self:StopVoiceLine(self.ListeningVox[i])
         end
 
         self:StopVoiceLine('ROXY_00050')
 
         if mode == 1 then return end
 
-        for i = 1, #spotvox do
-            self:StopVoiceLine(spotvox[i])
-        end
-    end
-
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-        
-        if self.Weeping then
-            self:StopWeeping()
-        end
-
-        self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)])
-        end)
-
-        self:DrG_Timer(0.05, function()
-            if self.CanSee then return end
-            
-            self:StopVoices(1)
-
-            self.ForceRun = true
-
-            self.VoiceDisabled = true
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
-
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceDisabled = false
+        for i = 1, #self.SpotVox do
+            self:StopVoiceLine(self.SpotVox[i])
         end
     end
 end

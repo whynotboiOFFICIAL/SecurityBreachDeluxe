@@ -11,7 +11,7 @@ ENT.BloodColor = BLOOD_COLOR_RED
 ENT.DoPossessorJumpscare = true
 
 -- Stats --
-ENT.SpawnHealth = 100
+ENT.SpawnHealth = 80
 
 -- Animations --
 ENT.WalkAnimation = 'walk'
@@ -25,8 +25,8 @@ ENT.JumpAnimRate = 1
 
 -- Speed --
 ENT.UseWalkframes = false
-ENT.WalkSpeed = 41.25
-ENT.RunSpeed = 210
+ENT.WalkSpeed = 50
+ENT.RunSpeed = 200
 
 -- Sounds --
 ENT.SFXPath = 'whynotboi/securitybreach/base/gregory'
@@ -151,11 +151,11 @@ if SERVER then
             state = 'crouch'
         end
 
-        self.IdleAnimation = state .. 'idle'
-        self.WalkAnimation = state .. 'walk'
-        self.RunAnimation = state .. 'run'
+        local idle = state .. 'idle'
+        local walk = state .. 'walk'
+        local run = state .. 'run'
 
-        self.JumpAnimation = 'fall'
+        self:SetMovementAnims(idle, walk, run, 'fall')
 
         self.FlashLight:Remove()
         self.Light:Remove()
@@ -174,12 +174,12 @@ if SERVER then
             state = 'crouch'
         end
 
-        self.IdleAnimation = 'fl' .. state .. 'idle'
-        self.WalkAnimation = 'fl' .. state .. 'walk'
-        self.RunAnimation = 'fl' .. state .. 'run'
+        local idle = 'fl' .. state .. 'idle'
+        local walk = 'fl' .. state .. 'walk'
+        local run = 'fl' .. state .. 'run'
 
-        self.JumpAnimation = 'flfall'
-
+        self:SetMovementAnims(idle, walk, run, 'flfall')
+        
         self:SpawnFlashlight()
         self:SpawnLight()
         

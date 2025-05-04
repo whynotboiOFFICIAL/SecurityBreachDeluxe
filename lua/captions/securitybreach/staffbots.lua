@@ -10,9 +10,11 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
 
     SBDELUXE:AddEnglishCaption(path .. 'NoTampering.wav', '<clr:204, 104, 104>Warning. Tampering with Fazbear automated staff will result in suspension of your membership.')
 
+    -- Comedian Bot
+    
     path = 'whynotboi/securitybreach/base/staffbot/vo/comedy/'
 
-    -- Comedian Bot Male
+    -- Male
     
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00001_m.wav', '<clr:204, 204, 204>How is everyone doing tonight?')
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00002_m.wav', '<clr:204, 204, 204>Great.')
@@ -34,7 +36,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00018_m.wav', '<clr:204, 204, 204>Did you ever notice how people are so obsessed with delicious mouthwatering pizza? They are all like, "I would love some delicious mouthwatering pizza." I bet a few of you were just thinking the same thing. Am I right? Robots cannot eat delicious mouthwatering pizza. We just go around saying "beep boop". Am I right?')
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00019_m.wav', '<clr:204, 204, 204>But seriously folks. Enjoy your visit and enjoy your delicious mouthwatering pizza. Next show in an unspecified number of minutes.')
 
-    -- Comedian Bot Female
+    -- Female
 
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00001_f.wav', '<clr:204, 204, 204>How is everyone doing tonight?')
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00002_f.wav', '<clr:204, 204, 204>Great.')
@@ -56,23 +58,27 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00018_f.wav', '<clr:204, 204, 204>Did you ever notice how people are so obsessed with delicious mouthwatering pizza? They are all like, "I would love some delicious mouthwatering pizza." I bet a few of you were just thinking the same thing. Am I right? Robots cannot eat delicious mouthwatering pizza. We just go around saying "beep boop". Am I right?')
     SBDELUXE:AddEnglishCaption(path .. 'COMEDYBOT_00019_f.wav', '<clr:204, 204, 204>But seriously folks. Enjoy your visit and enjoy your delicious mouthwatering pizza. Next show in an unspecified number of minutes.')
     
+    -- Cleaner Bot
+
     local path = 'whynotboi/securitybreach/base/staffbot/vo/mop/'
 
-    -- Cleaner Bot Male
+    -- Male
     
     SBDELUXE:AddEnglishCaption(path .. 'MOPBOT_00001_m.wav', '<clr:204, 204, 204>The mega PizzaPlex is closed, leave the premises or I will be forced to call security.')
     SBDELUXE:AddEnglishCaption(path .. 'MOPBOT_00002_m.wav', '<clr:204, 204, 204>Exit the building. This is your final warning.')
     SBDELUXE:AddEnglishCaption(path .. 'MOPBOT_00003_m.wav', '<clr:204, 204, 204>Alert! Alert! Security!')
     
-    -- Cleaner Bot Female
+    -- Female
     
     SBDELUXE:AddEnglishCaption(path .. 'MOPBOT_00001_f.wav', '<clr:204, 204, 204>The mega PizzaPlex is closed, leave the premises or I will be forced to call security.')
     SBDELUXE:AddEnglishCaption(path .. 'MOPBOT_00002_f.wav', '<clr:204, 204, 204>Exit the building. This is your final warning.')
     SBDELUXE:AddEnglishCaption(path .. 'MOPBOT_00003_f.wav', '<clr:204, 204, 204>Alert! Alert! Security!')
 
+    -- Sentry Bot
+
     local path = 'whynotboi/securitybreach/base/staffbot/vo/sentry/'
 
-    -- Sentry Bot Male
+    -- Male
     
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00011_m.wav', '<clr:204, 204, 204>Alert! Alert!')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00012_m.wav', '<clr:204, 204, 204>Security Alert!')
@@ -82,7 +88,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00016_m.wav', '<clr:204, 204, 204>Lost child found.')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00017_m.wav', '<clr:204, 204, 204>Target located.')
     
-    -- Sentry Bot Female
+    -- Female
     
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00011_f.wav', '<clr:204, 204, 204>Alert! Alert!')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00012_f.wav', '<clr:204, 204, 204>Security Alert!')
@@ -91,26 +97,30 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00015_f.wav', '<clr:204, 204, 204>Backup requested.')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00016_f.wav', '<clr:204, 204, 204>Lost child found.')
     SBDELUXE:AddEnglishCaption(path .. 'sentrybot_00017_f.wav', '<clr:204, 204, 204>Target located.')
-        
+   
+    -- Map Bot
+
     local path = 'whynotboi/securitybreach/base/staffbot/vo/map/'
 
-    -- Map Bot Male
+    -- Male
     
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001_m.wav', '<clr:204, 204, 204>Hi, please take this map.')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001alt_m.wav', '<clr:204, 204, 204>Hello, please take this map')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00002_m.wav', '<clr:204, 204, 204>Take a map.')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00004_m.wav', '<clr:204, 204, 204>Thank you, please enjoy.')
     
-    -- Map Bot Female
+    -- Female
     
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001_f.wav', '<clr:204, 204, 204>Hi, please take this map.')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00001alt_f.wav', '<clr:204, 204, 204>Hello, please take this map')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00002_f.wav', '<clr:204, 204, 204>Take a map.')
     SBDELUXE:AddEnglishCaption(path .. 'MAPBOT_00004_f.wav', '<clr:204, 204, 204>Thank you, please enjoy.')
     
+    -- Alient Bot
+
     local path = 'whynotboi/securitybreach/base/staffbot/vo/alien/'
 
-    -- Alien Bot Male
+    -- Male
     
     SBDELUXE:AddEnglishCaption(path .. 'alienbot_00004_m.wav', '<clr:204, 204, 204>Resistance is futile.')
     SBDELUXE:AddEnglishCaption(path .. 'alienbot_00005_m.wav', '<clr:204, 204, 204>We come in peace.')
@@ -119,7 +129,7 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_STAFFBOTSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'alienbot_00008_m.wav', '<clr:204, 204, 204>Die Earth scum.')
     SBDELUXE:AddEnglishCaption(path .. 'alienbot_00009_m.wav', '<clr:204, 204, 204>Stay still so I can shoot you.')
     
-    -- Alien Bot Female
+    -- Female
     
     SBDELUXE:AddEnglishCaption(path .. 'alienbot_00004_f.wav', '<clr:204, 204, 204>Resistance is futile.')
     SBDELUXE:AddEnglishCaption(path .. 'alienbot_00005_f.wav', '<clr:204, 204, 204>We come in peace.')

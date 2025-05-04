@@ -1,23 +1,28 @@
-local idlevox = {
+ENT.SearchingVox = {
     'VANNY_00001',
-    'VANNY_00002_001',
-    'VANNY_00002_002',
-    'VANNY_00002_003',
     'VANNY_00003_001',
     'VANNY_00003_002',
     'VANNY_00003_003'
 }
 
-local oldidlevox = {
-    'Vanny_Laugh_01',
-    'Vanny_Laugh_02',
-    'Vanny_Laugh_03',
-    'Vanny_Laugh_04',
-    'Vanny_Laugh_05',
-    'Vanny_Laugh_06',
-    'Vanny_VO_Fun',
-    'Vanny_VO_ISeeYou',
+ENT.ListeningVox = {
+    'VANNY_00003_001',
+    'VANNY_00003_002',
+    'VANNY_00003_003'
 }
+
+ENT.SpotVox = {
+    'VANNY_00002_001',
+    'VANNY_00002_002',
+    'VANNY_00002_003'
+}
+
+ENT.LostVox = {
+    'VANNY_00003_001',
+    'VANNY_00003_002',
+    'VANNY_00003_003'
+}
+
 if SERVER then
     function ENT:VoiceThink()
         if self.VoiceTick or self.VoiceDisabled then return end
@@ -27,11 +32,11 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            if GetConVar('fnaf_sb_new_vanny_oldvo'):GetBool() then
-                self:PlayVoiceLine(oldidlevox[math.random(#oldidlevox)])
-            else
-                self:PlayVoiceLine(idlevox[math.random(#idlevox)])
-            end
+            local table = self.SearchingVox
+
+            local snd = table[math.random(#table)]
+  
+            self:PlayVoiceLine(snd, true)
         end
 
         self:DrG_Timer(timer, function()
@@ -40,41 +45,22 @@ if SERVER then
     end
 
     function ENT:StopVoices(mode)
-        for i = 1, #idlevox do
-            self:StopVoiceLine(idlevox[i])
-        end
-        for i = 1, #oldidlevox do
-            self:StopVoiceLine(oldidlevox[i])
-        end
-    end
-
-    function ENT:OnSpotEnemy()
-        if GetConVar('fnaf_sb_new_vanny_spotps5'):GetBool() then
-            if self.IdleAnimation ~= 'wave' then
-                self.UseWalkframes = false
-
-                self.IdleAnimation = 'wave'
-
-                self:DrG_Timer(3, function()
-                    self.UseWalkframes = true
-
-                    self.IdleAnimation = 'idle'
-                end)
-            end
-        elseif GetConVar('fnaf_sb_new_vanny_prespot'):GetBool() then
-            self:CallInCoroutine(function(self,delay)
-                self:PlaySequenceAndMove('cartwheelpre')
-            end)
+        for i = 1, #self.SearchingVox do
+            self:StopVoiceLine(self.SearchingVox[i])
         end
 
-        self:DrG_Timer(0.05, function()
-            self.VoiceDisabled = true
-        end)
-    end
+        for i = 1, #self.ListeningVox do
+            self:StopVoiceLine(self.ListeningVox[i])
+        end
+        
+        for i = 1, #self.LostVox do
+            self:StopVoiceLine(self.LostVox[i])
+        end
 
-    function ENT:OnLoseEnemy()
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceDisabled = false
+        if mode == 1 then return end
+
+        for i = 1, #self.SpotVox do
+            self:StopVoiceLine(self.SpotVox[i])
         end
     end
 end

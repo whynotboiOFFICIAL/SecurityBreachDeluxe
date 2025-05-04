@@ -1,12 +1,6 @@
-local idlevox = {
+ENT.SearchingVox = {
     'ROXY_00009',
-    'ROXY_00010',
-    'ROXY_00011',
-    'ROXY_00012',
-    'ROXY_00013',
     'ROXY_00014',
-    'ROXY_00016',
-    'ROXY_00017',
     'ROXY_00022',
     'ROXY_00029',
     'ROXY_00030',
@@ -16,16 +10,31 @@ local idlevox = {
     'ROXY_00034',
     'ROXY_00035',
     'ROXY_00036',
-    'ROXY_00037',
-    'ROXY_00038',
-    'ROXY_00044',
-    'ROXY_00045'
+    'ROXY_00037'
 }
 
-local spotvox = {
+ENT.ListeningVox = {
+    'ROXY_00011',
+    'ROXY_00014',
+    'ROXY_00021',
+}
+
+ENT.SpotVox = {
+    'ROXY_00015',
     'ROXY_00018',
-    'ROXY_00019',
     'ROXY_00020'
+}
+
+ENT.PursuitVox = {
+    'ROXY_00016',
+    'ROXY_00017',
+    'ROXY_00018'
+}
+
+ENT.LostVox = {
+    'ROXY_00034',
+    'ROXY_00044',
+    'ROXY_00045'
 }
 
 ENT.PounceAnticVox = {
@@ -72,7 +81,15 @@ if SERVER then
         local timer = math.random(15, 30)
 
         if math.random(1,10) > 3 then
-            self:PlayVoiceLine(idlevox[math.random(#idlevox)], true)
+            local table = self.SearchingVox
+
+            --[[if self.Chasing then
+                table = self.PursuitVox
+            end]]--
+
+            local snd = table[math.random(#table)]
+  
+            self:PlayVoiceLine(snd, true)
         end
 
         self:DrG_Timer(timer, function()
@@ -81,61 +98,29 @@ if SERVER then
     end
 
     function ENT:StopVoices(mode)
-        for i = 1, #idlevox do
-            self:StopVoiceLine(idlevox[i])
+        for i = 1, #self.SearchingVox do
+            self:StopVoiceLine(self.SearchingVox[i])
         end
 
+        for i = 1, #self.ListeningVox do
+            self:StopVoiceLine(self.ListeningVox[i])
+        end
+       
+        for i = 1, #self.PursuitVox do
+            self:StopVoiceLine(self.PursuitVox[i])
+        end
+
+        for i = 1, #self.LostVox do
+            self:StopVoiceLine(self.LostVox[i])
+        end
+        
         self:StopVoiceLine('ROXY_00001')
         self:StopVoiceLine('ROXY_00002')
 
         if mode == 1 then return end
 
-        for i = 1, #spotvox do
-            self:StopVoiceLine(spotvox[i])
-        end
-    end
-
-    function ENT:OnStunned()
-        self:StopVoices()
-
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunin') 
-        end)
-
-        self.IdleAnimation = 'stunloop'
-    end
-
-    function ENT:OnStunExit()
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunout') 
-        end)
-
-        if self.PreAnim then
-            self.IdleAnimation = 'preidle'
-        else
-            self.IdleAnimation = 'idle'
-        end
-    end
-
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-
-        self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)], true)
-        end)
-
-        self:DrG_Timer(0.05, function()
-            self:StopVoices(1)
-
-            self.VoiceDisabled = true
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
-        
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceDisabled = false
+        for i = 1, #self.SpotVox do
+            self:StopVoiceLine(self.SpotVox[i])
         end
     end
 end

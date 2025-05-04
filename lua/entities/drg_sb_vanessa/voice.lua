@@ -1,4 +1,5 @@
-local idlevox = {
+ENT.SearchingVox = {
+    'VANESSA_00016',
     'VANESSA_00019',
     'VANESSA_00020',
     'VANESSA_00021',
@@ -15,24 +16,29 @@ local idlevox = {
     'VANESSA_00031'
 }
 
-local idleoldvox = {
-    'Vanessa_VO_Searching_Gregory_01',
-    'Vanessa_VO_Searching_Gregory_02',
-    'Vanessa_VO_Searching_Hello_01',
-    'Vanessa_VO_Searching_HeretoHelp_01',
-    'Vanessa_VO_Searching_IsThatYou_01',
-    'Vanessa_VO_Searching_KeepUSafe_01',
-    'Vanessa_VO_Searching_PleaseComeOut_01',
-    'Vanessa_VO_Searching_SomeoneThere_01',
-    'Vanessa_VO_Searching_TrustMe_01'
+ENT.ListeningVox = {
+    'VANESSA_00019',
+    'VANESSA_00030b'
 }
 
-local spotvox = {
+ENT.SpotVox = {
     'VANESSA_00010',
-    'VANESSA_00011'
+    'VANESSA_00011',
+    'VANESSA_00015'
 }
 
-local stunvox = {
+ENT.PursuitVox = {
+    'VANESSA_00016'
+}
+
+ENT.LostVox = {
+    'VANESSA_00013',
+    'VANESSA_00014',
+    'VANESSA_00017',
+    'VANESSA_00020'
+}
+
+ENT.StunVox = {
     'VANESSA_LIGHT_FLASH_001',
     'VANESSA_LIGHT_FLASH_002',
     'VANESSA_LIGHT_FLASH_003',
@@ -62,12 +68,16 @@ if SERVER then
 
         local timer = math.random(15, 30)
 
-        if math.random(1,10) > 5 then
-            if GetConVar('fnaf_sb_new_vanessa_oldvo'):GetBool() then
-                self:PlayVoiceLine(idleoldvox[math.random(#idleoldvox)])   
-            else
-                self:PlayVoiceLine(idlevox[math.random(#idlevox)])
-            end
+        if math.random(1,10) > 3 then
+            local table = self.SearchingVox
+
+            --[[if self.Chasing then
+                table = self.PursuitVox
+            end]]--
+
+            local snd = table[math.random(#table)]
+  
+            self:PlayVoiceLine(snd, true)
         end
 
         self:DrG_Timer(timer, function()
@@ -75,78 +85,33 @@ if SERVER then
         end)
     end
 
-    function ENT:OnStunned()
-        self:StopVoices()
-
-        if GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool() then
-            self:SetSkin(3)
-        else
-            self:SetSkin(1)
-        end
-
-        self:CallInCoroutine(function(self,delay)
-            self:PlayVoiceLine(stunvox[math.random(#stunvox)])
-            self:PlaySequenceAndMove('stunin') 
-        end)
-
-        self.IdleAnimation = 'stunloop'
-    end
-
-    function ENT:OnStunExit()
-        if GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool() then
-            self:SetSkin(2)
-        else
-            self:SetSkin(0)
-        end
-        
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunout') 
-        end)
-
-        self.IdleAnimation = 'idle'
-    end
-
     function ENT:StopVoices(mode)
-        for i = 1, #idlevox do
-            self:StopVoiceLine(idlevox[i])
+        for i = 1, #self.SearchingVox do
+            self:StopVoiceLine(self.SearchingVox[i])
         end
 
-        for i = 1, #idleoldvox do
-            self:StopVoiceLine(idleoldvox[i])
+        for i = 1, #self.ListeningVox do
+            self:StopVoiceLine(self.ListeningVox[i])
+        end
+
+        for i = 1, #self.LostVox do
+            self:StopVoiceLine(self.LostVox[i])
         end
 
         if mode == 1 then return end
 
-        for i = 1, #spotvox do
-            self:StopVoiceLine(spotvox[i])
+        for i = 1, #self.SpotVox do
+            self:StopVoiceLine(self.SpotVox[i])
         end
         
+        for i = 1, #self.PursuitVox do
+            self:StopVoiceLine(self.PursuitVox[i])
+        end
+
         if mode == 2 then return end
 
-        for i = 1, #stunvox do
-            self:StopVoiceLine(stunvox[i])
-        end
-    end
-
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-
-        self:DrG_Timer(0, function()
-            self:PlayVoiceLine(spotvox[math.random(#spotvox)])
-        end)
-        
-        self:DrG_Timer(0.05, function()
-            self:StopVoices(1)
-
-            self.VoiceDisabled = true
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
-        
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceDisabled = false
+        for i = 1, #self.StunVox do
+            self:StopVoiceLine(self.StunVox[i])
         end
     end
 end

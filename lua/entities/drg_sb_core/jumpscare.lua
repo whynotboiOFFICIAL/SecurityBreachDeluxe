@@ -2,11 +2,11 @@ function ENT:JumpscareEntity(entity, alt)
     if not IsValid(entity) or entity:Health() < 0.1 then return end
 
     if self.StopVoices then
+        self.VoiceDisabled = true
+        
         self:StopVoices()
     end
-    
-    self:RemoveAllGestures()
-    
+
     entity:SetPos(self:GetPos() + self:GetForward() * 35)
     
     self.ForceCycle = false

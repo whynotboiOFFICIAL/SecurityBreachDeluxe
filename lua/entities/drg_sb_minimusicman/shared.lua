@@ -12,6 +12,10 @@ ENT.BloodColor = DONT_BLEED
 -- Stats --
 ENT.SpawnHealth = 200
 
+-- Speed --
+ENT.WalkSpeed = 90
+ENT.RunSpeed = 90
+
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -73,10 +77,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-            self.HW2Jumpscare = true
-        end
-        
+        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+
         if GetConVar('fnaf_sb_new_ldjmm_music'):GetBool() then
             self:EmitSound('whynotboi/securitybreach/base/minimusicman/music.wav',75, 100, 0.4)
         end

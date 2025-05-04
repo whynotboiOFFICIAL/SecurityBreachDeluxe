@@ -15,6 +15,10 @@ ENT.CustomStunSFX = true
 ENT.SpawnHealth = 2000
 ENT.MeleeAttackRange = 200
 
+-- Speed --
+ENT.WalkSpeed = 250
+ENT.RunSpeed = 250
+
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -102,6 +106,12 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+
+        self.MusicEnabled = GetConVar('fnaf_sb_new_djmm_music'):GetBool()
+        self.CanSleep = GetConVar('fnaf_sb_new_djmm_sleep'):GetBool()
+        self.AnimatedEyes = GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool()
+
         self:SetMaxYawRate(100)
 
         self.PatrolsHit = 0
@@ -111,18 +121,12 @@ if SERVER then
         self.SleepPos = self:GetPos()
 
         self:SetSkin(0)
-
-        self:SetNWInt('eyeframe', 0)
-        
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-            self.HW2Jumpscare = true
-        end
            
-        if GetConVar('fnaf_sb_new_djmm_music'):GetBool() then
+        if self.MusicEnabled then
             self:EmitSound('whynotboi/securitybreach/base/music/djmm/part1.wav', 100)
         end
 
-        if GetConVar('fnaf_sb_new_djmm_sleep'):GetBool() then
+        if self.CanSleep then
             self:SleepEnter(true)
         end
     end
@@ -132,7 +136,7 @@ if SERVER then
             self.SleepTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 1000)) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or (GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
+                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and self:GetIgnorePlayers()) or (self:GetAIDisabled()) or v:Health() < 1 then continue end
                 self:SetDefaultRelationship(D_LI)
 
                 self:SleepExit()
@@ -147,7 +151,7 @@ if SERVER then
             self.EyeTick = true
 
             if math.random(100) > 50 then
-                if GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool() then
+                if self.AnimatedEyes then
                     self:SetBodygroup(2, 1)
                 end        
 
@@ -167,7 +171,7 @@ if SERVER then
             self:SleepExit()
         end
 
-        if GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool() then
+        if self.AnimatedEyes then
             self:SetBodygroup(2, 1)
         end
 
@@ -291,7 +295,7 @@ if SERVER then
             end
         end
         
-        if not GetConVar('fnaf_sb_new_djmm_music'):GetBool() then return end
+        if not self.MusicEnabled then return end
 
         self:DrG_Timer(0, function()
             if self.Track == 1 then
@@ -316,7 +320,7 @@ if SERVER then
         end
 
         if self.Track == 2 then
-            if GetConVar('fnaf_sb_new_djmm_sleep'):GetBool() then
+            if self.CanSleep then
                 self:SleepEnter()
             else
                 self:SwitchTrack(1)

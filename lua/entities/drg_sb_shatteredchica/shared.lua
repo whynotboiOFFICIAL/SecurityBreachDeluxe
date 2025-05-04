@@ -11,6 +11,7 @@ ENT.BloodColor = DONT_BLEED
 ENT.CanBeSummoned = true
 ENT.CanBeStunned = true
 ENT.HidingSpotSearch = true
+ENT.DynamicListening = true
 ENT.SearchID = 'chica'
 
 -- Stats --
@@ -85,19 +86,15 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-            self.HW2Jumpscare = true
-        end
+        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
-        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
-            self:SetBodygroup(2, 1)
-        end
+        self.CanSpeak = GetConVar('fnaf_sb_new_shatteredchica_hasvoice'):GetBool()
+        self.AIEating = GetConVar('fnaf_sb_new_shatteredchica_canlure'):GetBool()
+        self.PlayerEating = GetConVar('fnaf_sb_new_shatteredchica_playereat'):GetBool()
 
-        if GetConVar('fnaf_sb_new_shatteredchica_hasvoice'):GetBool() then
-            self.CanSpeak = true
+        self:SetBodygroup(2, GetConVar('fnaf_sb_new_shattereds_redeyes'):GetInt())
 
-            self.VOPath = 'whynotboi/securitybreach/base/glamrockchica'
-            
+        if self.CanSpeak then
             self:SpawnBeak()
         end
     end
@@ -135,6 +132,122 @@ if SERVER then
     end
     
     function ENT:Removed()
+        if IsValid(self.LuringTo) then
+            self.LuringTo.BeingDevoured = false
+        end
+    end
+
+    function ENT:LuredToMix(ent)
+        self:StopVoices() 
+        
+        self:SetDefaultRelationship(D_LI)
+
+        if self.CanSpeak then
+            self:PlayVoiceLine(self.ScroakVox[math.random(#self.ScroakVox)])
+        else
+            self:PlayVoiceLine(self.LowVox[math.random(#self.LowVox)])
+        end
+
+        self:CallInCoroutine(function(self,delay)
+            self.Luring = true
+            self.LuringTo = ent
+            self.VoiceDisabled = true
+
+            self:GoTo(ent:GetPos() + ent:GetForward() * 35)
+
+            if not IsValid(ent) then self.Luring = false return end
+
+            ent:SetBodygroup(1, 1)
+
+            self:SetVelocity(vector_origin)
+
+            self:SetPos(ent:GetPos() + ent:GetForward() * 35)
+
+            self:FaceInstant(ent)
+
+            self.DisableControls = true
+            self.Moving = false
+
+            self:SetAIDisabled(true)
+
+            self.IdleAnimation = 'rummageloop'
+
+            self:PlaySequenceAndMove('rummagein')
+
+            self:DrG_Timer(6, function()
+                ParticleEffectAttach( 'fnafsb_drool_chica', 4, self, 3 )
+            end)
+            
+            self:DrG_Timer(10, function()
+                if IsValid(ent) then
+                    ent:SetBodygroup(2, 1)
+                end
+
+                self:CallInCoroutine(function(self,delay)
+                    self.IdleAnimation = 'idle'
+                    self:PlaySequenceAndMove('rummageout')
+
+                    self.DisableControls = false
+                    self.Luring = false
+                    self.VoiceDisabled = false
+
+                    self.LuringTo = nil
+
+                    self:SetAIDisabled(false)
+                    self:SetDefaultRelationship(D_HT)
+                end)
+            end)
+        end)
+    end
+    
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        if self.CanSpeak then
+            self:PlayVoiceLine(self.ScroakVox[math.random(#self.ScroakVox)])
+        else
+            self:PlayVoiceLine(self.HighVox[math.random(#self.HighVox)])
+        end
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        self.IdleAnimation = 'idle'
+    end
+    
+    function ENT:OnSpotEnemy()
+        if self.Stunned then return end
+        
+        self:DrG_Timer(0.1, function()
+            if self.CanSpeak then
+                self:PlayVoiceLine(self.ScroakVox[math.random(#self.ScroakVox)])
+            else
+                self:PlayVoiceLine(self.HighVox[math.random(#self.HighVox)])
+            end
+        end)
+        
+        self:DrG_Timer(0.05, function()
+            self:StopVoices(1)
+
+            self.VoiceDisabled = true
+        end)
+    end
+
+    function ENT:OnLoseEnemy()
+        if self.Stunned or not self.CanSpeak then return end
+
+        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
+            self.VoiceDisabled = false
+        end
     end
 
     -- Sounds --

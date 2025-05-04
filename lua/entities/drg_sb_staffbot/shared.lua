@@ -70,6 +70,8 @@ if SERVER then
 
     function ENT:_BaseInitialize()
         self.WheelAngle = 0
+
+        self.OldStunVO = GetConVar('fnaf_sb_new_staffbot_stunvoice'):GetBool()
     end
 
     function ENT:RandomizePatrolPaths()
@@ -79,11 +81,11 @@ if SERVER then
 
         table.insert( self.PatrolPaths, pos )
 
-        pos = self:RandomPos(500, 500)
+        pos = self:RandomPos(300, 300)
 
         table.insert( self.PatrolPaths, pos )
 
-        pos = self:RandomPos(700, 700)
+        pos = self:RandomPos(500, 500)
 
         table.insert( self.PatrolPaths, pos )
     end
@@ -97,7 +99,7 @@ if SERVER then
             self:StopVoices()
         end
         
-        if GetConVar('fnaf_sb_new_staffbot_stunvoice'):GetBool() then
+        if self.OldStunVO then
             self:EmitSound('whynotboi/securitybreach/base/staffbot/vo/NoTampering.wav')
         end
 

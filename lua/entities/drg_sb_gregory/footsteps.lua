@@ -279,8 +279,7 @@
         self.WalkAnimation = item .. 'crouchwalk'
         self.RunAnimation = item .. 'crouchrun'
 
-        self.WalkSpeed = 34.38
-        self.RunSpeed = 68.75
+        self:SetMovement(30, 60)
 
         self.Crouched = true
 
@@ -310,8 +309,7 @@
         self.WalkAnimation = item .. 'walk'
         self.RunAnimation = item .. 'run'
 
-        self.WalkSpeed = 41.25
-        self.RunSpeed = 210
+        self:SetMovement(50, 200)
 
         self.Crouched = false
 

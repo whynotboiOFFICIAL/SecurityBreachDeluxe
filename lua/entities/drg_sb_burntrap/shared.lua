@@ -13,6 +13,9 @@ ENT.CanBeStunned = true
 -- Stats --
 ENT.SpawnHealth = 1000
 
+-- Speed --
+ENT.RunSpeed = 120
+
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -45,7 +48,10 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        if not GetConVar('fnaf_sb_new_burntrap_jumpscare'):GetBool() then
+        self.CanJumpscare = GetConVar('fnaf_sb_new_burntrap_jumpscare'):GetBool()
+        self.CanHack = GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool()
+        
+        if not self.CanJumpscare then
             self:SetDefaultRelationship(D_LI)
         end
     end
@@ -65,7 +71,7 @@ if SERVER then
     end
 
     function ENT:HackCheck()
-        if not GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool() then return end
+        if not self.CanHack then return end
             
         self.HackDelay = true
 
@@ -109,10 +115,7 @@ if SERVER then
 
         self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/activate/sfx_burntrap_hackFreddy_activate_0' .. math.random(3) .. '.wav')
 
-        self.UseWalkframes = false
-        self.DisableControls = true
-
-        self:SetMaxYawRate(0)
+        self:SetMovement(0, 0, 0, true)
 
         self:SetAIDisabled(true)
         
@@ -154,17 +157,16 @@ if SERVER then
             self.Interrupted = false
         end
 
-        self.UseWalkframes = true
+        self.RunAnimation = 'run'
+        self:SetMovement(60, 120, 250)
 
         self.DisableControls = false
-
-        self:SetMaxYawRate(250)
 
         self:SetAIDisabled(false)
     end
 
     function ENT:OnIdle()
-        if not GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool() then return self.BaseClass:OnIdle(self) end
+        if not self.CanHack then return self.BaseClass:OnIdle(self) end
 
         local tohack = nil
 
@@ -180,8 +182,10 @@ if SERVER then
         end
 
         if IsValid(tohack) then
-            self.RunAnimation = 'run'
+            self.RunAnimation = 'runfull'
             
+            self:SetMovement(60, 230, 250)
+
             self.Luring = true
 
             self.ForceRun = true
