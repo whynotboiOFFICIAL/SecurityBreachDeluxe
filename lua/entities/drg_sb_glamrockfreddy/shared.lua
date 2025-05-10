@@ -14,7 +14,7 @@ ENT.CanBeStunned = true
 ENT.SpawnHealth = 1000
 
 -- Speed --
-ENT.RunSpeed = 240
+ENT.RunSpeed = 280
 
 -- Animations --
 ENT.WalkAnimation = 'walk'
@@ -148,7 +148,7 @@ if SERVER then
             self:DrG_Timer(0.5, function()
                 self.DisableControls = false
                 
-                self:SetMovement(60, 240, 250)
+                self:SetMovement(60, 280, 250)
             end)
         end)
     end
@@ -383,7 +383,7 @@ if SERVER then
             self.FoundRecharge = false
             self.NullifyVoicebox = false
 
-            self:SetMovement(60, 230, 250)
+            self:SetMovement(60, 280, 250)
 
             self.DisableControls = false
 
@@ -591,7 +591,7 @@ if SERVER then
         self.Hacked = true
         self.BeingHacked = false
 
-        self:SetMovement(60, 230, 250)
+        self:SetMovement(60, 280, 250)
 
         self.DisableControls = false
 
@@ -629,7 +629,7 @@ if SERVER then
     
         self.DisableControls = false
 
-        self:SetMovement(60, 230, 250)
+        self:SetMovement(60, 280, 250)
 
         self.IdleAnimation = 'idle'
 

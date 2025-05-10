@@ -430,9 +430,15 @@ if SERVER then
 
         --local lerped = LerpVector(transitionProgress, self:WorldSpaceCenter(), self.AimTarget)
 
-        if self.AimTarget ~= nil and not self.AimDisabled  then
-            self:SmoothDirectPoseParametersAt(self.AimTarget, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 8)
-        elseif self.AimTarget == nil then
+        local target = self.AimTarget
+
+        if IsValid(target) and target:IsPlayer() then
+            target = target:EyePos() - Vector(0, 0, 30)
+        end
+
+        if IsValid(target) and not self.AimDisabled  then
+            self:SmoothDirectPoseParametersAt(target, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 8)
+        else
             self:SmoothDirectPoseParametersAt(self:WorldSpaceCenter() + self:GetForward() * 1, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 3)
         end
     end

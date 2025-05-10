@@ -4,7 +4,9 @@ function ENT:JumpscareEntity(entity, alt)
     if self.StopVoices then
         self.VoiceDisabled = true
         
-        self:StopVoices()
+        self:DrG_Timer(0.1, function()
+            self:StopVoices()
+        end)
     end
 
     entity:SetPos(self:GetPos() + self:GetForward() * 35)

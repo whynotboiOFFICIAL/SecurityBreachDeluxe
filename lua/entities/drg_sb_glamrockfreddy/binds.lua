@@ -231,7 +231,7 @@ end
 if SERVER then
     function ENT:OnPossessed()
         self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
-        
+
         self:RemoveAllGestures()
 
         self.OpenChest = false
@@ -250,6 +250,11 @@ if SERVER then
 
     function ENT:OnDispossessed(ent)
         self:DrG_Timer(0, function()
+
+            if not self.DisableControls then
+                self:SetMovement(60, 280, 250)
+            end
+
             if self:GetNWBool('UseHeadAttach') and self:GetNWInt('Energy') > 1 then
                 self:ExitFreddy(ent)
             end
