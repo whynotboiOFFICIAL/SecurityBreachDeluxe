@@ -1,4 +1,5 @@
 -- General
+
 local useplyfov = CreateClientConVar('fnaf_sb_new_fov_camera', 0, true, false, 'Camera Inherits Player FOV', 0, 1)
 
 CreateConVar('fnaf_sb_new_voicelines', 1, FCVAR_ARCHIVE, 'Use Voice Lines', 0, 1)
@@ -8,6 +9,10 @@ CreateConVar('fnaf_sb_new_hw2_jumpscares', 0, FCVAR_ARCHIVE, 'Help Wanted 2 Jump
 CreateConVar('fnaf_sb_new_betaeyes', 0, FCVAR_ARCHIVE, 'Beta Eye Glows', 0, 1)
 CreateConVar('fnaf_sb_new_traileranims', 0, FCVAR_ARCHIVE, 'Gameplay Trailer Animations', 0, 1)
 CreateConVar('fnaf_sb_new_shattereds_redeyes', 0, FCVAR_ARCHIVE, 'Shattereds Red Eyes', 0, 1)
+
+-- Gregory
+
+CreateConVar('fnaf_sb_new_gregory_infinitestamina', 0, FCVAR_ARCHIVE, 'Gregory Infinite Stamina', 0, 1)
 
 -- Glamrock Freddy
 
@@ -235,6 +240,16 @@ if CLIENT then
 			panel:CheckBox('Shattereds Red Eyes', 'fnaf_sb_new_shattereds_redeyes')
 			panel:ControlHelp('Shattereds will use a red eye glow like in the Halloween tweet by Steel Wool')
 
+			-- Gregory
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Gregory')
+			panel:Help('')
+
+			panel:CheckBox('Gregory Infinite Stamina', 'fnaf_sb_new_gregory_infinitestamina')
+            panel:ControlHelp('Gregory will have infinite stamina when enabled')
+			
 			-- Glamrock Freddy
 
 			panel:Help('')

@@ -279,8 +279,11 @@
         self.WalkAnimation = item .. 'crouchwalk'
         self.RunAnimation = item .. 'crouchrun'
 
+        self:SetNWBool('Crouching', true)
+        
         self:SetMovement(30, 60)
-
+        self:SetMovementRates(1, 1, 1, 1)
+        
         self.Crouched = true
 
         self:SetCollisionBounds(Vector(-3, -3, 0), Vector(3, 3, 30))
@@ -309,7 +312,10 @@
         self.WalkAnimation = item .. 'walk'
         self.RunAnimation = item .. 'run'
 
-        self:SetMovement(50, 200)
+        self:SetNWBool('Crouching', false)
+
+        self:SetMovement(110, 200)
+        self:SetMovementRates(1, 2, 1, 1)
 
         self.Crouched = false
 

@@ -15,7 +15,7 @@ ENT.SpawnHealth = 80
 
 -- Animations --
 ENT.WalkAnimation = 'walk'
-ENT.WalkAnimRate = 1
+ENT.WalkAnimRate = 2
 ENT.RunAnimation = 'run'
 ENT.RunAnimRate = 1
 ENT.IdleAnimation = 'idle'
@@ -25,8 +25,8 @@ ENT.JumpAnimRate = 1
 
 -- Speed --
 ENT.UseWalkframes = false
-ENT.WalkSpeed = 50
-ENT.RunSpeed = 200
+ENT.WalkSpeed = 110
+ENT.RunSpeed = 220
 
 -- Sounds --
 ENT.SFXPath = 'whynotboi/securitybreach/base/gregory'
@@ -60,6 +60,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.InfiniteStamina = GetConVar('fnaf_sb_new_gregory_infinitestamina'):GetBool()
+
         self:SetPlayersRelationship(D_LI)
 
         if GetConVar('fnaf_sb_new_freddy_friendly'):GetBool() then
@@ -71,12 +73,38 @@ if SERVER then
         self:SetClassRelationship('drg_sb_staffbot_map', D_LI)
         self:SetClassRelationship('drg_sb_staffbot_mop', D_LI)
         self:SetClassRelationship('drg_sb_staffbot_comedian', D_LI)
+
+        self:SetNWFloat('Stamina', 200)
     end
 
     function ENT:AddCustomThink()
+        self:SetNWBool('DisableRun', self.DisableRun)
+
         if self.GlamrockFreddy then
             if not IsValid(self.GlamrockFreddy) then
                 self.GlamrockFreddy = nil
+            end
+        end
+        
+        if self.InfiniteStamina then return end
+
+        if self:IsRunning() then
+            local stamina = self:GetNWFloat('Stamina')
+
+            if stamina <= 0 then
+                self.DisableRun = true
+            end
+            
+            self:SetNWFloat('Stamina', math.Clamp(stamina - 0.4, 0, 200))
+
+            self:SetCooldown('staminacharge', 1)
+        elseif self:GetCooldown('staminacharge') <= 0 then
+            local stamina = self:GetNWFloat('Stamina')
+
+            if stamina < 200 then
+                self:SetNWFloat('Stamina', math.Clamp(stamina + 1, 0, 200))
+            else
+                self.DisableRun = false
             end
         end
     end
@@ -126,12 +154,22 @@ if SERVER then
         end
     end
 
+    function ENT:RestoreMovement()
+        if self.Crouched then
+            self:SetMovement(30, 60)
+            self:SetMovementRates(1, 1, 1, 1)       
+        else
+            self:SetMovement(110, 220)
+            self:SetMovementRates(1, 2, 1, 1)       
+        end
+    end
+
     function ENT:FlashlightToggle()
         if self.LightOn then
             self:EmitSound('whynotboi/securitybreach/base/props/flashlight/sfx_general_flashlight_off_03.wav', 75, 100, 0.5)
 
             self.Light:Fire('TurnOff')
-
+            
             self.LightOn = false
         else
             self:EmitSound('whynotboi/securitybreach/base/props/flashlight/Gregory_Flashlight_On.wav')
@@ -143,6 +181,8 @@ if SERVER then
     end
 
     function ENT:DeEquipFlashlight()
+        self:SetNWBool('HasFlashlight', false)
+
         self:EmitSound('whynotboi/securitybreach/base/gregory/putaway/sfx_gregory_inventory_item_equip_putAway_0' .. math.random(6) .. '.wav')
 
         local state = ''
@@ -157,8 +197,9 @@ if SERVER then
 
         self:SetMovementAnims(idle, walk, run, 'fall')
 
-        self.FlashLight:Remove()
-        self.Light:Remove()
+        SafeRemoveEntity(self.FlashLight)
+
+        SafeRemoveEntity(self.Light)
         
         self.CurrentItem = 0
 
@@ -166,6 +207,8 @@ if SERVER then
     end
 
     function ENT:EquipFlashlight()
+        self:SetNWBool('HasFlashlight', true)
+
         self:EmitSound('whynotboi/securitybreach/base/gregory/takeout/sfx_gregory_inventory_item_equip_takeOut_0' .. math.random(6) .. '.wav')
 
         local state = ''
@@ -200,9 +243,6 @@ if SERVER then
     end
 
     function ENT:CustomAnimEvents(e)
-    end
-
-    function ENT:AddCustomThink()
     end
 
     function ENT:OnDeath()
