@@ -63,7 +63,7 @@ if SERVER then
     ENT.AnimEventSounds = {
         ['servo_l'] = {
             hasEnding = true,
-            path = 'whynotboi/securitybreach/base/montgomerygator/servo/large/sfx_servo_large_',
+            path = 'whynotboi/securitybreach/base/montgomerygator/servo/large/sfx_monty_servo_large_',
             count = 4,
             volume = 0.45,
             channel = CHAN_STATIC
