@@ -10,6 +10,14 @@ CreateConVar('fnaf_sb_new_betaeyes', 0, FCVAR_ARCHIVE, 'Beta Eye Glows', 0, 1)
 CreateConVar('fnaf_sb_new_traileranims', 0, FCVAR_ARCHIVE, 'Gameplay Trailer Animations', 0, 1)
 CreateConVar('fnaf_sb_new_shattereds_redeyes', 0, FCVAR_ARCHIVE, 'Shattereds Red Eyes', 0, 1)
 
+-- Multipliers
+
+CreateConVar('fnaf_sb_new_multiplier_walkspeed', 1, FCVAR_NONE, 'Walk Speed Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_runspeed', 1, FCVAR_NONE, 'Run Speed Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_sightrange', 1, FCVAR_NONE, 'Sight Range Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_pounceup', 1, FCVAR_NONE, 'Pounce Vertical Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_pounceforward', 1, FCVAR_NONE, 'Pounce Horizontal Multiplier', 0, 2)
+
 -- Gregory
 
 CreateConVar('fnaf_sb_new_gregory_infinitestamina', 0, FCVAR_ARCHIVE, 'Gregory Infinite Stamina', 0, 1)
@@ -239,6 +247,29 @@ if CLIENT then
 
 			panel:CheckBox('Shattereds Red Eyes', 'fnaf_sb_new_shattereds_redeyes')
 			panel:ControlHelp('Shattereds will use a red eye glow like in the Halloween tweet by Steel Wool')
+
+			-- Multipliers
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Multipliers')
+			panel:Help('(These sliders will multiply the values in the AI, these values do not save between games)')
+			panel:Help('')
+
+			panel:NumSlider( 'Walk Speed Multiplier', 'fnaf_sb_new_multiplier_walkspeed', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			panel:NumSlider( 'Run Speed Multiplier', 'fnaf_sb_new_multiplier_runspeed', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			panel:NumSlider( 'Sight Range Multiplier', 'fnaf_sb_new_multiplier_sightrange', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			panel:NumSlider( 'Pounce Vertical Multiplier', 'fnaf_sb_new_multiplier_pounceup', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+			
+			panel:NumSlider( 'Pounce Horizontal Multiplier', 'fnaf_sb_new_multiplier_pounceforward', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
 
 			-- Gregory
 

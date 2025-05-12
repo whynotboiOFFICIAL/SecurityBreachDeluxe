@@ -16,9 +16,6 @@ ENT.SearchID = 'monty'
 -- Stats --
 ENT.SpawnHealth = 1000
 
--- Speed --
-ENT.RunSpeed = 240
-
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -46,16 +43,6 @@ ENT.PounceLandSounds = {
     '/land/fly_monty_land_03.wav'
 }
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -72,6 +59,11 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 240)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(1000 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
         self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
         self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()

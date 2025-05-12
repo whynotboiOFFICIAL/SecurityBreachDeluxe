@@ -1,9 +1,6 @@
 if not DrGBase then return end -- return if DrGBase isn't installed
 ENT.Base = 'drgbase_nextbot' -- DO NOT TOUCH (obviously)
 
--- I updated it again
-
--- Misc --
 ENT.RagdollOnDeath = true
 
 -- Speed --
@@ -18,6 +15,16 @@ ENT.RangeAttackRange = 150
 ENT.MeleeAttackRange = 60
 ENT.ReachEnemyRange = 60
 ENT.AvoidEnemyRange = 0
+
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 60
+ENT.SightRange = 1600
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
 
 -- Relationships --
 ENT.Factions = {'FACTION_ANIMATRONIC'}
@@ -119,6 +126,14 @@ if SERVER then
     -- Basic
 
     function ENT:_BaseInitialize()
+        self.WalkMultiplier = GetConVar('fnaf_sb_new_multiplier_walkspeed'):GetFloat()
+        self.RunMultiplier = GetConVar('fnaf_sb_new_multiplier_runspeed'):GetFloat()
+
+        self.PounceUpMultiplier = GetConVar('fnaf_sb_new_multiplier_pounceup'):GetFloat()
+        self.PounceForwardMultiplier = GetConVar('fnaf_sb_new_multiplier_pounceforward'):GetFloat()
+
+        self:SetSightRange(1600 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self.Width = self:BoundingRadius() * 0.1
 
         self.DamageTolerance = 0
@@ -432,11 +447,17 @@ if SERVER then
 
         local target = self.AimTarget
 
-        if IsValid(target) and target:IsPlayer() then
-            target = target:EyePos() - Vector(0, 0, 30)
+        if IsValid(target) then
+            if target:IsPlayer() then
+                target = target:EyePos() - Vector(0, 0, 30)
+            elseif target.IsDrGNextbot then
+                local eyebone = target:LookupBone(target.EyeBone)
+
+                target = target:WorldSpaceCenter() - Vector(0, 0, 20)
+            end
         end
 
-        if IsValid(target) and not self.AimDisabled  then
+        if IsValid(self.AimTarget) and not self.AimDisabled  then
             self:SmoothDirectPoseParametersAt(target, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 8)
         else
             self:SmoothDirectPoseParametersAt(self:WorldSpaceCenter() + self:GetForward() * 1, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 3)

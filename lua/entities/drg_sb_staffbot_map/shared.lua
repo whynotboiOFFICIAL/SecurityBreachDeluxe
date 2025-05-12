@@ -153,7 +153,7 @@ if SERVER then
 
         self.Stunned = true
 
-        entity:SetPos(self:GetPos() + self:GetForward() * 35)
+        entity:SetPos(self:GetPos() + self:GetForward() * 80)
     
         self.CurrentVictim = entity
         entity:AddFlags(FL_NOTARGET)

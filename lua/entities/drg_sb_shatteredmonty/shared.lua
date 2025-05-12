@@ -16,9 +16,6 @@ ENT.HidingSpotSearch = true
 -- Stats --
 ENT.SpawnHealth = 600
 
--- Speed --
-ENT.RunSpeed = 160
-
 -- Animations --
 ENT.WalkAnimation = 'crawl'
 ENT.WalkAnimRate = 1
@@ -47,16 +44,6 @@ ENT.PounceLandSounds = {
     '/land/fly_monty_land_03.wav'
 }
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -73,6 +60,11 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 160)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(1000 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         
         self.CanPounce = GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool()

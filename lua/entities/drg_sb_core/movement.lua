@@ -1,6 +1,9 @@
 function ENT:SetMovement(walkspeed, runspeed, yawrate, disable)
-    self.WalkSpeed = walkspeed
-    self.RunSpeed = runspeed
+    local walkmulti = self.WalkMultiplier or 1
+    local runmulti = self.RunMultiplier or 1
+    
+    self.WalkSpeed = walkspeed * walkmulti
+    self.RunSpeed = runspeed * runmulti
 
     self:SetMaxYawRate(yawrate or 250)
 
@@ -17,9 +20,12 @@ function ENT:SetMovementAnims(idle, walk, run, jump)
 end
 
 function ENT:SetMovementRates(idle, walk, run, jump)
+    local walkmulti = self.WalkMultiplier or 1
+    local runmulti = self.RunMultiplier or 1
+
     self.IdleAnimRate = idle
-    self.WalkAnimRate = walk
-    self.RunAnimRate = run
+    self.WalkAnimRate = walk * walkmulti
+    self.RunAnimRate = run * runmulti
     self.JumpAnimRate = jump
 end
 

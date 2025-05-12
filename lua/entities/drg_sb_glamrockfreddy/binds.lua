@@ -121,7 +121,7 @@ if CLIENT then
 
         -- Battery --
 
-        if GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 3 then return end
+        if self:GetNWBool('NoBatteryHUD') then return end
 
         local energy = self:GetNWInt('Energy')
 
@@ -241,6 +241,10 @@ if SERVER then
         end
 
         if not self:GetNWBool('UseHeadAttach') then
+            if self.BatteryConfig == 1 then
+                self:SetNWBool('NoBatteryHUD', true)
+            end
+
             if IsValid(self.Partner) then
                 self.Partner.GlamrockFreddy = nil
                 self.Partner = nil
@@ -250,6 +254,10 @@ if SERVER then
 
     function ENT:OnDispossessed(ent)
         self:DrG_Timer(0, function()
+
+            if self.BatteryConfig ~= 3 then
+                self:SetNWBool('NoBatteryHUD', false)
+            end
 
             if not self.DisableControls then
                 self:SetMovement(60, 280, 250)

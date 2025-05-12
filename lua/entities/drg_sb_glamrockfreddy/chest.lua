@@ -44,7 +44,7 @@ function ENT:EnterFreddy(ent)
 
     self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
     
-    self:SetMovement(150, 150, 250, false)
+    self:SetMovement(150, 150, 250)
     
     self:DrG_Timer(0, function()
         self:FaceInstant(ent)

@@ -16,11 +16,6 @@ ENT.SpawnHealth = 1000
 ENT.Frightening = false
 ENT.DefaultRelationship = D_LI
 
--- Speed --
-ENT.UseWalkframes = false
-ENT.WalkSpeed = 150
-ENT.RunSpeed = 150
-
 -- Animations --
 ENT.WalkAnimation = 'idle'
 ENT.WalkAnimRate = 1
@@ -34,16 +29,6 @@ ENT.JumpAnimRate = 1
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/staffbot/jumpscare/sfx_mapbot_jumpscare_02.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/staffbot'
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
 
 include('binds.lua')
 
@@ -69,6 +54,14 @@ if SERVER then
     -- Basic --
 
     function ENT:_BaseInitialize()
+        self.WalkMultiplier = GetConVar('fnaf_sb_new_multiplier_walkspeed'):GetFloat()
+        self.RunMultiplier = GetConVar('fnaf_sb_new_multiplier_runspeed'):GetFloat()
+        
+        self:SetMovement(200, 200)
+        self:SetMovementRates(1, 1, 1)
+
+        self.DisableRun = true
+
         self.WheelAngle = 0
 
         self.OldStunVO = GetConVar('fnaf_sb_new_staffbot_stunvoice'):GetBool()

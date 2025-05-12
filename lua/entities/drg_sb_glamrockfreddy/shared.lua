@@ -13,9 +13,6 @@ ENT.CanBeStunned = true
 -- Stats --
 ENT.SpawnHealth = 1000
 
--- Speed --
-ENT.RunSpeed = 280
-
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -50,16 +47,6 @@ ENT.PounceLandSounds = {
     '/land/fly_monty_land_03.wav'
 }
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -69,7 +56,8 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetNWInt('Energy', 100)
+        self:SetMovement(60, 280)
+        self:SetMovementRates(1, 1, 1)
 
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
         self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
@@ -78,6 +66,12 @@ if SERVER then
         self.Voicebox = GetConVar('fnaf_sb_new_freddy_chicavoice'):GetBool()
         self.CanPounce = GetConVar('fnaf_sb_new_freddy_montylegs'):GetBool()
         self.BatteryConfig = GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt()
+
+        if self.BatteryConfig == 3 then
+            self:SetNWBool('NoBatteryHUD', true)
+        end
+
+        self:SetNWInt('Energy', 100)
 
         self:SetBodygroup(4, GetConVar('fnaf_sb_new_freddy_chicavoice'):GetInt())
         self:SetBodygroup(7, GetConVar('fnaf_sb_new_freddy_montyclaws'):GetInt())
@@ -215,6 +209,12 @@ if SERVER then
         
         if self.Partner then
             if not IsValid(self.Partner) or self.Partner.GlamrockFreddy ~= self then
+                self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
+                
+                if self.OpenChest then
+                    self:CloseChestHatch()
+                end
+
                 self.Partner = nil
             end
         end
@@ -383,7 +383,11 @@ if SERVER then
             self.FoundRecharge = false
             self.NullifyVoicebox = false
 
-            self:SetMovement(60, 280, 250)
+            if self:GetNWBool('UseHeadAttach') then
+                self:SetMovement(150, 150, 250)
+            else
+                self:SetMovement(60, 280, 250)
+            end
 
             self.DisableControls = false
 
@@ -555,6 +559,8 @@ if SERVER then
         
         self:SetMovement(0, 0, 0, true)
 
+        self:SetBodygroup(1, 3)
+
         self:SetMaxYawRate(0)
 
         self.VoiceDisabled = true
@@ -595,8 +601,6 @@ if SERVER then
 
         self.DisableControls = false
 
-        self:SetBodygroup(1, 3)
-
         self.IdleAnimation = 'idle'
 
         if IsValid(self.Hacker) then
@@ -630,6 +634,8 @@ if SERVER then
         self.DisableControls = false
 
         self:SetMovement(60, 280, 250)
+
+        self:EyesConfig()
 
         self.IdleAnimation = 'idle'
 

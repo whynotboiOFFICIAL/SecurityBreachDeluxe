@@ -85,7 +85,7 @@ function ENT:RespondToSound(pos)
     if not self.Luring then
         self.VoiceDisabled = true
         self.Luring = true
-
+        
         if self.OnInvestigating then
             self:OnInvestigating()
         end

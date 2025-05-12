@@ -15,10 +15,6 @@ ENT.CustomStunSFX = true
 ENT.SpawnHealth = 2000
 ENT.MeleeAttackRange = 200
 
--- Speed --
-ENT.WalkSpeed = 250
-ENT.RunSpeed = 250
-
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -32,16 +28,6 @@ ENT.JumpAnimRate = 1
 -- Sounds --
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/djmusicman/jumpscare/sfx_jumpScare_DJMM.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/djmusicman'
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
 
 include('binds.lua')
 
@@ -106,6 +92,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(250, 250)
+        self:SetMovementRates(1, 1, 1)
+
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
         self.MusicEnabled = GetConVar('fnaf_sb_new_djmm_music'):GetBool()

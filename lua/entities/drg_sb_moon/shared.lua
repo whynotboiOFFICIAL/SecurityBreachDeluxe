@@ -23,24 +23,10 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'moonidle1'
 ENT.JumpAnimRate = 1
 
--- Speed --
-ENT.WalkSpeed = 136
-ENT.RunSpeed = 136
-
 -- Sounds --
 ENT.DisableMat = true
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/moon'
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
 
 ENT.DefaultRelationship = D_LI
 
@@ -99,6 +85,11 @@ if SERVER then
     end
 
     function ENT:CustomInitialize()
+        self:SetMovement(136, 136)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(1400 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self:Timer(0, function()
             self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
             self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()

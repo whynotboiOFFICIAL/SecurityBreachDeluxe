@@ -23,11 +23,6 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'fall'
 ENT.JumpAnimRate = 1
 
--- Speed --
-ENT.UseWalkframes = false
-ENT.WalkSpeed = 110
-ENT.RunSpeed = 220
-
 -- Sounds --
 ENT.SFXPath = 'whynotboi/securitybreach/base/gregory'
 
@@ -36,17 +31,7 @@ ENT.Factions = {'FACTION_HUMAN', 'FACTION_PLAYER'}
 ENT.Frightening = false
 ENT.DefaultRelationship = D_FR
 ENT.AvoidAfraidOfRange = 20000
-ENT.WatchAfraidOfRange = 19999
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
+ENT.WatchAfraidOfRange = 20000
 
 -- Possession --
 ENT.PossessionMovement = POSSESSION_MOVE_8DIR
@@ -60,6 +45,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(110, 220)
+        self:SetMovementRates(1, 2, 1)
+
         self.InfiniteStamina = GetConVar('fnaf_sb_new_gregory_infinitestamina'):GetBool()
 
         self:SetPlayersRelationship(D_LI)

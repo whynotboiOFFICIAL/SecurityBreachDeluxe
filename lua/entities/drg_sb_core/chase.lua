@@ -148,7 +148,10 @@ function ENT:PounceStart()
     self:DrG_Timer(0.1, function()
         self:SetPos(self:GetPos() + Vector(0, 0, 30))
 
-        self:SetVelocity(self:GetForward() * 1000 + Vector(0, 0, 150))
+        local forwardvel = 1000 * self.PounceForwardMultiplier
+        local upvel = 150 * self.PounceUpMultiplier
+
+        self:SetVelocity(self:GetForward() * forwardvel + Vector(0, 0, upvel))
     end)
     
     self.Pouncing = true

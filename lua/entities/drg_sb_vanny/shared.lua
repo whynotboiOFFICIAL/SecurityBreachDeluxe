@@ -13,10 +13,6 @@ ENT.CanBeSummoned = true
 -- Stats --
 ENT.SpawnHealth = 150
 
--- Speed --
-ENT.WalkSpeed = 80
-ENT.RunSpeed = 280
-
 -- Animations --
 ENT.WalkAnimation = 'skip'
 ENT.WalkAnimRate = 1
@@ -32,16 +28,6 @@ ENT.JumpscareSound = 'whynotboi/securitybreach/base/vanny/jumpscare/sfx_jumpScar
 ENT.SFXPath = 'whynotboi/securitybreach/base/vanny'
 ENT.DisableMat = true
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -50,6 +36,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(80, 280)
+        self:SetMovementRates(1, 1, 1)
+
         self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         
         self.PreJumpscare = GetConVar('fnaf_sb_new_vanny_prejumpscare'):GetBool()

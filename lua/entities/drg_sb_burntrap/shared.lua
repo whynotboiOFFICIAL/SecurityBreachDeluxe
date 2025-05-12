@@ -13,9 +13,6 @@ ENT.CanBeStunned = true
 -- Stats --
 ENT.SpawnHealth = 1000
 
--- Speed --
-ENT.RunSpeed = 120
-
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -48,6 +45,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 120)
+        self:SetMovementRates(1, 1, 1)
+
         self.CanJumpscare = GetConVar('fnaf_sb_new_burntrap_jumpscare'):GetBool()
         self.CanHack = GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool()
         

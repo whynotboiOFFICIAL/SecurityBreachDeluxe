@@ -44,16 +44,6 @@ ENT.PounceLandSounds = {
     '/land/fly_roxy_land_03.wav'
 }
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -71,6 +61,11 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 200)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(800 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+        
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
         self.CanSee = GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool()

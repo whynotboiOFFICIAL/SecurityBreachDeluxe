@@ -12,10 +12,6 @@ ENT.BloodColor = DONT_BLEED
 -- Stats --
 ENT.SpawnHealth = 200
 
--- Speed --
-ENT.WalkSpeed = 90
-ENT.RunSpeed = 90
-
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -30,16 +26,6 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/minimusicman'
 ENT.DisableMat = true
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
 
 include('binds.lua')
 
@@ -77,6 +63,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 60)
+        self:SetMovementRates(1, 1, 1)
+
         self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
         if GetConVar('fnaf_sb_new_ldjmm_music'):GetBool() then

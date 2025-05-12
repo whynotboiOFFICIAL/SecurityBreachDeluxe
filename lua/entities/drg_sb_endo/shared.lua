@@ -14,10 +14,6 @@ ENT.CustomStunSFX = true
 -- Stats --
 ENT.SpawnHealth = 200
 
--- Speed --
-ENT.WalkSpeed = 80
-ENT.RunSpeed = 240
-
 -- Animations --
 ENT.WalkAnimation = 'walk1'
 ENT.WalkAnimRate = 1
@@ -32,16 +28,6 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/endo/jumpscare/sfx_jumpscare_endo.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/endo'
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 0
-ENT.SightRange = 0
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 
 if SERVER then
@@ -53,6 +39,9 @@ if SERVER then
        
         self.HW2Jumpscare =  GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
         self.DisableFreezeOnSight = GetConVar('fnaf_sb_new_endo_chase'):GetBool()
+
+        self:SetMovement(80, 230)
+        self:SetMovementRates(1, 1, 1)
 
         if not self.DisableFreezeOnSight then     
             self.WalkSpeed = 0
@@ -172,10 +161,6 @@ if SERVER then
             self.RunAnimation = 'endowalk' .. self.Type
         end
 
-        self.IdleAnimRate = 0
-        self.WalkAnimRate = 0
-        self.RunAnimRate = 0
-
         self:SetMovement(0, 0, 0, true)
  
         self.ForceCycle = true
@@ -200,10 +185,8 @@ if SERVER then
             
             self:SetMovement(80, 240, 250)
         end
-
-        self.IdleAnimRate = 1
-        self.WalkAnimRate = 1
-        self.RunAnimRate = 1
+        
+        self:SetMovementRates(1, 1, 1)
 
         self.DisableControls = false
     end

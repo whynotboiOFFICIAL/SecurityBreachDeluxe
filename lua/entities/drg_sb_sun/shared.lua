@@ -23,24 +23,10 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
 ENT.JumpAnimRate = 1
 
--- Speed --
-ENT.WalkSpeed = 150
-ENT.RunSpeed = 150
-
 -- Sounds --
 ENT.DisableMat = true
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/sun'
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
 
 ENT.DefaultRelationship = D_LI
 
@@ -83,6 +69,11 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(150, 150)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(1400 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self:Timer(0, function()
             self.Target = nil
 

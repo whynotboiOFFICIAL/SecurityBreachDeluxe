@@ -15,9 +15,6 @@ ENT.CustomStunSFX = true
 -- Stats --
 ENT.SpawnHealth = 100
 
--- Speed --
-ENT.RunSpeed = 240
-
 -- Animations --
 ENT.WalkAnimation = 'walk'
 ENT.WalkAnimRate = 1
@@ -32,16 +29,6 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/vanessa'
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -51,6 +38,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 230)
+        self:SetMovementRates(1, 1, 1)
+
         self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
 
         self.OldFace = GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool()
@@ -176,15 +166,15 @@ if SERVER then
 
         self.RunAnimation = 'jog'
 
-        self.RunSpeed = 150
+        self:SetMovement(60, 120)
     end
 
     function ENT:OnInvestigatingEnd()
         self.ForceRun = false
 
         self.RunAnimation = 'run'
-        
-        self.RunSpeed = 240
+
+        self:SetMovement(60, 230)
     end
 
     function ENT:OnStunned()
