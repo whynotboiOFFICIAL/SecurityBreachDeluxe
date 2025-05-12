@@ -8,7 +8,7 @@ ENT.PossessionBinds = {
     [IN_ATTACK] = {{
         coroutine = true,
         onkeydown = function(self)
-            if self.Stunned or GetConVar('ai_disabled'):GetBool() or self.DisableControls then return end
+            if self.Stunned or self:GetAIDisabled() or self.DisableControls then return end
 
             if not self.CatchTick then          
                 local size = 140
@@ -19,7 +19,7 @@ ENT.PossessionBinds = {
                 self.CatchTick = true
     
                 for k, v in ipairs( ents.FindInCone( startPos, dir, size, angle ) ) do
-                    if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or v:Health() < 1 then continue end
+                    if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and self:GetIgnorePlayers()) or v:Health() < 1 then continue end
     
                     self:CallInCoroutine(function(self,delay)
                         self:JumpscareEntity(v)

@@ -43,16 +43,6 @@ ENT.PounceLandSounds = {
     '/land/fly_monty_land_03.wav'
 }
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -60,7 +50,7 @@ if SERVER then
     ENT.AnimEventSounds = {
         ['servo_l'] = {
             hasEnding = true,
-            path = 'whynotboi/securitybreach/base/montgomerygator/servo/large/sfx_servo_large_',
+            path = 'whynotboi/securitybreach/base/montgomerygator/servo/large/sfx_monty_servo_large_',
             count = 4,
             volume = 0.45,
             channel = CHAN_STATIC
@@ -69,46 +59,35 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-            self.HW2Jumpscare = true
-        end
+        self:SetMovement(60, 240)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(1000 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
+        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+        self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
+        self.PreAnim = GetConVar('fnaf_sb_new_traileranims'):GetBool()
+
+        self.GrowlEnabled = GetConVar('fnaf_sb_new_monty_growls'):GetBool()
+        self.CanPounce = GetConVar('fnaf_sb_new_monty_pounceattack'):GetBool()
+        self.CanJump = GetConVar('fnaf_sb_new_monty_jumpattack'):GetBool() and navmesh.IsLoaded()
+        self.CanBeStunned = GetConVar('fnaf_sb_new_monty_enablestun'):GetBool()
         
-        if GetConVar('fnaf_sb_new_damaging'):GetBool() then
-            self.GradualDamaging = true
-        end
+        self:SetBodygroup(2, GetConVar('fnaf_sb_new_monty_transglass'):GetInt())
+        self:SetBodygroup(3, GetConVar('fnaf_sb_new_betaeyes'):GetInt())
 
-        if GetConVar('fnaf_sb_new_monty_transglass'):GetBool() then
-            self:SetBodygroup(2, 1)
-        end
-
-        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
-            self:SetBodygroup(3, 1)
-        end
-
-        if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
+        if self.PreAnim then
             self.IdleAnimation = 'preidle'
             self.WalkAnimation = 'prewalk'
             self.RunAnimation = 'prerun'
-
-            self.PreAnim = true
         end
 
-        if not GetConVar('fnaf_sb_new_monty_pounceattack'):GetBool() then
-            self.CanPounce = false
-        end
-
-        if GetConVar('fnaf_sb_new_monty_jumpattack'):GetBool() and navmesh.IsLoaded() then
-            self.CanJump = true
-        end
-
-        if GetConVar('fnaf_sb_new_monty_enablestun'):GetBool() then
-            self.CanBeStunned = true
-        end
     end
 
-    function ENT:BreakDoor(d)
-        self.DisableControls = true
-        self.UseWalkframes = false
+    function ENT:BreakDoor(d)        
+        self:SetMovement(0, 0, 0, true)
+
         self.Moving = false
 
         self:DrG_Timer(0.3, function()
@@ -125,7 +104,8 @@ if SERVER then
 
             self:DrG_Timer(0.5, function()
                 self.DisableControls = false
-                self.UseWalkframes = true
+                
+                self:SetMovement(60, 230, 250)
             end)
         end)
 
@@ -146,6 +126,7 @@ if SERVER then
         local model = ent:GetModel()
         local mats = ent:GetMaterials()
         local skin = ent:GetSkin()
+
         ent:Remove()
 
         local door = ents.Create('prop_physics')
@@ -170,9 +151,72 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if GetConVar('fnaf_sb_new_monty_growls'):GetBool() then
+        if self.GrowlEnabled then
             self:GrowlThink()
         end
+    end
+
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)], true)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        if self.PreAnim then
+            self.IdleAnimation = 'preidle'
+        else
+            self.IdleAnimation = 'idle'
+        end
+    end
+
+    function ENT:OnSpotEnemy()
+        if self.Stunned then return end
+        
+        self.VoiceDisabled = true
+        
+        if self.VoiceCancel then
+            self:VoiceCancel()
+        end
+        
+        self:DrG_Timer(0.1, function()
+            if math.random(1, 100) > 50 then
+                self:PlayVoiceLine(self.PursuitVox[math.random(#self.PursuitVox)], true)
+            else
+                self:PlayVoiceLine(self.SpotVox[math.random(#self.SpotVox)], true)
+            end          
+        end)
+        
+        self:DrG_Timer(0.05, function()
+            self:StopVoices(1)
+        end)
+    end
+
+    function ENT:OnLoseEnemy()
+        if self.Stunned then return end
+
+        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
+            self.VoiceCancel = self:SBTimer(4, function()
+                self.VoiceDisabled = false
+            end)
+        end
+
+        self:StopVoices(2)
+
+        if IsValid(self.CurrentVictim) then return end
+        
+        self:DrG_Timer(0.05, function()
+            self:PlayVoiceLine(self.LostVox[math.random(#self.LostVox)], true)
+        end)
     end
 
     function ENT:Removed()

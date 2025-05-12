@@ -23,10 +23,6 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'idle'
 ENT.JumpAnimRate = 1
 
--- Speed --
-ENT.WalkSpeed = 0
-ENT.RunSpeed = 0
-
 -- Relationships --
 ENT.DefaultRelationship = D_LI
 
@@ -51,16 +47,6 @@ ENT.PounceLandSounds = {
     '/land/fly_monty_land_03.wav'
 }
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 include('voice.lua')
 
@@ -70,44 +56,37 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self:SetMovement(60, 280)
+        self:SetMovementRates(1, 1, 1)
+
+        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+        self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
+        
+        self.Claws = GetConVar('fnaf_sb_new_freddy_montyclaws'):GetBool()
+        self.Voicebox = GetConVar('fnaf_sb_new_freddy_chicavoice'):GetBool()
+        self.CanPounce = GetConVar('fnaf_sb_new_freddy_montylegs'):GetBool()
+        self.BatteryConfig = GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt()
+
+        if self.BatteryConfig == 3 then
+            self:SetNWBool('NoBatteryHUD', true)
+        end
+
         self:SetNWInt('Energy', 100)
 
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-            self.HW2Jumpscare = true
-        end
+        self:SetBodygroup(4, GetConVar('fnaf_sb_new_freddy_chicavoice'):GetInt())
+        self:SetBodygroup(7, GetConVar('fnaf_sb_new_freddy_montyclaws'):GetInt())
+        self:SetBodygroup(8, GetConVar('fnaf_sb_new_freddy_montylegs'):GetInt())
+        self:SetBodygroup(9, GetConVar('fnaf_sb_new_freddy_montylegs'):GetInt())
+        self:SetBodygroup(10, GetConVar('fnaf_sb_new_freddy_montylegs'):GetInt())
 
-        if GetConVar('fnaf_sb_new_damaging'):GetBool() then
-            self.GradualDamaging = true
-        end
-
+        self:EyesConfig()
+               
         if not GetConVar('fnaf_sb_new_freddy_friendly'):GetBool() then
             self:SetDefaultRelationship(D_HT)
 
             self.Hostile = true
             self.CanBeSummoned = true
-        end
-
-
-        if GetConVar('fnaf_sb_new_freddy_montyclaws'):GetBool() then
-            self:SetBodygroup(7, 1)
-
-            self.Claws = true
-        end
-
-        if GetConVar('fnaf_sb_new_freddy_chicavoice'):GetBool() then
-            self:SetBodygroup(4, 1)
-
-            self.Voicebox = true
-        end
-        
-        self:EyesConfig()
-
-        if GetConVar('fnaf_sb_new_freddy_montylegs'):GetBool() then
-            self:SetBodygroup(8, 1)
-            self:SetBodygroup(9, 1)
-            self:SetBodygroup(10, 1)
-
-            self.CanPounce = true
+            self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         end
     end
 
@@ -138,8 +117,7 @@ if SERVER then
     function ENT:BreakDoor(d)
         if not self.Claws then return end
 
-        self.DisableControls = true
-        self.UseWalkframes = false
+        self:SetMovement(0, 0, 250, true)
 
         self:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/claws/swing/sfx_montyClaws_swing_0' .. math.random(3) .. '.wav')
 
@@ -163,13 +141,14 @@ if SERVER then
 
             self:DrG_Timer(0.5, function()
                 self.DisableControls = false
-                self.UseWalkframes = true
+                
+                self:SetMovement(60, 280, 250)
             end)
         end)
     end
 
     function ENT:AddCustomThink()
-        if not self.PowerTick and not self.FoundRecharge and not (GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 3 or (GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 1 and not self.Inhabited)) then
+        if not self.PowerTick and not self.FoundRecharge and not (self.BatteryConfig == 3 or (self.BatteryConfig == 1 and not self.Inhabited)) then
             local currentpower = self:GetNWInt('Energy')
 
             self.PowerTick = true
@@ -230,6 +209,12 @@ if SERVER then
         
         if self.Partner then
             if not IsValid(self.Partner) or self.Partner.GlamrockFreddy ~= self then
+                self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
+                
+                if self.OpenChest then
+                    self:CloseChestHatch()
+                end
+
                 self.Partner = nil
             end
         end
@@ -265,7 +250,7 @@ if SERVER then
                 self.Partner = nil
             end
             
-            if  dist < 50 and not ((GetConVar('ai_disabled'):GetBool()) or (partner:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) and partner:Health() > 0 then
+            if  dist < 50 and not ((self:GetAIDisabled()) or (partner:IsPlayer() and self:GetIgnorePlayers())) and partner:Health() > 0 then
                 if self.AimTarget ~= partner then
                     self.AimTarget = partner
 
@@ -290,7 +275,7 @@ if SERVER then
             end
 
             if not self.IsSick and not self.Stunned then
-                if dist < 20 and not ((GetConVar('ai_disabled'):GetBool()) or (partner:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) and partner:Health() > 0 then
+                if dist < 20 and not ((self:GetAIDisabled()) or (partner:IsPlayer() and self:GetIgnorePlayers())) and partner:Health() > 0 then
                     if not self.OpenChest then
                         self:OpenChestHatch()
                     end
@@ -325,6 +310,7 @@ if SERVER then
         self:StopVoices() 
         
         self.ForceRun = true
+        self.NullifyVoicebox = true
 
         self:CallInCoroutine(function(self,delay)
 
@@ -342,12 +328,16 @@ if SERVER then
 
             self.ForceRun = false
 
-            if not IsValid(ent) then self.FoundRecharge = false return end
+            if not IsValid(ent) then 
+                self.FoundRecharge = false 
+                self.NullifyVoicebox = false
+            return end
 
             if not ent.Occupied then
                 ent:Use(self)
             else
                 self.FoundRecharge = false
+                self.NullifyVoicebox = false
             end
         end)
     end
@@ -368,16 +358,13 @@ if SERVER then
 
         self:SetVelocity(vector_origin)
         
-        self.DisableControls = true
         self.FoundRecharge = true
 
         self.ForceRun = false
 
         self:SetAIDisabled(true)
 
-        self:SetMaxYawRate(0)
-
-        self.UseWalkframes = false
+        self:SetMovement(0, 0, 0, true)
 
         self:DrG_Timer(5, function()
             if IsValid(ent) then
@@ -394,13 +381,17 @@ if SERVER then
             end
 
             self.FoundRecharge = false
+            self.NullifyVoicebox = false
+
+            if self:GetNWBool('UseHeadAttach') then
+                self:SetMovement(150, 150, 250)
+            else
+                self:SetMovement(60, 280, 250)
+            end
+
             self.DisableControls = false
 
             self:SetAIDisabled(false)
-
-            self:SetMaxYawRate(250)
-
-            self.UseWalkframes = true
 
             self:EmitSound('whynotboi/securitybreach/base/props/rechargestation/charge/sfx_rechargeStation_charge_complete.wav')
 
@@ -422,6 +413,34 @@ if SERVER then
         self.IdleAnimation = 'idle'
         self.WalkAnimation = 'walk'
         self.RunAnimation = 'run'
+    end
+
+    function ENT:SickMode()
+        self.Inhabited = false
+        self.Moving = false
+        self.IsSick = true
+        
+        self.PossessionMovement = POSSESSION_MOVE_CUSTOM
+
+        self.IdleAnimation = 'idlesick'
+        self.WalkAnimation = 'walksick'
+        self.RunAnimation = 'runsick'
+        
+        if self.OpenChest then
+            self:CloseChestHatch()
+        end
+
+        if not IsValid(self.Partner) then return end
+
+        local partner = self.Partner
+        local pos = partner:GetPos()
+        local dist = pos:DistToSqr(self:GetPos())/ 1000
+
+        partner:EmitSound('whynotboi/securitybreach/base/glamrockfreddy/alerts/sfx_freddy_alert_outOfPower.wav')
+
+        if dist < 50 then
+            self:DialogueTrigger(1, partner)
+        end
     end
 
     function ENT:SummonFreddy(ent)
@@ -449,7 +468,7 @@ if SERVER then
     end
 
     function ENT:Use(ent)
-        if ((GetConVar('ai_disabled'):GetBool()) or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool())) or self.IsSick or self.BeingHacked then return end
+        if ((self:GetAIDisabled()) or (ent:IsPlayer() and self:GetIgnorePlayers())) or self.IsSick or self.BeingHacked then return end
 
         if (ent == self.Partner) or (self:IsPossessed() and not IsValid(self.Partner)) then
             self.StoredPlayerWeapon = IsValid(ent:GetActiveWeapon()) and ent:GetActiveWeapon() or nil
@@ -472,7 +491,15 @@ if SERVER then
 
         if IsValid(self.Partner) then return end
 
-        self:Wait(math.random(3, 7))
+        self:Wait(math.random(3, 7), function()
+            if self.Luring and self._InterruptSeq then
+                return true
+            end
+        end)
+    
+        if self.Luring then
+            self:InvestigatePosition()
+        end
     end
 
     function ENT:OnIdle()
@@ -481,6 +508,186 @@ if SERVER then
         self:AddPatrolPos(self:RandomPos(1500))
     end
     
+    function ENT:OnStunned()
+        self:StopVoices()
+        
+        if self.OpenChest then
+            self:CloseChestHatch()
+        end
+
+        if self.Hostile then
+            self:PlayVoiceLine(self.CorruptedVox[math.random(#self.CorruptedVox)])
+        else
+            self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)], true)
+        end
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunin') 
+        end)
+
+        self.Moving = false
+
+        self.IdleAnimation = 'stunloop'
+    end
+
+    function ENT:OnStunExit()
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout') 
+        end)
+
+        self.IdleAnimation = 'idle'
+    end
+
+    function ENT:HackStart()
+        if self.OpenChest then
+            self:CloseChestHatch()
+        end
+
+        if self.Inhabited then
+            self:ExitFreddy(self:GetPossessor())
+                        
+            self:DrG_Timer(2.5, function()
+                if not self.BeingHacked then return end
+                
+                self:CloseChestHatch()
+            end)
+        end
+
+        self.HackProgress = 0
+
+        self.Moving = false
+        
+        self:SetMovement(0, 0, 0, true)
+
+        self:SetBodygroup(1, 3)
+
+        self:SetMaxYawRate(0)
+
+        self.VoiceDisabled = true
+        self.BeingHacked = true
+    
+        self.IdleAnimation = 'stunloop'
+        self:PlaySequenceAndMove('stunin')
+
+        if not self.HackLines then
+            self.HackLines = true
+
+            self:PlayVoiceLine('FREDDY_00160', true)
+            
+            self:DrG_Timer(2, function()
+                if not self.BeingHacked then return end
+
+                self:PlayVoiceLine('FREDDY_00161', true)
+            end)
+        else
+            self:PlayVoiceLine(self.CorruptedVox[math.random(#self.CorruptedVox)], true)
+        end
+
+        self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
+
+        self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_lp.wav')
+    end
+
+    function ENT:HackComplete()
+        if self.Partner then
+            self.Partner.GlamrockFreddy = nil
+            self.Partner = nil
+        end
+
+        self.Hacked = true
+        self.BeingHacked = false
+
+        self:SetMovement(60, 280, 250)
+
+        self.DisableControls = false
+
+        self.IdleAnimation = 'idle'
+
+        if IsValid(self.Hacker) then
+            self.Hacker:CallInCoroutine(function(self,delay)
+                self:HackExit()
+            end)
+        end
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlayVoiceLine('FREDDY_00122a', true)
+
+            self:PlaySequenceAndMove('stunout')
+
+            self:DrG_Timer(2, function()
+                self.VoiceDisabled = false
+            end)
+        end)
+
+        self.Hostile = true
+        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
+
+        self:SetDefaultRelationship(D_HT)
+        
+        self:StopSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_lp.wav')
+        self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_complete_end.wav')
+    end
+
+    function ENT:HackInterrupted()
+        self.BeingHacked = false
+    
+        self.DisableControls = false
+
+        self:SetMovement(60, 280, 250)
+
+        self:EyesConfig()
+
+        self.IdleAnimation = 'idle'
+
+        self:StopVoices()
+        
+        if IsValid(self.Hacker) then
+            self.Hacker:CallInCoroutine(function(self,delay)
+                self:HackExit()
+            end)
+        end
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('stunout')
+
+            self:DrG_Timer(1, function()
+                self.VoiceDisabled = false
+            end)
+        end)
+
+        self:StopSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_lp.wav')
+        self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_complete_end.wav')
+    end
+
+    function ENT:OnSpotEnemy(enemy)
+        if self.VoiceCancel then
+            self:VoiceCancel()
+        end
+
+        self:DrG_Timer(0.05, function()
+            self.VoiceDisabled = true 
+            self:StopVoices(1)
+        end)
+    end
+
+    function ENT:OnLoseEnemy()
+        if self.Stunned then return end
+        
+        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
+            self.VoiceCancel = self:SBTimer(4, function()
+                self.VoiceDisabled = false
+            end)
+        end
+
+        self:StopVoices(2)
+        
+        if IsValid(self.CurrentVictim) then return end
+
+        self:DrG_Timer(0.05, function()
+            self:PlayVoiceLine(self.LostVox[math.random(#self.LostVox)], true)
+        end)
+    end
+
     function ENT:Removed()
         self:StopSound('whynotboi/securitybreach/base/glamrockfreddy/sfx_roxyEyes_hud_lp.wav')
         self:StopSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_lp.wav')

@@ -23,22 +23,10 @@ ENT.IdleAnimRate = 1
 ENT.JumpAnimation = 'moonidle1'
 ENT.JumpAnimRate = 1
 
-ENT.UseWalkframes = true
-
 -- Sounds --
 ENT.DisableMat = true
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/moon'
-
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 150
-ENT.SightRange = 15000
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
 
 ENT.DefaultRelationship = D_LI
 
@@ -89,7 +77,7 @@ if SERVER then
     
         local anim = 'moonjumpscare'
 
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+        if self.HW2Jumpscare then
             anim = 'moonjumpscarehw'
         end
 
@@ -97,16 +85,22 @@ if SERVER then
     end
 
     function ENT:CustomInitialize()
+        self:SetMovement(136, 136)
+        self:SetMovementRates(1, 1, 1)
+
+        self:SetSightRange(1400 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self:Timer(0, function()
-            self.Target = nil
+            self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
+            self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+
+            self.MoonRun = GetConVar('fnaf_sb_new_moon_userun'):GetBool()
+            self.CanFlashStun = GetConVar('fnaf_sb_new_moon_flashstun'):GetBool()
+            self.JackOMoon = GetConVar('fnaf_sb_new_moon_jackomoon'):GetBool()
 
             self.loco:SetAcceleration(3000)
             self.loco:SetDeceleration(0)
 
-            if GetConVar('fnaf_sb_new_moon_userun'):GetBool() then
-                self.MoonRun = true
-            end
-    
             self:EmitSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav', 75, 100, 0.45)
             self:EmitSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_general_lp.wav', 75, 100, 0.45)
 
@@ -117,18 +111,63 @@ if SERVER then
     
             self.SFXPath = 'whynotboi/securitybreach/base/moon'
             
-            self.IdleAnimation = 'moonidle1'
-            self.WalkAnimation = 'moonwalk'
-            
             if self.MoonRun then
                 self.RunAnimation = 'moonrun'
-            else
-                self.RunAnimation = 'moonwalk'
+
+                self:SetMovement(136, 230)
+            end
+                
+            if self.JackOMoon then
+                self:ApplyJackO()
             end
         end)
 
         self.SpawnPosition = self:GetPos()
         self.IdleCycles = 0
+        self.FlashTolerance = 0
+    end
+
+    function ENT:ApplyJackO()
+        self:SetModel('models/whynotboi/securitybreach/base/animatronics/daycareattendant/jackomoon.mdl')
+
+        self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
+
+        self.SearchingVox = {
+            'Moon_Carousel_001',
+            'Moon_Carousel_002',
+            'Moon_Carousel_004',
+            'Moon_Laugh_001',
+            'Moon_Laugh_002',
+            'Moon_Laugh_003',
+            'Moon_Laugh_004'
+        }
+        
+        self.ListeningVox = {
+            'Moon_Carousel_003',
+            'Moon_Laugh_003',
+            'Moon_Laugh_004'
+        }
+                
+        self.SpotVox = {
+            'Moon_Carousel_003',
+            'Moon_Carousel_004',
+            'Moon_Carousel_005',
+            'Moon_Laugh_001',
+            'Moon_Laugh_002',
+            'Moon_Laugh_003',
+            'Moon_Laugh_004'
+        }
+       
+        self.PursuitVox = {
+            'Moon_Carousel_005'
+        }
+
+        self.LostVox = {
+            'Moon_Laugh_001',
+            'Moon_Laugh_002',
+            'Moon_Laugh_003',
+            'Moon_Laugh_004'
+        }
     end
 
     function ENT:SpawnHook(pos)
@@ -184,6 +223,42 @@ if SERVER then
     function ENT:CustomThink()
         if self.Stunned then return end
 
+        if self.CanFlashStun then
+            if self:BeingFlashed() and not self.Shaking and not IsValid(self.CurrentVictim) then
+                self.Shaking = true
+
+                self:AddGestureSequence(self:LookupSequence('shake'), false)
+            end
+
+            if not self:BeingFlashed() and self.Shaking then
+                self.Shaking = false
+
+                self:RemoveAllGestures()
+            end
+
+            if not self.FlashTick then
+                self.FlashTick = true
+
+                if self.Shaking then
+                    if self.FlashTolerance < 10 then
+                        self.FlashTolerance = self.FlashTolerance + 1
+                    else
+                        self:FlashStun()
+
+                        self.FlashTolerance = 0
+                    end
+                else
+                    if self.FlashTolerance > 0 then
+                        self.FlashTolerance = self.FlashTolerance - 2
+                    end
+                end     
+
+                self:DrG_Timer(0.2, function()
+                    self.FlashTick = false
+                end)
+            end
+        end
+        
         if self.VoiceThink then
             self:VoiceThink()
         end
@@ -249,9 +324,9 @@ if SERVER then
 
             if self.IdleCycles > 3 and math.random(1,100) > 50 then
                 if self.WalkAnimation ~= 'moonskitter' then
-                    self.IdleAnimation = 'moonwalktocrawl'
-                    self.WalkAnimation = 'moonwalktocrawl'
-                    self.RunAnimation = 'moonwalktocrawl'
+                    self:CallInCoroutine(function(self,delay)
+                        self:PlaySequenceAndMove('moonwalktocrawl')
+                    end)
                 end
 
                 self.IdleCycles = 0
@@ -265,9 +340,9 @@ if SERVER then
 
             if self.IdleCycles > 3 and math.random(1,100) > 50 then
                 if self.WalkAnimation ~= 'moonwalk' then
-                    self.IdleAnimation = 'mooncrawltowalk'
-                    self.WalkAnimation = 'mooncrawltowalk'
-                    self.RunAnimation = 'mooncrawltowalk'
+                    self:CallInCoroutine(function(self,delay)
+                        self:PlaySequenceAndMove('mooncrawltowalk')
+                    end)
                 end
 
                 self.IdleCycles = 0
@@ -275,19 +350,19 @@ if SERVER then
         end
 
         if e == 'toskitter' then
-            self.IdleAnimation = 'moonidle4'
-            self.WalkAnimation = 'moonskitter'
-            self.RunAnimation = 'moonskitter'
+            self:SetMovementAnims('moonidle4', 'moonskitter', 'moonskitter')
             
+            self:SetMovement(136, 136)
+
             self.Skittering = true
 
             self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 35))
         end
 
         if e == 'towalk' then
-            self.IdleAnimation = 'moonidle1'
-            self.WalkAnimation = 'moonwalk'
-            self.RunAnimation = 'moonwalk'
+            self:SetMovementAnims('moonidle1', 'moonwalk', 'moonwalk')
+
+            self:SetMovement(136, 136)
 
             self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
 
@@ -295,6 +370,8 @@ if SERVER then
 
             if self:IsPossessed() then
                 self.RunAnimation = 'moonrun'
+
+                self:SetMovement(136, 230)
             end
         end
 
@@ -310,13 +387,95 @@ if SERVER then
         self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_detail_lp.wav')
         self:StopSound('whynotboi/securitybreach/base/moon/mech/sfx_moonman_mech_general_lp.wav')
     end
+       
+    function ENT:FlashStun()
+        self:StopVoices()
+        
+        self:RemoveAllGestures()
+
+        self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)], false)
+
+        self.IdleAnimation = 'idlesad'
+
+        self.Stunned = true
+        self.NullifyVoicebox = true
+        self.DisableControls = true
+
+        self:SetAIDisabled(true)
+
+        self:CallInCoroutine(function(self,delay)
+            self:PlaySequenceAndMove('moonstun')
+        end)
+        
+        self:DrG_Timer(8, function()
+            self:OnStunExit()
+
+            self.Stunned = false
+            self.NullifyVoicebox = false
+            self.DisableControls = false
+
+            self:SetAIDisabled(false)
+        end)
+    end
+
+    function ENT:OnStunned()
+        self:StopVoices()
+
+        self:RemoveAllGestures()
+
+        self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)], false)
+
+        self.IdleAnimation = 'idlesad'
+    end
+
+    function ENT:OnStunExit()
+        if self.Skittering then
+            self.IdleAnimation = 'moonidle4'
+        else
+            self.IdleAnimation = 'moonidle1'
+        end
+    end
 
     function ENT:OnNewEnemy()
+        if self.Stunned then return end
+        
+        self.VoiceDisabled = true
+             
+        if self.VoiceCancel then
+            self:VoiceCancel()
+        end
+
+        self:DrG_Timer(0.1, function()
+            if math.random(1, 100) > 50 then
+                self:PlayVoiceLine(self.PursuitVox[math.random(#self.PursuitVox)], true)
+            else
+                self:PlayVoiceLine(self.SpotVox[math.random(#self.SpotVox)], true)
+            end             
+        end)
+        
+        self:DrG_Timer(0.05, function()
+            self:StopVoices(1)
+        end)
     end
 
-    function ENT:OnLoseEnemy()
-    end
+    function ENT:OnLastEnemy()
+        if self.Stunned then return end
 
+        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
+            self.VoiceCancel = self:SBTimer(4, function()
+                self.VoiceDisabled = false
+            end)
+        end
+
+        self:StopVoices(2)
+
+        if IsValid(self.CurrentVictim) then return end
+        
+        self:DrG_Timer(0.05, function()
+            self:PlayVoiceLine(self.LostVox[math.random(#self.LostVox)], true)
+        end)
+    end
+    
     -- Sounds --
 
     function ENT:StepSFX()

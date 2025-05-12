@@ -1,23 +1,30 @@
 if not DrGBase then return end -- return if DrGBase isn't installed
 ENT.Base = 'drgbase_nextbot' -- DO NOT TOUCH (obviously)
 
--- I updated it again
-
--- Misc --
 ENT.RagdollOnDeath = true
 
 -- Speed --
-ENT.UseWalkframes = true
-ENT.WalkSpeed = 0
-ENT.RunSpeed = 0
+ENT.UseWalkframes = false
+ENT.WalkSpeed = 60
+ENT.RunSpeed = 200
 
 -- AI --
 ENT.Omniscient = false
 ENT.SpotDuration = 30
-ENT.RangeAttackRange = 600
+ENT.RangeAttackRange = 150
 ENT.MeleeAttackRange = 60
 ENT.ReachEnemyRange = 60
 ENT.AvoidEnemyRange = 0
+
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 60
+ENT.SightRange = 1600
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
 
 -- Relationships --
 ENT.Factions = {'FACTION_ANIMATRONIC'}
@@ -109,7 +116,7 @@ include('possession.lua')
 
 if SERVER then
 
-    include('walkframe.lua')
+    include('movement.lua')
     include('footsteps.lua')
     include('patrol.lua')
     include('chase.lua')
@@ -119,6 +126,14 @@ if SERVER then
     -- Basic
 
     function ENT:_BaseInitialize()
+        self.WalkMultiplier = GetConVar('fnaf_sb_new_multiplier_walkspeed'):GetFloat()
+        self.RunMultiplier = GetConVar('fnaf_sb_new_multiplier_runspeed'):GetFloat()
+
+        self.PounceUpMultiplier = GetConVar('fnaf_sb_new_multiplier_pounceup'):GetFloat()
+        self.PounceForwardMultiplier = GetConVar('fnaf_sb_new_multiplier_pounceforward'):GetFloat()
+
+        self:SetSightRange(1600 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
+
         self.Width = self:BoundingRadius() * 0.1
 
         self.DamageTolerance = 0
@@ -190,10 +205,12 @@ if SERVER then
         end
     end
     
+    -- Returns
+
     function ENT:EntityInaccessible(ent)
         if ent == self or ent == self:GetPossessor() then return true end
         if self.Stunned or self.PounceStarted or self:IsPossessed() then return true end
-        if GetConVar('ai_disabled'):GetBool() or (ent:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then return true end
+        if self:GetAIDisabled() or (ent:IsPlayer() and self:GetIgnorePlayers()) then return true end
         if (ent:IsPlayer() and IsValid(ent:DrG_GetPossessing())) or (ent.IsDrGNextbot and ent:IsInFaction('FACTION_ANIMATRONIC')) or ent:Health() < 1 then return true end
         if IsValid(ent:GetNWEntity('2PlayFreddy')) or IsValid(ent:GetNWEntity('HidingSpotSB')) then return true end
         if not (ent:IsPlayer() or ent:IsNextBot() or ent:IsNPC()) then return true end
@@ -237,6 +254,31 @@ if SERVER then
         return isBeingLookedAt
     end
 
+    function ENT:BeingFlashed()
+        local players = player.GetHumans()
+        local isBeingFlashed = false
+    
+        for i = 1, #players do
+            local ply = players[i]
+            local nextbot = ply:DrG_GetPossessing()
+                
+            if self:GetPossessor() ~= ply then
+                local ent = ply:GetEyeTrace().Entity
+                local poslight = false
+
+                if IsValid(nextbot) and nextbot.LightOn then
+                    poslight = true
+                end
+
+                if ent == self and (ply:FlashlightIsOn() or poslight) then
+                    isBeingFlashed = true
+                end
+            end
+        end
+    
+        return isBeingFlashed
+    end
+
     local ai_ignoreplayers = GetConVar('ai_ignoreplayers')
     local ai_disabled = GetConVar('ai_disabled')
 
@@ -257,7 +299,19 @@ if SERVER then
     
         return timname
     end
-     
+
+    function ENT:SBTimer(delay, func)
+        local cancelled = false
+    
+        timer.Simple(delay, function()
+            if not cancelled and self:IsValid() then
+                func(self)
+            end
+        end)
+    
+        return function() cancelled = true end
+    end
+
     function ENT:LayerBlend(id, rate, out)
         if out then
             self:SetLayerWeight(id, 1)
@@ -278,7 +332,7 @@ if SERVER then
         end)
     end
 
-    -- EventFrames
+    -- Eventframes
 
     function ENT:HandleAnimEvent(a,b,c,d,e)
         if string.sub(e, 1, 4) == 'sfx_' then
@@ -298,6 +352,12 @@ if SERVER then
                     self:StopAnimSounds(name, true)
                 end
             end
+        end
+
+        if string.sub(e, 1, 7) == 'turneye' then
+            local toturn = string.sub(e, 8, 10)
+
+            self.EyeAngle = Angle(0, toturn, 0)
         end
 
         if e == 'step' and self.StepSFX then
@@ -385,9 +445,21 @@ if SERVER then
 
         --local lerped = LerpVector(transitionProgress, self:WorldSpaceCenter(), self.AimTarget)
 
-        if self.AimTarget ~= nil and not self.AimDisabled  then
-            self:SmoothDirectPoseParametersAt(self.AimTarget, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 8)
-        elseif self.AimTarget == nil then
+        local target = self.AimTarget
+
+        if IsValid(target) then
+            if target:IsPlayer() then
+                target = target:EyePos() - Vector(0, 0, 30)
+            elseif target.IsDrGNextbot then
+                local eyebone = target:LookupBone(target.EyeBone)
+
+                target = target:WorldSpaceCenter() - Vector(0, 0, 20)
+            end
+        end
+
+        if IsValid(self.AimTarget) and not self.AimDisabled  then
+            self:SmoothDirectPoseParametersAt(target, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 8)
+        else
             self:SmoothDirectPoseParametersAt(self:WorldSpaceCenter() + self:GetForward() * 1, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter(), 3)
         end
     end
@@ -452,7 +524,7 @@ if SERVER then
     -- Damage
        
     function ENT:DoStunned()
-        if self.Stunned or self.StunDelay or self.PounceStarted or self.Luring then return end
+        if self.Stunned or self.StunDelay or self.PounceStarted or self.StunDisabled then return end
         
         self.Moving = false
 
@@ -462,7 +534,9 @@ if SERVER then
 
         self.DisableControls = true
         self.VoiceDisabled = true
+        self._InterruptSeq = true
         self.Stunned = true
+        self.NullifyVoicebox = true
 
         self:SetAIDisabled(true)
         
@@ -481,6 +555,8 @@ if SERVER then
 
             self.DisableControls = false
             self.Stunned = false
+            self.NullifyVoicebox = false
+            self._InterruptSeq = false
 
             if not self:HasEnemy() then
                 self.VoiceDisabled = false

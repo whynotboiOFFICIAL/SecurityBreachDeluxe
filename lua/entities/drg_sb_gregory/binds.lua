@@ -127,7 +127,91 @@ ENT.PossessionViews = {
 }
 
 if CLIENT then
+    local staminaframe = Material('ui/securitybreach/gregory/Gregory_HUD_Stamina_frame.png')
+    local staminabar = Material('ui/securitybreach/gregory/Gregory_HUD_Stamina_Fill.png')
+
+    local crouch = Material('ui/securitybreach/gregory/Gregory_HUD_crouch_noflashlight_white_icon.png')
+    local crouchLight = Material('ui/securitybreach/gregory/Gregory_HUD_crouch_white_icon.png')
+
+    local currentStamina = 200
+    local alpha = 0
+    local alpha2 = 0
+
+    local hasRunOut = false
+
     function ENT:PossessionHUD() 
+        local w, h = ScrW(), ScrH()
+
+        local stamina = self:GetNWFloat('Stamina')
+
+        local isRunDisabled = self:GetNWBool('DisableRun')
+
+        if hasRunOut and not isRunDisabled then
+            alpha = 1
+        end
+
+        hasRunOut = isRunDisabled
+
+        if stamina < 200 then
+            if hasRunOut then
+                local value = math.floor((SysTime() * 3) % 2)
+
+                alpha = (value == 0 and 0 or 1)
+            else
+                alpha = math.Clamp(alpha + RealFrameTime(), 0, 1)
+            end
+        elseif stamina >= 200 then
+            alpha = math.Clamp(alpha - RealFrameTime(), 0, 1)
+        end
+
+        if hasRunOut then
+            surface.SetDrawColor(255, 0, 0, 255 * alpha)
+        else
+            surface.SetDrawColor(76, 77, 174, 255 * alpha)
+        end
+
+        surface.SetMaterial(staminaframe)
+
+        local w2, h2 = ScreenScale(200), ScreenScale(10)
+        local batteryx = w / 2 - w2 / 2
+
+        surface.DrawTexturedRect(batteryx, h - h2 * 3.5, w2, h2)
+
+        currentStamina = math.Approach(currentStamina, stamina, RealFrameTime() * 85)
+
+        w2 = ScreenScale(200 * (currentStamina / 200))
+
+        batteryx = w / 2 - w2 / 2
+
+        surface.SetMaterial(staminabar)
+
+        surface.DrawTexturedRect(batteryx, h - h2 * 3.5, w2, h2)
+        
+        -- Crouching 
+
+        local crouching = self:GetNWBool('Crouching')
+
+        local hasFlashlight = self:GetNWBool('HasFlashlight')
+
+        if crouching then
+            alpha2 = math.Clamp(alpha2 + RealFrameTime() * 1.5, 0, 1)
+        else
+            alpha2 = math.Clamp(alpha2 - RealFrameTime() * 1.5, 0, 1)
+        end
+
+        surface.SetDrawColor(76, 77, 174, 255 * alpha2)
+
+        w2, h2 = ScreenScale(40), ScreenScale(40)
+
+        batteryx = w / 1.1 - w2 / 2
+
+        if hasFlashlight then
+            surface.SetMaterial(crouchLight)
+        else
+            surface.SetMaterial(crouch)
+        end
+
+        surface.DrawTexturedRect(batteryx, h - h2 * 1.3, w2, h2)
     end
 
     function ENT:PossessorView()

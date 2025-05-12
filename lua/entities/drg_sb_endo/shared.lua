@@ -28,16 +28,6 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/endo/jumpscare/sfx_jumpscare_endo.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/endo'
 
--- Detection --
-ENT.EyeBone = 'Head_jnt'
-ENT.EyeOffset = Vector(0, 0, 0)
-ENT.EyeAngle = Angle(0, 0, 0)
-ENT.SightFOV = 0
-ENT.SightRange = 0
-ENT.MinLuminosity = 0
-ENT.MaxLuminosity = 1
-ENT.HearingCoefficient = 1
-
 include('binds.lua')
 
 if SERVER then
@@ -46,12 +36,16 @@ if SERVER then
 
     function ENT:CustomInitialize()
         self.Type = math.random(3)
-        
-        self.WalkSpeed = 0
-        self.RunSpeed = 0
+       
+        self.HW2Jumpscare =  GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+        self.DisableFreezeOnSight = GetConVar('fnaf_sb_new_endo_chase'):GetBool()
 
-        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
-            self.HW2Jumpscare = true
+        self:SetMovement(80, 230)
+        self:SetMovementRates(1, 1, 1)
+
+        if not self.DisableFreezeOnSight then     
+            self.WalkSpeed = 0
+            self.RunSpeed = 0
         end
         
         local appearance = GetConVar('fnaf_sb_new_endo_appearance'):GetInt()
@@ -93,13 +87,9 @@ if SERVER then
             animt = math.random(2)
         end
 
-        self:SetMaxYawRate(0)
-
+        self:SetMovement(0, 0, 0, true)
+        
         self.IdleAnimation = 'deactivated' .. animt
-
-        self.UseWalkframes = false
-
-        self.DisableControls = true
 
         self.Sleeping = true
     end
@@ -124,8 +114,6 @@ if SERVER then
             self:PlaySequenceAndMove('activate' .. animt)
 
             self.CueFreeze = false
-            self.DisableControls = false
-            self.UseWalkframes = true
 
             self:SetMaxYawRate(250)
             self:SetSightRange(15000)
@@ -133,12 +121,18 @@ if SERVER then
 
             self.IdleAnimation = 'idle' .. self.Type
 
+            self.DisableControls = false
+     
             if self.Appearance == 3 then
                 self.WalkAnimation = 'crawl'
                 self.RunAnimation = 'crawl'
+                   
+                self:SetMovement(200, 200, 250)
             else
                 self.WalkAnimation = 'walk' .. self.Type
                 self.RunAnimation = 'run' .. self.Type
+                   
+                self:SetMovement(80, 240, 250)
             end
         end)
     end
@@ -151,8 +145,6 @@ if SERVER then
     end
 
     function ENT:Frozen()
-        if GetConVar('fnaf_sb_new_endo_chase'):GetBool() then return end
-
         if self.IsFrozen or self.CueFreeze then return end
 
         self.IsFrozen = true
@@ -169,15 +161,8 @@ if SERVER then
             self.RunAnimation = 'endowalk' .. self.Type
         end
 
-        self.IdleAnimRate = 0
-        self.WalkAnimRate = 0
-        self.RunAnimRate = 0
-
-        self.UseWalkframes = false
-
-        self:SetMaxYawRate(0)
-        
-        self.DisableControls = true
+        self:SetMovement(0, 0, 0, true)
+ 
         self.ForceCycle = true
     end
 
@@ -187,29 +172,27 @@ if SERVER then
         self.IsFrozen = false
         self.ForceCycle = false
 
-        self.UseWalkframes = true
-
         self.IdleAnimation = 'idle' .. self.Type
 
         if self.Appearance == 3 then
             self.WalkAnimation = 'crawl'
             self.RunAnimation = 'crawl'
+            
+            self:SetMovement(200, 200, 250)
         else
             self.WalkAnimation = 'walk' .. self.Type
             self.RunAnimation = 'run' .. self.Type
+            
+            self:SetMovement(80, 240, 250)
         end
-
-        self.IdleAnimRate = 1
-        self.WalkAnimRate = 1
-        self.RunAnimRate = 1
-
-        self:SetMaxYawRate(250)
         
+        self:SetMovementRates(1, 1, 1)
+
         self.DisableControls = false
     end
 
     function ENT:AddCustomThink()
-        if IsValid(self.CurrentVictim) or self.Stunned then return end
+        if IsValid(self.CurrentVictim) or self.Stunned or self.DisableFreezeOnSight then return end
 
         if self.ForceCycle then
             self:SetCycle(self.Cycle)
@@ -217,7 +200,7 @@ if SERVER then
 
         local isPossessed = self:IsPossessed()
     
-        if GetConVar('ai_disabled'):GetBool() or isPossessed then return end
+        if self:GetAIDisabled() or isPossessed then return end
         
         local enemy = self:GetEnemy()
 

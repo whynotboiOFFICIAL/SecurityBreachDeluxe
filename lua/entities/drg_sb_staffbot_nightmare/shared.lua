@@ -8,11 +8,19 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/staffbot/nightm
 
 if SERVER then
     function ENT:CustomInitialize()
+        self.Buried = GetConVar('fnaf_sb_new_nightmarebot_buried'):GetBool()
+
         self.CurrentPath = 1
+   
+        local g = math.random(2)
 
-        if GetConVar('fnaf_sb_new_nightmarebot_buried'):GetBool() then
-            self.Buried = true
+        self.Gender = 'm'
 
+        if g == 2 then
+            self.Gender = 'f'
+        end
+        
+        if self.Buried then
             self:SetSkin(2)
 
             self.IdleAnimation = 'idleground'
@@ -33,14 +41,6 @@ if SERVER then
             self:RandomizePatrolPaths()
     
             self:SetSkin(math.random(0, 1))
-        end
-                
-        local g = math.random(2)
-
-        self.Gender = 'm'
-
-        if g == 2 then
-            self.Gender = 'f'
         end
     end
     

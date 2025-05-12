@@ -65,20 +65,16 @@ ENT.PossessionBinds = {
     }},
 
     [IN_DUCK] = {{
-        coroutine = false,
+        coroutine = true,
         onkeydown = function(self)
             if self.Stunned or self.SkitterDelay then return end
 
             self.SkitterDelay = true
 
             if self.Skittering then
-                self.IdleAnimation = 'mooncrawltowalk'
-                self.WalkAnimation = 'mooncrawltowalk'
-                self.RunAnimation = 'mooncrawltowalk'
+                self:PlaySequenceAndMove('mooncrawltowalk')
             else
-                self.IdleAnimation = 'moonwalktocrawl'
-                self.WalkAnimation = 'moonwalktocrawl'
-                self.RunAnimation = 'moonwalktocrawl'
+                self:PlaySequenceAndMove('moonwalktocrawl')
             end
             
             self:DrG_Timer(2, function()
@@ -102,24 +98,20 @@ end
 
 if SERVER then
     function ENT:OnPossessed()
-        if self.AttendantType == 1 then
-            self.RunAnimation = 'moonrun'
-        else
-            if self.IsBlocking then
-                self.WalkAnimation = 'walk'
+        self.RunAnimation = 'moonrun'
 
-                self.IsBlocking = false
-            end
-        end
+        self:SetMovement(136, 240)
     end
 
     function ENT:OnDispossessed()
-        if self.AttendantType == 1 then      
-            if self.MoonRun then
-                self.RunAnimation = 'moonrun'
-            else
-                self.RunAnimation = 'moonwalk'
-            end
+        if self.MoonRun then
+            self.RunAnimation = 'moonrun'
+
+            self:SetMovement(136, 240)
+        else
+            self.RunAnimation = 'moonwalk'
+
+            self:SetMovement(136, 136)
         end
     end
 end

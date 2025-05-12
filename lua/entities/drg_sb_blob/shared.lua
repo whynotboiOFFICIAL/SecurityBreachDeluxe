@@ -48,6 +48,9 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
+        self.ProxJumpscare = GetConVar('fnaf_sb_new_blob_proxjumpscare'):GetBool()
+        self.CanUseTendrils = GetConVar('fnaf_sb_new_blob_tendrils'):GetBool()
+        
         self:SetAIDisabled(true)
 
         self.DisableControls = true
@@ -58,7 +61,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if GetConVar('fnaf_sb_new_blob_proxjumpscare'):GetBool() and not self.KillTick then
+        if self.ProxJumpscare and not self.KillTick then
             self.KillTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 250)) do
@@ -80,7 +83,7 @@ if SERVER then
             end)
         end
 
-        if self.AvailibleTendrils < 1 or not GetConVar('fnaf_sb_new_blob_tendrils'):GetBool() then return end
+        if self.AvailibleTendrils < 1 or not self.CanUseTendrils then return end
 
         if not self.TendrilCheckTick then
             self.TendrilCheckTick = true

@@ -1,68 +1,84 @@
 -- General
+
 local useplyfov = CreateClientConVar('fnaf_sb_new_fov_camera', 0, true, false, 'Camera Inherits Player FOV', 0, 1)
 
-CreateConVar('fnaf_sb_new_hw2_jumpscares', 0, FCVAR_ARCHIVE, 'Help Wanted 2 Jumpscares', 0, 1)
 CreateConVar('fnaf_sb_new_voicelines', 1, FCVAR_ARCHIVE, 'Use Voice Lines', 0, 1)
 CreateConVar('fnaf_sb_new_damaging', 1, FCVAR_ARCHIVE, 'Gradual Damging', 0, 1)
+CreateConVar('fnaf_sb_new_sounddetect', 1, FCVAR_ARCHIVE, 'Dynamic Sound Detection', 0, 1)
+CreateConVar('fnaf_sb_new_hw2_jumpscares', 0, FCVAR_ARCHIVE, 'Help Wanted 2 Jumpscares', 0, 1)
 CreateConVar('fnaf_sb_new_betaeyes', 0, FCVAR_ARCHIVE, 'Beta Eye Glows', 0, 1)
 CreateConVar('fnaf_sb_new_traileranims', 0, FCVAR_ARCHIVE, 'Gameplay Trailer Animations', 0, 1)
 CreateConVar('fnaf_sb_new_shattereds_redeyes', 0, FCVAR_ARCHIVE, 'Shattereds Red Eyes', 0, 1)
 
+-- Multipliers
+
+CreateConVar('fnaf_sb_new_multiplier_walkspeed', 1, FCVAR_NONE, 'Walk Speed Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_runspeed', 1, FCVAR_NONE, 'Run Speed Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_sightrange', 1, FCVAR_NONE, 'Sight Range Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_pounceup', 1, FCVAR_NONE, 'Pounce Vertical Multiplier', 0, 2)
+CreateConVar('fnaf_sb_new_multiplier_pounceforward', 1, FCVAR_NONE, 'Pounce Horizontal Multiplier', 0, 2)
+
+-- Gregory
+
+CreateConVar('fnaf_sb_new_gregory_infinitestamina', 0, FCVAR_ARCHIVE, 'Gregory Infinite Stamina', 0, 1)
+
 -- Glamrock Freddy
 
+CreateConVar('fnaf_sb_new_freddy_batteryconfig', 1, FCVAR_ARCHIVE, 'Glamrock Freddy Battery', 1, 3)
 CreateConVar('fnaf_sb_new_freddy_friendly', 1, FCVAR_ARCHIVE, 'Glamrock Freddy Safe Mode', 0, 1)
 CreateConVar('fnaf_sb_new_freddy_safeeyes', 1, FCVAR_ARCHIVE, 'Glamrock Freddy Safe Mode Eyes', 0, 1)
 CreateConVar('fnaf_sb_new_freddy_montyclaws', 0, FCVAR_ARCHIVE, 'Glamrock Freddy Claws Upgrade', 0, 1)
 CreateConVar('fnaf_sb_new_freddy_chicavoice', 0, FCVAR_ARCHIVE, 'Glamrock Freddy Voicebox Upgrade', 0, 1)
 CreateConVar('fnaf_sb_new_freddy_roxyeyes', 0, FCVAR_ARCHIVE, 'Glamrock Freddy Ocular Upgrade', 0, 1)
 CreateConVar('fnaf_sb_new_freddy_montylegs', 0, FCVAR_ARCHIVE, 'Glamrock Freddy Locomotive Upgrade', 0, 1)
-CreateConVar('fnaf_sb_new_freddy_batteryconfig', 1, FCVAR_ARCHIVE, 'Glamrock Freddy Battery', 1, 3)
 
 -- Glamrock Chica
 
 CreateConVar('fnaf_sb_new_chica_breaths', 1, FCVAR_ARCHIVE, 'Glamrock Chica Breathing', 0, 1)
+CreateConVar('fnaf_sb_new_chica_canlure', 1, FCVAR_ARCHIVE, 'Glamrock Chica Eating', 0, 1)
+CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Possession Eating', 0, 1)
 CreateConVar('fnaf_sb_new_chica_shred', 0, FCVAR_ARCHIVE, 'Glamrock Chica Guitar Shredding', 0, 1)
 CreateConVar('fnaf_sb_new_chica_valley', 0, FCVAR_ARCHIVE, 'Glamrock Chica Valley Voice', 0, 1)
 CreateConVar('fnaf_sb_new_chica_voiceattack', 0, FCVAR_ARCHIVE, 'Glamrock Chica Voicebox', 0, 1)
-CreateConVar('fnaf_sb_new_chica_canlure', 1, FCVAR_ARCHIVE, 'Glamrock Chica Eating', 0, 1)
-CreateConVar('fnaf_sb_new_chica_playereat', 1, FCVAR_ARCHIVE, 'Glamrock Chica Possession Eating', 0, 1)
 
 -- Montgomery Gator
 
 CreateConVar('fnaf_sb_new_monty_growls', 1, FCVAR_ARCHIVE, 'Montgomery Gator Growling', 0, 1)
-CreateConVar('fnaf_sb_new_monty_transglass', 0, FCVAR_ARCHIVE, 'Montgomery Gator Transparent Shades', 0, 1)
 CreateConVar('fnaf_sb_new_monty_pounceattack', 1, FCVAR_ARCHIVE, 'Montgomery Gator Pounce', 0, 1)
-CreateConVar('fnaf_sb_new_monty_jumpattack', 1, FCVAR_ARCHIVE, 'Montgomery Gator Jump', 0, 1)
+CreateConVar('fnaf_sb_new_monty_transglass', 0, FCVAR_ARCHIVE, 'Montgomery Gator Transparent Shades', 0, 1)
+CreateConVar('fnaf_sb_new_monty_jumpattack', 0, FCVAR_ARCHIVE, 'Montgomery Gator Jump', 0, 1)
 CreateConVar('fnaf_sb_new_monty_enablestun', 0, FCVAR_ARCHIVE, 'Montgomery Gator Stun', 0, 1)
 
 -- Roxanne Wolf
 
-CreateConVar('fnaf_sb_new_roxy_montywalk', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Alt Walk', 0, 1)
-CreateConVar('fnaf_sb_new_roxy_peptalk', 1, FCVAR_ARCHIVE, 'Roxanne Wolf Pep Talks', 0, 1)
 CreateConVar('fnaf_sb_new_roxy_pounceattack', 1, FCVAR_ARCHIVE, 'Roxanne Wolf Pounce', 0, 1)
+CreateConVar('fnaf_sb_new_roxy_peptalk', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Pep Talks', 0, 1)
+CreateConVar('fnaf_sb_new_roxy_montywalk', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Alt Walk', 0, 1)
 CreateConVar('fnaf_sb_new_roxy_jumpattack', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Jump', 0, 1)
 
 -- Daycare Attendant
 
 CreateConVar('fnaf_sb_new_sun_alwayshostile', 0, FCVAR_ARCHIVE, 'Sun Always Hostile', 0, 1)
 CreateConVar('fnaf_sb_new_moon_userun', 0, FCVAR_ARCHIVE, 'Moon Run Animation', 0, 1)
+CreateConVar('fnaf_sb_new_moon_flashstun', 0, FCVAR_ARCHIVE, 'Moon Light Stun', 0, 1)
+CreateConVar('fnaf_sb_new_moon_jackomoon', 0, FCVAR_ARCHIVE, 'Jack O Moon', 0, 1)
 
 -- Shattered Chica
 
-CreateConVar('fnaf_sb_new_shatteredchica_hasvoice', 0, FCVAR_ARCHIVE, 'Shattered Chica Has Voice', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredchica_canlure', 1, FCVAR_ARCHIVE, 'Shattered Chica Eating', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredchica_playereat', 1, FCVAR_ARCHIVE, 'Shattered Chica Possession Eating', 0, 1)
+CreateConVar('fnaf_sb_new_shatteredchica_hasvoice', 0, FCVAR_ARCHIVE, 'Shattered Chica Has Voice', 0, 1)
 
 -- Shattered Monty
 
-CreateConVar('fnaf_sb_new_shatteredmonty_haslegs', 0, FCVAR_ARCHIVE, 'Shattered Monty Has Legs', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredmonty_pounceattack', 1, FCVAR_ARCHIVE, 'Shattered Monty Pounce', 0, 1)
+CreateConVar('fnaf_sb_new_shatteredmonty_haslegs', 0, FCVAR_ARCHIVE, 'Shattered Monty Has Legs', 0, 1)
 
 -- Shattered Roxy
 
-CreateConVar('fnaf_sb_new_shatteredroxy_haseyes', 0, FCVAR_ARCHIVE, 'Shattered Roxy Has Eyes', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredroxy_weep', 1, FCVAR_ARCHIVE, 'Shattered Roxy Weep', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredroxy_pounceattack', 1, FCVAR_ARCHIVE, 'Shattered Roxy Pounce', 0, 1)
+CreateConVar('fnaf_sb_new_shatteredroxy_haseyes', 0, FCVAR_ARCHIVE, 'Shattered Roxy Has Eyes', 0, 1)
 
 -- Glamrock Endo
 
@@ -78,18 +94,17 @@ CreateConVar('fnaf_sb_new_vanessa_lightstun', 0, FCVAR_ARCHIVE, 'Vanessa Light S
 
 -- Vanny
 
-CreateConVar('fnaf_sb_new_vanny_oldvo', 0, FCVAR_ARCHIVE, 'Vanny Old Voicelines', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_spotps5', 0, FCVAR_ARCHIVE, 'Vanny Wave Spot Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_spotanim', 0, FCVAR_ARCHIVE, 'Vanny Spot Animation', 0, 2)
 CreateConVar('fnaf_sb_new_vanny_preidle', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Idle Animation', 0, 1)
 CreateConVar('fnaf_sb_new_vanny_prewalk', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Walk Animation', 0, 1)
 CreateConVar('fnaf_sb_new_vanny_prerun', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Run Animation', 0, 1)
-CreateConVar('fnaf_sb_new_vanny_prespot', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Run Animation', 0, 1)
 CreateConVar('fnaf_sb_new_vanny_prejumpscare', 0, FCVAR_ARCHIVE, 'Vanny Prerelease Jumpscare Animation', 0, 1)
+CreateConVar('fnaf_sb_new_vanny_oldvo', 0, FCVAR_ARCHIVE, 'Vanny Old Voicelines', 0, 1)
 
 -- STAFF Bots
 
-CreateConVar('fnaf_sb_new_staffbot_stunvoice', 1, FCVAR_ARCHIVE, 'S.T.A.F.F. Bot Stun Voiceline', 0, 1)
 CreateConVar('fnaf_sb_new_alienbot_skin', 1, FCVAR_ARCHIVE, 'FazerBlast Bot Skin', 1, 4)
+CreateConVar('fnaf_sb_new_staffbot_stunvoice', 1, FCVAR_ARCHIVE, 'S.T.A.F.F. Bot Stun Voiceline', 0, 1)
 CreateConVar('fnaf_sb_new_cleanerbot_voice', 1, FCVAR_ARCHIVE, 'Cleaner Bot Voicelines', 0, 1)
 CreateConVar('fnaf_sb_new_nightmarebot_buried', 1, FCVAR_ARCHIVE, 'Nightmare Bot Buried', 0, 1)
 
@@ -206,17 +221,20 @@ if CLIENT then
 			panel:Help('General')
 			panel:Help('')
 
-
-            panel:CheckBox('Help Wanted 2 Jumpscares', 'fnaf_sb_new_hw2_jumpscares')
-            panel:ControlHelp('Characters that have jumpscares in Help Wanted 2 will switch to those respective jumpscares')
-			panel:ControlHelp('(This will apply model changes to Shattered Roxy)')
-
 			panel:CheckBox('Use Voice Lines', 'fnaf_sb_new_voicelines')
             panel:ControlHelp('Characters talk and make vocals as they do ingame')
 
 			panel:CheckBox('Gradual Damaging', 'fnaf_sb_new_damaging')
 			panel:ControlHelp('Characters get dirtier the more they take damage')
 			panel:ControlHelp('(This will only apply to the main 4 Glamrocks)')
+
+			panel:CheckBox('Dynamic Sound Detecion', 'fnaf_sb_new_sounddetect')
+			panel:ControlHelp('Characters will respond to sound instead of immediately spotting you')
+			panel:ControlHelp('(This won\'t apply to every NPC)')
+
+            panel:CheckBox('Help Wanted 2 Jumpscares', 'fnaf_sb_new_hw2_jumpscares')
+            panel:ControlHelp('Characters that have jumpscares in Help Wanted 2 will switch to those respective jumpscares')
+			panel:ControlHelp('(This will apply model changes to Shattered Roxy)')
 
 			panel:CheckBox('Beta Eye Glows', 'fnaf_sb_new_betaeyes')
 			panel:ControlHelp('Characters will use their early eye emission textures')
@@ -230,12 +248,51 @@ if CLIENT then
 			panel:CheckBox('Shattereds Red Eyes', 'fnaf_sb_new_shattereds_redeyes')
 			panel:ControlHelp('Shattereds will use a red eye glow like in the Halloween tweet by Steel Wool')
 
+			-- Multipliers
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Multipliers')
+			panel:Help('(These sliders will multiply the values in the AI, these values do not save between games)')
+			panel:Help('')
+
+			panel:NumSlider( 'Walk Speed Multiplier', 'fnaf_sb_new_multiplier_walkspeed', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			panel:NumSlider( 'Run Speed Multiplier', 'fnaf_sb_new_multiplier_runspeed', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			panel:NumSlider( 'Sight Range Multiplier', 'fnaf_sb_new_multiplier_sightrange', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			panel:NumSlider( 'Pounce Vertical Multiplier', 'fnaf_sb_new_multiplier_pounceup', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+			
+			panel:NumSlider( 'Pounce Horizontal Multiplier', 'fnaf_sb_new_multiplier_pounceforward', 0, 2, 2 )
+			panel:ControlHelp('(Default value is 1.00)')
+
+			-- Gregory
+
+			panel:Help('')
+			panel:Help('')
+			panel:Help('Gregory')
+			panel:Help('')
+
+			panel:CheckBox('Gregory Infinite Stamina', 'fnaf_sb_new_gregory_infinitestamina')
+            panel:ControlHelp('Gregory will have infinite stamina when enabled')
+			
 			-- Glamrock Freddy
 
 			panel:Help('')
 			panel:Help('')
 			panel:Help('Glamrock Freddy')
 			panel:Help('')
+
+            local batteryconfig = panel:ComboBox('Glamrock Freddy Battery', 'fnaf_sb_new_freddy_batteryconfig')
+
+            batteryconfig:AddChoice( 'Battery Only Drains When Inside', 1 )
+            batteryconfig:AddChoice( 'Battery Drains Both Inside and Out', 2 )
+            batteryconfig:AddChoice( 'Infinite Battery', 3 )
 
 			panel:CheckBox('Glamrock Freddy Safe Mode', 'fnaf_sb_new_freddy_friendly')
             panel:ControlHelp('Glamrock Freddy will not be hostile and instead will assist if available')
@@ -255,12 +312,6 @@ if CLIENT then
 			panel:CheckBox('Glamrock Freddy Locomotive Upgrade', 'fnaf_sb_new_freddy_montylegs')
             panel:ControlHelp('Glamrock Freddy will be equipped with Monty\'s legs')
 	
-            local batteryconfig = panel:ComboBox('Glamrock Freddy Battery', 'fnaf_sb_new_freddy_batteryconfig')
-
-            batteryconfig:AddChoice( 'Battery Only Drains When Inside', 1 )
-            batteryconfig:AddChoice( 'Battery Drains Both Inside and Out', 2 )
-            batteryconfig:AddChoice( 'Infinite Battery', 3 )
-
 			-- Glamrock Chica
 
 			panel:Help('')
@@ -271,6 +322,12 @@ if CLIENT then
 			panel:CheckBox('Glamrock Chica Breathing', 'fnaf_sb_new_chica_breaths')
             panel:ControlHelp('Glamrock Chica breaths when she isn\'t speaking')
 			
+			panel:CheckBox('Glamrock Chica Eating', 'fnaf_sb_new_chica_canlure')
+            panel:ControlHelp('Glamrock Chica will be forced to eat Monty Mix during AI')
+			
+			panel:CheckBox('Glamrock Chica Possession Eating', 'fnaf_sb_new_chica_playereat')
+            panel:ControlHelp('Glamrock Chica will be forced to eat Monty Mix during possession')
+			
 			panel:CheckBox('Glamrock Chica Guitar Shredding', 'fnaf_sb_new_chica_shred')
             panel:ControlHelp('Glamrock Chica can randomly shred on her guitar when she\'s patrolling')
 			
@@ -279,12 +336,6 @@ if CLIENT then
 			
 			panel:CheckBox('Glamrock Chica Valley Voice', 'fnaf_sb_new_chica_valley')
             panel:ControlHelp('Glamrock Chica uses her really annoying valley voice lines')
-			
-			panel:CheckBox('Glamrock Chica Eating', 'fnaf_sb_new_chica_canlure')
-            panel:ControlHelp('Glamrock Chica will be forced to eat Monty Mix during AI')
-			
-			panel:CheckBox('Glamrock Chica Possession Eating', 'fnaf_sb_new_chica_playereat')
-            panel:ControlHelp('Glamrock Chica will be forced to eat Monty Mix during possession')
 			
 			-- Montgomery Gator
 
@@ -296,11 +347,11 @@ if CLIENT then
 			panel:CheckBox('Montgomery Gator Growling', 'fnaf_sb_new_monty_growls')
             panel:ControlHelp('Montgomery Gator growls when he isn\'t speaking')
 
-			panel:CheckBox('Montgomery Gator Transparent Shades', 'fnaf_sb_new_monty_transglass')
-            panel:ControlHelp('Montgomery Gator has see through glasses')
-
 			panel:CheckBox('Montgomery Gator Pounce', 'fnaf_sb_new_monty_pounceattack')
             panel:ControlHelp('Montgomery Gator will leap through the air to try and kill you')
+
+			panel:CheckBox('Montgomery Gator Transparent Shades', 'fnaf_sb_new_monty_transglass')
+            panel:ControlHelp('Montgomery Gator has see through glasses')
 
 			panel:CheckBox('Montgomery Gator Jump', 'fnaf_sb_new_monty_jumpattack')
             panel:ControlHelp('Montgomery Gator will jump around the map at random')
@@ -314,16 +365,16 @@ if CLIENT then
 			panel:Help('')
 			panel:Help('Roxanne Wolf')
 			panel:Help('')
-
-			panel:CheckBox('Roxanne Wolf Alt Walk', 'fnaf_sb_new_roxy_montywalk')
-            panel:ControlHelp('Roxanne Wolf will use Monty\'s walk animation like in game')
+		
+			panel:CheckBox('Roxanne Wolf Pounce', 'fnaf_sb_new_roxy_pounceattack')
+            panel:ControlHelp('Roxanne Wolf will leap through the air to try and kill you')
 					
 			panel:CheckBox('Roxanne Wolf Pep Talks', 'fnaf_sb_new_roxy_peptalk')
             panel:ControlHelp('Roxanne Wolf when near a mirror will talk to herself')
 						
-			panel:CheckBox('Roxanne Wolf Pounce', 'fnaf_sb_new_roxy_pounceattack')
-            panel:ControlHelp('Roxanne Wolf will leap through the air to try and kill you')
-					
+			panel:CheckBox('Roxanne Wolf Alt Walk', 'fnaf_sb_new_roxy_montywalk')
+            panel:ControlHelp('Roxanne Wolf will use Monty\'s walk animation like in game')
+			
 			panel:CheckBox('Roxanne Wolf Jump', 'fnaf_sb_new_roxy_jumpattack')
             panel:ControlHelp('Roxanne Wolf will jump around the map at random')
 	
@@ -341,6 +392,14 @@ if CLIENT then
             panel:ControlHelp('Moon will run when chasing you instead of walking')
 			panel:ControlHelp('(This will stop Moon from crawling when he is chasing you)')
 			
+			panel:CheckBox('Moon Flash Stun', 'fnaf_sb_new_moon_flashstun')
+            panel:ControlHelp('Moon can be stunned when light is held on him')
+			panel:ControlHelp('(This only work with player flashlights)')
+			
+			panel:CheckBox('Jack O Moon', 'fnaf_sb_new_moon_jackomoon')
+            panel:ControlHelp('Moon\'s appearance will be replaced with Jack O Moon')
+			panel:ControlHelp('(This will change his voice lines to the ones from Help Wanted 2)')
+			
 			-- Shattered Chica
 			
 			panel:Help('')
@@ -348,15 +407,15 @@ if CLIENT then
 			panel:Help('Shattered Chica')
 			panel:Help('')
 
-			panel:CheckBox('Shattered Chica Has Voice', 'fnaf_sb_new_shatteredchica_hasvoice')
-            panel:ControlHelp('Shattered Chica will be able to use her voicebox again')
-			
 			panel:CheckBox('Shattered Chica Eating', 'fnaf_sb_new_shatteredchica_canlure')
             panel:ControlHelp('Shattered Chica will be forced to eat Monty Mix during AI')
 			
 			panel:CheckBox('Shattered Chica Possession Eating', 'fnaf_sb_new_shatteredchica_playereat')
             panel:ControlHelp('Shattered Chica will be forced to eat Monty Mix during possession')
 					
+			panel:CheckBox('Shattered Chica Has Voice', 'fnaf_sb_new_shatteredchica_hasvoice')
+            panel:ControlHelp('Shattered Chica will be able to use her voicebox again')
+			
 			-- Shattered Monty
 			
 			panel:Help('')
@@ -364,12 +423,12 @@ if CLIENT then
 			panel:Help('Shattered Monty')
 			panel:Help('')
 
-			panel:CheckBox('Shattered Monty Has Legs', 'fnaf_sb_new_shatteredmonty_haslegs')
-            panel:ControlHelp('Shattered Monty will be able to stand on his legs again')
-			
 			panel:CheckBox('Shattered Monty Pounce', 'fnaf_sb_new_shatteredmonty_pounceattack')
             panel:ControlHelp('Shattered Monty will leap through the air to try and kill you')
 						
+			panel:CheckBox('Shattered Monty Has Legs', 'fnaf_sb_new_shatteredmonty_haslegs')
+            panel:ControlHelp('Shattered Monty will be able to stand on his legs again')
+			
 			-- Shattered Roxy
 			
 			panel:Help('')
@@ -377,14 +436,15 @@ if CLIENT then
 			panel:Help('Shattered Roxy')
 			panel:Help('')
 
-			panel:CheckBox('Shattered Roxy Has Eyes', 'fnaf_sb_new_shatteredroxy_haseyes')
-            panel:ControlHelp('Shattered Roxy will be able to see again')
-			
 			panel:CheckBox('Shattered Roxy Weep', 'fnaf_sb_new_shatteredroxy_weep')
             panel:ControlHelp('Shattered Roxy can weep when patrolling')
 			
 			panel:CheckBox('Shattered Roxy Pounce', 'fnaf_sb_new_shatteredroxy_pounceattack')
             panel:ControlHelp('Shattered Roxy will leap through the air to try and kill you')
+
+			panel:CheckBox('Shattered Roxy Has Eyes', 'fnaf_sb_new_shatteredroxy_haseyes')
+            panel:ControlHelp('Shattered Roxy will be able to see again')
+			panel:ControlHelp('(This will allow her to be stunned)')
 
 			-- Glamrock Endo
 
@@ -429,11 +489,11 @@ if CLIENT then
 			panel:Help('Vanny')
 			panel:Help('')
 
-			panel:CheckBox('Vanny Old Voicelines', 'fnaf_sb_new_vanny_oldvo')
-            panel:ControlHelp('Vanny uses old versions of her voicelines')
+            local spotconfig = panel:ComboBox('Vanny Spot Animation', 'fnaf_sb_new_vanny_spotanim')
 
-			panel:CheckBox('Vanny Wave Spot Animation', 'fnaf_sb_new_vanny_spotps5')
-            panel:ControlHelp('Vanny uses her wave animation when she spots something')
+            spotconfig:AddChoice( 'No Spot Animation', 0 )
+            spotconfig:AddChoice( 'Wave', 1 )
+            spotconfig:AddChoice( 'Prerelease Cartwheel', 2 )
 
 			panel:CheckBox('Vanny Prerelease Idle Animation', 'fnaf_sb_new_vanny_preidle')
             panel:ControlHelp('Vanny uses her prerelease idle animation')
@@ -443,13 +503,13 @@ if CLIENT then
 
 			panel:CheckBox('Vanny Prerelease Run Animation', 'fnaf_sb_new_vanny_prerun')
             panel:ControlHelp('Vanny uses her prerelease run animation')
-			
-			panel:CheckBox('Vanny Prerelease Spot Animation', 'fnaf_sb_new_vanny_prespot')
-            panel:ControlHelp('Vanny uses her prerelease cartwheel animation when she spots something')
-				
+		
 			panel:CheckBox('Vanny Trailer Jumpscare Animation', 'fnaf_sb_new_vanny_prejumpscare')
             panel:ControlHelp('Vanny uses her jumpscare animation from the trailer')
-															
+					
+			panel:CheckBox('Vanny Old Voicelines', 'fnaf_sb_new_vanny_oldvo')
+            panel:ControlHelp('Vanny uses old versions of her voicelines')
+										
 			-- STAFFBOTS
 
 			panel:Help('')
@@ -457,15 +517,15 @@ if CLIENT then
 			panel:Help('S.T.A.F.F. Bots')
 			panel:Help('')
 
-			panel:CheckBox('S.T.A.F.F. Bot Stun Voiceline', 'fnaf_sb_new_staffbot_stunvoice')
-            panel:ControlHelp('S.T.A.F.F. Bots use the stun voiceline that was removed from the game')
-
             local batteryconfig = panel:ComboBox('FazerBlast Bot Skin', 'fnaf_sb_new_alienbot_skin')
 
             batteryconfig:AddChoice( 'Base S.T.A.F.F. Bot', 1 )
             batteryconfig:AddChoice( 'Cut Alien Skin', 2 )
             batteryconfig:AddChoice( 'Cut FazerBlast Skin', 3 )
 			batteryconfig:AddChoice( 'Randomize Skin', 4 )
+
+			panel:CheckBox('S.T.A.F.F. Bot Stun Voiceline', 'fnaf_sb_new_staffbot_stunvoice')
+            panel:ControlHelp('S.T.A.F.F. Bots use the stun voiceline that was removed from the game')
 
 			panel:CheckBox('Cleaner Bot Voicelines', 'fnaf_sb_new_cleanerbot_voice')
             panel:ControlHelp('Cleaner Bot uses its unused voice lines')
@@ -554,7 +614,7 @@ if CLIENT then
 
 		for k,v in ipairs(ents.FindInSphere(nextbot:WorldSpaceCenter(), 1000)) do
 			if v == ply or v == nextbot then continue end
-			if (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) then continue end
+			if (v:IsPlayer() and self:GetIgnorePlayers()) then continue end
 			if IsValid(v:GetNWEntity('2PlayFreddy')) or IsValid(v:GetNWEntity('HidingSpotSB')) then continue end
 			if not (v:IsPlayer() or v:IsNextBot() or v:IsNPC()) then continue end
 			
