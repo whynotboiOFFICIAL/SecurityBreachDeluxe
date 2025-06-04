@@ -255,9 +255,9 @@ end
 function ENT:EnterCinematic(ent)
     if ent:IsPlayer() then
         ent:Freeze(true)
-        ent:DrawViewModel(false)
+        --ent:DrawViewModel(false)
         self.StoredPlayerWeapon = IsValid(ent:GetActiveWeapon()) and ent:GetActiveWeapon() or nil
-        ent:CrosshairDisable()
+        --ent:CrosshairDisable()
         ent:SetActiveWeapon(nil)
 
         net.Start('SECURITYBREACHFINALLYCINEMATIC')
@@ -296,6 +296,7 @@ function ENT:ExitCinematic(ent)
         ent:CrosshairEnable()
         if IsValid(self.StoredPlayerWeapon) then
             ent:SelectWeapon(self.StoredPlayerWeapon)
+            ent:SetActiveWeapon(self.StoredPlayerWeapon)
         end
         self.StoredPlayerWeapon = nil
         ent:DrawViewModel(true)
