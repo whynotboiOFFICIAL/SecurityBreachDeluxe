@@ -68,11 +68,15 @@ if SERVER then
         self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
         
         self.CanPounce = GetConVar('fnaf_sb_new_shatteredmonty_pounceattack'):GetBool()
+        self.HasLegs = GetConVar('fnaf_sb_new_shatteredmonty_haslegs'):GetBool()
 
-        if GetConVar('fnaf_sb_new_shatteredmonty_haslegs'):GetBool() then
+        if self.HasLegs then
             self:SetModel('models/whynotboi/securitybreach/base/animatronics/shatteredmonty/shatteredmontywithlegs.mdl')
             
             self:SetCollisionBounds(Vector(-10, -10, 0), Vector(10, 10, 75))
+
+            self:SetMovementAnims('idle', 'walk', 'run', 'idle')
+            self:SetMovement(60, 240)
         end
 
         self:SetBodygroup(1, GetConVar('fnaf_sb_new_shattereds_redeyes'):GetInt())
@@ -112,8 +116,20 @@ if SERVER then
     function ENT:StepSFX()
         local shake = 0.1
 
-        self:EmitSound('whynotboi/securitybreach/base/shatteredmonty/handtouch/fly_monty_shattered_handTouch_0'.. math.random(6) .. '.wav')
-        self:EmitSound('whynotboi/securitybreach/base/shatteredmonty/add/fly_monty_shattered_add_0'.. math.random(6) .. '.wav')
+        if self.HasLegs then
+            shake = 0.8
+
+            if self:IsRunning() then
+                self:EmitSound('whynotboi/securitybreach/base/montgomerygator/footsteps/run/fly_monty_run_'.. math.random(1,23) .. '.wav')
+
+                shake = 1
+            else
+                self:EmitSound('whynotboi/securitybreach/base/montgomerygator/footsteps/walk/fly_monty_walk_'.. math.random(1,19) .. '.wav')
+            end
+        else
+            self:EmitSound('whynotboi/securitybreach/base/shatteredmonty/handtouch/fly_monty_shattered_handTouch_0'.. math.random(6) .. '.wav')
+            self:EmitSound('whynotboi/securitybreach/base/shatteredmonty/add/fly_monty_shattered_add_0'.. math.random(6) .. '.wav')
+        end
 
         util.ScreenShake( self:GetPos(), shake, 1, 1, 500 )
     end

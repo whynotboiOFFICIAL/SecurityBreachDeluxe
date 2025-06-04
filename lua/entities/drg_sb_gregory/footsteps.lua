@@ -2,7 +2,7 @@
 
     local footsteps6walk = {
         -- Carpet
-        [74] = 'whynotboi/securitybreach/base/gregory/footsteps/walk/carpet/fly_gregory_carpet_walk_0.wav',
+        [74] = 'whynotboi/securitybreach/base/gregory/footsteps/walk/carpet/fly_gregory_carpet_walk_0',
 
         -- Concrete
         [67] = 'whynotboi/securitybreach/base/gregory/footsteps/walk/concrete/fly_gregory_concrete_walk_0',
