@@ -36,27 +36,21 @@ function SWEP:Initialize()
 
     self:SetNWInt('BlasterAmmo', 6)
 
-    self.Golden = GetConVar('fnaf_sb_new_fazerblaster_gold'):GetBool()
-
-    self.InfiniteAmmo = GetConVar('fnaf_sb_new_fazerblaster_infiniteammo'):GetBool()
-
     self.LaserAmmo = 6
 
     self.Recharge = 0
-
-    if self.Golden then
-        self:SetSkin(1)
-    end
 end
 
 function SWEP:Deploy()
     local vm = self.Owner:GetViewModel()
-        
-    if self.Golden then
-        vm:SetSkin(1)
-    end
 
     vm:ResetSequence('equip')
+    
+    if GetConVar('fnaf_sb_new_fazerblaster_gold'):GetBool() then
+        vm:SetSkin(1)
+
+        self:SetSkin(1)
+    end
 end
 
 function SWEP:PrimaryAttack()
@@ -66,7 +60,7 @@ function SWEP:PrimaryAttack()
 
     self.Recharge = 0
     
-    if not self.InfiniteAmmo then
+    if not GetConVar('fnaf_sb_new_fazerblaster_infiniteammo'):GetBool() then
         local ammo = self:GetNWInt('BlasterAmmo') - 1
 
         self.LaserAmmo = ammo

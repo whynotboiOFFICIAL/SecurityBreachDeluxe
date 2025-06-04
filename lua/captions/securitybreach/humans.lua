@@ -4,10 +4,10 @@
 hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     hook.Remove('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS')
 
-    -- Gregory
-    
     local path = 'whynotboi/securitybreach/base/gregory/vo/'
 
+    -- Gregory Voices
+    
     SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00046.wav', '<clr:255, 255, 255>Freddy! Are you ok?')
     SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00058.wav', '<clr:255, 255, 255>Freddy! You saved me!')
     SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00067.wav', '<clr:255, 255, 255>Freddy!')
@@ -22,17 +22,11 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00128b.wav', '<clr:255, 255, 255>Augh! I hate that thing!')
     SBDELUXE:AddEnglishCaption(path .. 'GREGORY_00148.wav', '<clr:255, 255, 255>Punch it Freddy!')
 
-    -- Vanessa
 
     path = 'whynotboi/securitybreach/base/vanessa/vo/'
 
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00010.wav', '<clr:255, 255, 255>Over here!')
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00011.wav', '<clr:255, 255, 255>I found him!')
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00013.wav', '<clr:255, 255, 255>Check the area.')
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00014.wav', '<clr:255, 255, 255>He can\'t be far.')
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00015.wav', '<clr:255, 255, 255>He\'s here!')
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00016.wav', '<clr:255, 255, 255>Get over here!')
-    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00017.wav', '<clr:255, 255, 255>Where did he go?')
+    -- Vanessa Idle Voices
+    
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00019.wav', '<clr:255, 255, 255>Where are you?')
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00020.wav', '<clr:255, 255, 255>Where did you go?')
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00021.wav', '<clr:255, 255, 255>Ugh... I hate kids.')
@@ -48,6 +42,8 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00030b.wav', '<clr:255, 255, 255>Come out come out wherever you are!')
     SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00031.wav', '<clr:255, 255, 255>I can help.')
 
+    -- Vanessa Old Idle Voices
+    
     SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_Gregory_01.wav', '<clr:255, 255, 255>Gregory?')
     SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_Gregory_02.wav', '<clr:255, 255, 255>Gregory?')
     SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_Hello_01.wav', '<clr:255, 255, 255>Hello?')
@@ -58,9 +54,14 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_SomeoneThere_01.wav', '<clr:255, 255, 255>Is someone there?')
     SBDELUXE:AddEnglishCaption(path .. 'Vanessa_VO_Searching_TrustMe_01.wav', '<clr:255, 255, 255>You\'ve got to trust me!')
 
-    -- Vanny
+    -- Vanessa Spot Voices
 
+    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00010.wav', '<clr:255, 255, 255>Over here!')
+    SBDELUXE:AddEnglishCaption(path .. 'VANESSA_00011.wav', '<clr:255, 255, 255>I found him!')
+    
     path = 'whynotboi/securitybreach/base/vanny/vo/'
+
+    -- Vanny Voices
 
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00001.wav', '<clr:255, 0, 0>Are you having fun yet?')
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00002_001.wav', '<clr:255, 0, 0>There you are!')
@@ -69,6 +70,8 @@ hook.Add('SetupCloseCaptions', 'SBDELUXE_HUMANSCAPTIONS', function()
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00003_001.wav', '<clr:255, 0, 0>See you soon!')
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00003_002.wav', '<clr:255, 0, 0>See you soon!')
     SBDELUXE:AddEnglishCaption(path .. 'VANNY_00003_003.wav', '<clr:255, 0, 0>See you soon!')
+    
+    -- Vanny Old Voices
 
     SBDELUXE:AddEnglishCaption(path .. 'Vanny_VO_Fun.wav', '<clr:255, 0, 0>Let\'s have some fun.')
     SBDELUXE:AddEnglishCaption(path .. 'Vanny_VO_ISeeYou.wav', '<clr:255, 0, 0>I see you.')

@@ -44,6 +44,16 @@ ENT.PounceLandSounds = {
     '/land/fly_roxy_land_03.wav'
 }
 
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 150
+ENT.SightRange = 15000
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
+
 include('binds.lua')
 include('voice.lua')
 
@@ -68,99 +78,48 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetMovement(60, 200)
-        self:SetMovementRates(1, 1, 1)
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+        
+        if GetConVar('fnaf_sb_new_damaging'):GetBool() then
+            self.GradualDamaging = true
+        end
 
-        self:SetSightRange(1200 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
-
-        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
-        self.GradualDamaging = GetConVar('fnaf_sb_new_damaging'):GetBool()
-        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
-        self.PreAnim = GetConVar('fnaf_sb_new_traileranims'):GetBool()
-
-        self.DoPepTalks = GetConVar('fnaf_sb_new_roxy_peptalk'):GetBool()
-        self.CanPounce = GetConVar('fnaf_sb_new_roxy_pounceattack'):GetBool()
-        self.CanJump = GetConVar('fnaf_sb_new_roxy_jumpattack'):GetBool() and navmesh.IsLoaded()
-
-        self:SetBodygroup(3, GetConVar('fnaf_sb_new_betaeyes'):GetInt())
+        if GetConVar('fnaf_sb_new_betaeyes'):GetBool() then
+            self:SetBodygroup(3, 1)
+        end
 
         if GetConVar('fnaf_sb_new_roxy_montywalk'):GetBool() then
             self.WalkAnimation = 'walkalt'
         end
 
-        if self.PreAnim then
+        if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
             self.IdleAnimation = 'preidle'
             self.WalkAnimation = 'prewalk'
             self.RunAnimation = 'prerun'
+
+            self.PreAnim = true
         end
+
+        if GetConVar('fnaf_sb_new_roxy_peptalk'):GetBool() then
+            self.DoPepTalks = true
+        end
+        
+        if not GetConVar('fnaf_sb_new_roxy_pounceattack'):GetBool() then
+            self.CanPounce = false
+        end
+        
+        if GetConVar('fnaf_sb_new_roxy_jumpattack'):GetBool() and navmesh.IsLoaded() then
+            self.CanJump = true
+        end
+
     end
 
     function ENT:AddCustomThink()
         if self.Luring then
             self:DoorCode()
         end
-    end
-
-    function ENT:OnStunned()
-        self:StopVoices()
-
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunin') 
-        end)
-
-        self.IdleAnimation = 'stunloop'
-    end
-
-    function ENT:OnStunExit()
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunout') 
-        end)
-
-        if self.PreAnim then
-            self.IdleAnimation = 'preidle'
-        else
-            self.IdleAnimation = 'idle'
-        end
-    end
-
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-        
-        self.VoiceDisabled = true
-        
-        if self.VoiceCancel then
-            self:VoiceCancel()
-        end
-
-        self:DrG_Timer(0.1, function()
-            if math.random(1, 100) > 50 then
-                self:PlayVoiceLine(self.PursuitVox[math.random(#self.PursuitVox)], true)
-            else
-                self:PlayVoiceLine(self.SpotVox[math.random(#self.SpotVox)], true)
-            end             
-        end)
-        
-        self:DrG_Timer(0.05, function()
-            self:StopVoices(1)
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
-
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceCancel = self:SBTimer(4, function()
-                self.VoiceDisabled = false
-            end)
-        end
-
-        self:StopVoices(2)
-
-        if IsValid(self.CurrentVictim) then return end
-        
-        self:DrG_Timer(0.05, function()
-            self:PlayVoiceLine(self.LostVox[math.random(#self.LostVox)], true)
-        end)
     end
 
     function ENT:Removed()
@@ -195,14 +154,14 @@ if SERVER then
         util.ScreenShake( self:GetPos(), shake, 1, 1, 500 )
     end
 
-    -- Pep Talk -- 
-
     function ENT:InitiatePepTalk(mirror)
         self:DrG_Timer(2, function()  
             self.Luring = false
 
-            self:SetMovement(0, 0, 0, true)
+            self.UseWalkframes = false
 
+            self.DisableControls = true
+            
             self.IdleAnimation = 'peptalkidle'
         end)
 
@@ -234,15 +193,14 @@ if SERVER then
 
     function ENT:EndTalk()
         self.Admiring = false
-        self.NullifyVoicebox = false
-
-        if self.PreAnim then
+                
+        if GetConVar('fnaf_sb_new_traileranims'):GetBool() then
             self.IdleAnimation = 'preidle'
         else
             self.IdleAnimation = 'idle'
         end
 
-        self:SetMovement(60, 200, 250)
+        self.UseWalkframes = true
 
         self.DisableControls = false
         
@@ -257,20 +215,11 @@ if SERVER then
         return normal
     end
     
-    local function mirrorZCheck(ent, ent2)
-        local mirrorpos = ent:GetPos()
-        local mypos = ent2:GetPos()
-
-        if mypos.z - mirrorpos.z < 50 then
-            return true
-        end
-    end
-
     function ENT:MirrorCheck()
         local mirror = nil
 
         for k,v in pairs(ents.FindInSphere(self:WorldSpaceCenter(), 400)) do
-            if v:GetClass() ~= 'func_reflective_glass' and mirrorZCheck(v, self) then continue end
+            if v:GetClass() ~= 'func_reflective_glass' then continue end
 
             mirror = v
             break
@@ -278,7 +227,6 @@ if SERVER then
 
         if IsValid(mirror) then
             self.VoiceDisabled = true
-            self.NullifyVoicebox = true
             self.AdmireDelay = true
             self.Admiring = true
             self.Luring = true
@@ -299,7 +247,6 @@ if SERVER then
 
             if self:HasEnemy() then
                 self.VoiceDisabled = false
-                self.NullifyVoicebox = false
                 self.AdmireDelay = false
                 self.Admiring = false
                 self.Luring = false

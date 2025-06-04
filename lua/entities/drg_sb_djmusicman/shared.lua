@@ -29,6 +29,16 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/djmusicman/jumpscare/sfx_jumpScare_DJMM.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/djmusicman'
 
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 150
+ENT.SightRange = 15000
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
+
 include('binds.lua')
 
 if SERVER then
@@ -92,15 +102,6 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetMovement(250, 250)
-        self:SetMovementRates(1, 1, 1)
-
-        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
-
-        self.MusicEnabled = GetConVar('fnaf_sb_new_djmm_music'):GetBool()
-        self.CanSleep = GetConVar('fnaf_sb_new_djmm_sleep'):GetBool()
-        self.AnimatedEyes = GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool()
-
         self:SetMaxYawRate(100)
 
         self.PatrolsHit = 0
@@ -110,12 +111,18 @@ if SERVER then
         self.SleepPos = self:GetPos()
 
         self:SetSkin(0)
+
+        self:SetNWInt('eyeframe', 0)
+        
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
            
-        if self.MusicEnabled then
+        if GetConVar('fnaf_sb_new_djmm_music'):GetBool() then
             self:EmitSound('whynotboi/securitybreach/base/music/djmm/part1.wav', 100)
         end
 
-        if self.CanSleep then
+        if GetConVar('fnaf_sb_new_djmm_sleep'):GetBool() then
             self:SleepEnter(true)
         end
     end
@@ -125,7 +132,7 @@ if SERVER then
             self.SleepTick = true
 
             for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 1000)) do
-                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and self:GetIgnorePlayers()) or (self:GetAIDisabled()) or v:Health() < 1 then continue end
+                if (v == self or v == self:GetPossessor()) or (v.IsDrGNextbot and v:IsInFaction('FACTION_ANIMATRONIC')) or not (v:IsPlayer() or v:IsNPC() or v:IsNextBot()) or (v:IsPlayer() and GetConVar('ai_ignoreplayers'):GetBool()) or (GetConVar('ai_disabled'):GetBool()) or v:Health() < 1 then continue end
                 self:SetDefaultRelationship(D_LI)
 
                 self:SleepExit()
@@ -140,7 +147,7 @@ if SERVER then
             self.EyeTick = true
 
             if math.random(100) > 50 then
-                if self.AnimatedEyes then
+                if GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool() then
                     self:SetBodygroup(2, 1)
                 end        
 
@@ -160,7 +167,7 @@ if SERVER then
             self:SleepExit()
         end
 
-        if self.AnimatedEyes then
+        if GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool() then
             self:SetBodygroup(2, 1)
         end
 
@@ -284,7 +291,7 @@ if SERVER then
             end
         end
         
-        if not self.MusicEnabled then return end
+        if not GetConVar('fnaf_sb_new_djmm_music'):GetBool() then return end
 
         self:DrG_Timer(0, function()
             if self.Track == 1 then
@@ -309,7 +316,7 @@ if SERVER then
         end
 
         if self.Track == 2 then
-            if self.CanSleep then
+            if GetConVar('fnaf_sb_new_djmm_sleep'):GetBool() then
                 self:SleepEnter()
             else
                 self:SwitchTrack(1)

@@ -121,7 +121,7 @@ if CLIENT then
 
         -- Battery --
 
-        if self:GetNWBool('NoBatteryHUD') then return end
+        if GetConVar('fnaf_sb_new_freddy_batteryconfig'):GetInt() == 3 then return end
 
         local energy = self:GetNWInt('Energy')
 
@@ -231,7 +231,7 @@ end
 if SERVER then
     function ENT:OnPossessed()
         self:DirectPoseParametersAt(nil, 'aim_pitch', 'aim_yaw', self:WorldSpaceCenter())
-
+        
         self:RemoveAllGestures()
 
         self.OpenChest = false
@@ -241,10 +241,6 @@ if SERVER then
         end
 
         if not self:GetNWBool('UseHeadAttach') then
-            if self.BatteryConfig == 1 then
-                self:SetNWBool('NoBatteryHUD', true)
-            end
-
             if IsValid(self.Partner) then
                 self.Partner.GlamrockFreddy = nil
                 self.Partner = nil
@@ -254,15 +250,6 @@ if SERVER then
 
     function ENT:OnDispossessed(ent)
         self:DrG_Timer(0, function()
-
-            if self.BatteryConfig ~= 3 then
-                self:SetNWBool('NoBatteryHUD', false)
-            end
-
-            if not self.DisableControls then
-                self:SetMovement(60, 280, 250)
-            end
-
             if self:GetNWBool('UseHeadAttach') and self:GetNWInt('Energy') > 1 then
                 self:ExitFreddy(ent)
             end

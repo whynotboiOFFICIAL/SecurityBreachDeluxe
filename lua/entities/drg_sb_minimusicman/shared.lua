@@ -27,6 +27,16 @@ ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_
 ENT.SFXPath = 'whynotboi/securitybreach/base/minimusicman'
 ENT.DisableMat = true
 
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 150
+ENT.SightRange = 15000
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
+
 include('binds.lua')
 
 if SERVER then
@@ -63,11 +73,10 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetMovement(60, 60)
-        self:SetMovementRates(1, 1, 1)
-
-        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
-
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
+        end
+        
         if GetConVar('fnaf_sb_new_ldjmm_music'):GetBool() then
             self:EmitSound('whynotboi/securitybreach/base/minimusicman/music.wav',75, 100, 0.4)
         end

@@ -33,6 +33,11 @@ ENT.PossessionBinds = {
     [IN_ATTACK2] = {{
         coroutine = true,
         onkeydown = function(self)
+            if self.Swimming then return end
+            
+            -- Fuck this --
+
+            --self:StartHook()
         end
     }},
 
@@ -89,13 +94,6 @@ if CLIENT then
 end
 
 if SERVER then
-    function ENT:OnPossessed()
-        if self.IsBlocking then
-            self.WalkAnimation = 'walk'
-
-            self.IsBlocking = false
-        end
-    end
 end
 
 AddCSLuaFile()

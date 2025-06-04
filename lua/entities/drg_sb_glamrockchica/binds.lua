@@ -46,7 +46,6 @@ ENT.PossessionBinds = {
     [IN_SCORE] = {{
         coroutine = true,
         onkeydown = function(self)
-            self.EyeAngle = Angle(0, 180, 0)
         end
     }},
 

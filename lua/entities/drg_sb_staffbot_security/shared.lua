@@ -141,7 +141,7 @@ if SERVER then
     end
 
     function ENT:AddCustomThink()
-        if self.Stunned or self:GetAIDisabled() or self:IsPossessed() then return end
+        if self.Stunned or GetConVar('ai_disabled'):GetBool() or self:IsPossessed() then return end
 
         if not self.CatchTick then          
             local size = 140
@@ -279,9 +279,6 @@ if SERVER then
     
     function ENT:Removed()
         self:StopSound('whynotboi/securitybreach/base/staffbot/jumpscare/sfx_jumpScare_sewer.wav')
-        self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_01.wav')
-        self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_02.wav')
-        self:StopSound('whynotboi/securitybreach/base/staffbot/wheels/sfx_staffBot_wheels_lp_03.wav')
     end
 
     function ENT:OnDeath()

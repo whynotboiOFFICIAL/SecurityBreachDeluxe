@@ -45,13 +45,7 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetMovement(60, 120)
-        self:SetMovementRates(1, 1, 1)
-
-        self.CanJumpscare = GetConVar('fnaf_sb_new_burntrap_jumpscare'):GetBool()
-        self.CanHack = GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool()
-        
-        if not self.CanJumpscare then
+        if not GetConVar('fnaf_sb_new_burntrap_jumpscare'):GetBool() then
             self:SetDefaultRelationship(D_LI)
         end
     end
@@ -71,7 +65,7 @@ if SERVER then
     end
 
     function ENT:HackCheck()
-        if not self.CanHack then return end
+        if not GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool() then return end
             
         self.HackDelay = true
 
@@ -115,7 +109,10 @@ if SERVER then
 
         self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/activate/sfx_burntrap_hackFreddy_activate_0' .. math.random(3) .. '.wav')
 
-        self:SetMovement(0, 0, 0, true)
+        self.UseWalkframes = false
+        self.DisableControls = true
+
+        self:SetMaxYawRate(0)
 
         self:SetAIDisabled(true)
         
@@ -157,16 +154,17 @@ if SERVER then
             self.Interrupted = false
         end
 
-        self.RunAnimation = 'run'
-        self:SetMovement(60, 120, 250)
+        self.UseWalkframes = true
 
         self.DisableControls = false
+
+        self:SetMaxYawRate(250)
 
         self:SetAIDisabled(false)
     end
 
     function ENT:OnIdle()
-        if not self.CanHack then return self.BaseClass:OnIdle(self) end
+        if not GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool() then return self.BaseClass:OnIdle(self) end
 
         local tohack = nil
 
@@ -182,10 +180,8 @@ if SERVER then
         end
 
         if IsValid(tohack) then
-            self.RunAnimation = 'runfull'
+            self.RunAnimation = 'run'
             
-            self:SetMovement(60, 230, 250)
-
             self.Luring = true
 
             self.ForceRun = true

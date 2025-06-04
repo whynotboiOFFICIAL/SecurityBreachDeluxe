@@ -304,10 +304,14 @@ function ENT:ExitCinematic(ent)
         if ent.DoPossessorJumpscare then
             ent:SetNoDraw(false)
 
-            if ent.RestoreMovement then
-                ent:RestoreMovement()
+            if ent.Crouched then
+                ent.WalkSpeed = 32.38
+                ent.RunSpeed = 68.75
+            else
+                ent.WalkSpeed = 41.25
+                ent.RunSpeed = 210
             end
-            
+
             ent:SetAIDisabled(false)
 
             ent:SetNWBool('CustomPossessorCam', false)

@@ -29,6 +29,16 @@ ENT.JumpAnimRate = 1
 ENT.JumpscareSound = 'whynotboi/securitybreach/base/bot/jumpscare/sfx_jumpScare_scream.wav'
 ENT.SFXPath = 'whynotboi/securitybreach/base/vanessa'
 
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 150
+ENT.SightRange = 15000
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
+
 include('binds.lua')
 include('voice.lua')
 
@@ -38,44 +48,10 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetMovement(60, 230)
-        self:SetMovementRates(1, 1, 1)
-
-        self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
-
-        self.OldFace = GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool()
-        self.OldVox = GetConVar('fnaf_sb_new_vanessa_oldvo'):GetBool()
-        self.CanStun = GetConVar('fnaf_sb_new_vanessa_lightstun'):GetBool()
-
-        self.Cycles = 0
-
         self:SpawnLight()
 
-        if self.OldFace then
+        if GetConVar('fnaf_sb_new_vanessa_oldface'):GetBool() then
             self:SetSkin(2)
-        end
-
-        if self.OldVox then             
-            self.SearchingVox = {
-                'Vanessa_VO_Searching_Gregory_01',
-                'Vanessa_VO_Searching_Gregory_02',
-                'Vanessa_VO_Searching_HeretoHelp_01',
-                'Vanessa_VO_Searching_KeepUSafe_01',
-                'Vanessa_VO_Searching_PleaseComeOut_01',
-                'Vanessa_VO_Searching_TrustMe_01'
-            }
-
-            self.ListeningVox = {
-                'Vanessa_VO_Searching_Hello_01',
-                'Vanessa_VO_Searching_SomeoneThere_01',
-                'Vanessa_VO_Searching_IsThatYou_01'
-            }
-        end
-    end
-
-    function ENT:AddCustomThink()
-        if IsValid(self.LockEntity) then
-            self:FaceInstant(self.LockEntity)
         end
     end
 
@@ -109,7 +85,7 @@ if SERVER then
 
     function ENT:OnRangeAttack(enemy)
         if self.RangeTick or self.Stunned or not enemy:IsPlayer() then return end
-        if not self.CanStun then return end
+        if not GetConVar('fnaf_sb_new_vanessa_lightstun'):GetBool() then return end
 
         self.RangeTick = true
 
@@ -136,16 +112,8 @@ if SERVER then
             self.IdleAnimation = 'idle'
         end
         if e == 'walkcycle' then
-            self.Cycles = self.Cycles + 1
-
-            if self.Cycles > 2 then
-                if math.random(1,10) > 9 then
-                    self.Cycles = 0
-
-                    self.WalkAnimation = 'walkscan'
-                else
-                    self.Cycles = 0
-                end
+            if math.random(1,10) > 9 then
+                self.WalkAnimation = 'walkscan'
             end
         end
         if e == 'towalk' then
@@ -161,90 +129,10 @@ if SERVER then
         end
     end
 
-    function ENT:OnInvestigating()
-        self.ForceRun = true
-
-        self.RunAnimation = 'jog'
-
-        self:SetMovement(60, 120)
-    end
-
-    function ENT:OnInvestigatingEnd()
-        self.ForceRun = false
-
-        self.RunAnimation = 'run'
-
-        self:SetMovement(60, 230)
-    end
-
-    function ENT:OnStunned()
-        self:StopVoices()
-
-        if self.OldFace then
-            self:SetSkin(3)
-        else
-            self:SetSkin(1)
+    function ENT:AddCustomThink()
+        if IsValid(self.LockEntity) then
+            self:FaceInstant(self.LockEntity)
         end
-
-        self:CallInCoroutine(function(self,delay)
-            self:PlayVoiceLine(self.StunVox[math.random(#self.StunVox)])
-            self:PlaySequenceAndMove('stunin') 
-        end)
-
-        self.IdleAnimation = 'stunloop'
-    end
-
-    function ENT:OnStunExit()
-        if self.OldFace then
-            self:SetSkin(2)
-        else
-            self:SetSkin(0)
-        end
-        
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunout') 
-        end)
-
-        self.IdleAnimation = 'idle'
-    end
-
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-
-        self:OnInvestigatingEnd()
-
-        if self.VoiceCancel then
-            self:VoiceCancel()
-        end
-
-        self:DrG_Timer(0.1, function()
-            self:PlayVoiceLine(self.SpotVox[math.random(#self.SpotVox)])
-            self.VoiceDisabled = false
-        end)
-         
-        self:DrG_Timer(0.05, function()
-            self:StopVoices(1)
-
-            self.VoiceDisabled = true
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
- 
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceCancel = self:SBTimer(4, function()
-                self.VoiceDisabled = false
-            end)
-        end
-
-        self:StopVoices(2)
-
-        if IsValid(self.CurrentVictim) then return end
-        
-        self:DrG_Timer(0.05, function()
-            self:PlayVoiceLine(self.LostVox[math.random(#self.LostVox)], true)
-        end)
     end
 
     function ENT:OnDeath()

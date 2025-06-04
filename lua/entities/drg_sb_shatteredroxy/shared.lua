@@ -44,6 +44,16 @@ ENT.PounceLandSounds = {
     '/land/fly_roxy_land_03.wav'
 }
 
+-- Detection --
+ENT.EyeBone = 'Head_jnt'
+ENT.EyeOffset = Vector(0, 0, 0)
+ENT.EyeAngle = Angle(0, 0, 0)
+ENT.SightFOV = 150
+ENT.SightRange = 15000
+ENT.MinLuminosity = 0
+ENT.MaxLuminosity = 1
+ENT.HearingCoefficient = 1
+
 include('binds.lua')
 include('voice.lua')
 
@@ -61,28 +71,30 @@ if SERVER then
     -- Basic --
 
     function ENT:CustomInitialize()
-        self:SetMovement(60, 200)
-        self:SetMovementRates(1, 1, 1)
+        if GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool() then
+            self.HW2Jumpscare = true
 
-        self:SetSightRange(800 * GetConVar('fnaf_sb_new_multiplier_sightrange'):GetFloat())
-        
-        self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
+            self:SetBodygroup(2, 1)
+        end
 
-        self.CanSee = GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool()
-        self.CanBeStunned = GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool()
-        self.DynamicListening = GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool()
+        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
+            self:SetSkin(2)
+        end
 
-        self.CanPounce = GetConVar('fnaf_sb_new_shatteredroxy_pounceattack'):GetBool()
-        self.CanWeep = GetConVar('fnaf_sb_new_shatteredroxy_weep'):GetBool()
-        
-        self:SetBodygroup(2, GetConVar('fnaf_sb_new_hw2_jumpscares'):GetInt())
+        if GetConVar('fnaf_sb_new_shatteredroxy_haseyes'):GetBool() then
+            self.CanSee = true
 
-        self:SetSkin(GetConVar('fnaf_sb_new_shattereds_redeyes'):GetInt())
-
-        if self.CanSee then
             self:SpawnEyes()
         else
             self:SetSightFOV(0)
+        end
+
+        if GetConVar('fnaf_sb_new_shatteredroxy_weep'):GetBool() then
+            self.CanWeep = true
+        end
+
+        if not GetConVar('fnaf_sb_new_shatteredroxy_pounceattack'):GetBool() then
+            self.CanPounce = false
         end
     end
 
@@ -100,63 +112,17 @@ if SERVER then
 
         eyes:ResetSequence('idle')
 
-        if self:GetSkin() == 1 then
+        if GetConVar('fnaf_sb_new_shattereds_redeyes'):GetBool() then
             eyes:SetBodygroup(0, 1)
         end
 
         self:DeleteOnRemove(eyes)
     end
-  
-    function ENT:AddCustomThink()
-        if self.Stunned or self.PounceStarted or self:GetAIDisabled() or self:IsPossessed() then return end
-        if self.CanSee then return end
 
-        if not self.KillTick then
-            self.KillTick = true
-
-            for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 30)) do
-                if self:IsPossessed() then continue end
-                if self:EntityInaccessible(v) then continue end
-
-                self:CallInCoroutine(function(self,delay)
-                    self:JumpscareEntity(v)
-                end)
-            end
-
-            self:DrG_Timer(0.3, function()
-                self.KillTick = false
-            end)
-        end
-
-        if self.PursuePos and not self.LeapTick then
-            if not self.CanPounce then return end
-
-            self.LeapTick = true
-
-            local pos = self.PursuePos
-            local dist = pos:DistToSqr(self:GetPos())/ 1000
-
-            if dist < 80 then
-                self:FaceInstant(pos)
-
-                self:EndPursuit()
-
-                self:CallInCoroutine(function(self,delay)
-                    self:PounceStart()
-                end)
-            end
-
-            self:DrG_Timer(0.1, function()
-                self.LeapTick = false
-            end)
-        end
-    end
-    
     function ENT:SpotEntity(ent)
         if self.CanSee then return self.BaseClass.SpotEntity(self, ent) end
         if self:IsPossessed() then return end
         if self:EntityInaccessible(ent) then return end
-        if IsValid(self.CurrentVictim) then return end
 
         self:AlertedTo(ent:GetPos(), ent)
     end
@@ -220,56 +186,49 @@ if SERVER then
             self.ForceRun = false
         end)
     end
-    
-    function ENT:OnStunned()
-        self:StopVoices()
 
-        if self.Weeping then
-            self:StopWeeping()
+    function ENT:AddCustomThink()
+        if self.Stunned or self.PounceStarted or GetConVar('ai_disabled'):GetBool() or self:IsPossessed() then return end
+        if self.CanSee then return end
+
+        if not self.KillTick then
+            self.KillTick = true
+
+            for k,v in ipairs(ents.FindInSphere(self:WorldSpaceCenter(), 30)) do
+                if self:IsPossessed() then continue end
+                if self:EntityInaccessible(v) then continue end
+
+                self:CallInCoroutine(function(self,delay)
+                    self:JumpscareEntity(v)
+                end)
+            end
+
+            self:DrG_Timer(0.3, function()
+                self.KillTick = false
+            end)
         end
 
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunin') 
-        end)
+        if self.PursuePos and not self.LeapTick then
+            if not self.CanPounce then return end
 
-        self.IdleAnimation = 'stunloop'
-    end
+            self.LeapTick = true
 
-    function ENT:OnStunExit()
-        self:CallInCoroutine(function(self,delay)
-            self:PlaySequenceAndMove('stunout') 
-        end)
+            local pos = self.PursuePos
+            local dist = pos:DistToSqr(self:GetPos())/ 1000
 
-        self.IdleAnimation = 'idle'
-    end
-    
-    function ENT:OnSpotEnemy()
-        if self.Stunned then return end
-        
-        if self.Weeping then
-            self:StopWeeping()
-        end
+            if dist < 80 then
+                self:FaceInstant(pos)
 
-        self:DrG_Timer(0.1, function()
-            self:PlayVoiceLine(self.SpotVox[math.random(#self.SpotVox)])
-        end)
+                self:EndPursuit()
 
-        self:DrG_Timer(0.05, function()
-            if self.CanSee then return end
-            
-            self:StopVoices(1)
+                self:CallInCoroutine(function(self,delay)
+                    self:PounceStart()
+                end)
+            end
 
-            self.ForceRun = true
-
-            self.VoiceDisabled = true
-        end)
-    end
-
-    function ENT:OnLoseEnemy()
-        if self.Stunned then return end
-
-        if self.VoiceDisabled and not IsValid(self.CurrentVictim) then
-            self.VoiceDisabled = false
+            self:DrG_Timer(0.1, function()
+                self.LeapTick = false
+            end)
         end
     end
 

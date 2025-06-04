@@ -64,21 +64,21 @@ function ENT:DoorCode(door)
                         v:Fire('Close')
                     end
                 end
-
-            if not v:GetInternalVariable('m_bLocked') then
-                v:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
-            end
-            
-            self.DoorDelay = true
-            
-            self:DrG_Timer(0.8, function()
-                if v:IsValid() then
-                    v:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE)
+                
+                if not v:GetInternalVariable('m_bLocked') then
+                    v:SetCollisionGroup(COLLISION_GROUP_IN_VEHICLE)
                 end
                 
-                self.DoorDelay = nil
-            end)
-
+                self.DoorDelay = true
+                
+                self:DrG_Timer(0.5, function()
+                    if v:IsValid() then
+                        v:SetCollisionGroup(COLLISION_GROUP_INTERACTIVE)
+                    end
+                    
+                    self.DoorDelay = nil
+                end)
+                
                 break
             end
         end
