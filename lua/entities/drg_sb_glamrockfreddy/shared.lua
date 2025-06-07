@@ -555,6 +555,7 @@ if SERVER then
 
         self.HackProgress = 0
 
+        self.CanBeStunned = false
         self.Moving = false
         
         self:SetMovement(0, 0, 0, true)
@@ -620,6 +621,8 @@ if SERVER then
         end)
 
         self.Hostile = true
+        self.CanBeStunned = true
+
         self.DynamicListening = GetConVar('fnaf_sb_new_sounddetect'):GetBool()
 
         self:SetDefaultRelationship(D_HT)
@@ -655,6 +658,8 @@ if SERVER then
             end)
         end)
 
+        self.CanBeStunned = true
+        
         self:StopSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_lp.wav')
         self:EmitSound('whynotboi/securitybreach/base/burntrap/hackfreddy/sfx_burntrap_hackFreddy_complete_end.wav')
     end

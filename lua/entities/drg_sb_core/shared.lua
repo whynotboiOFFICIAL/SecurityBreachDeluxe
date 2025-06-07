@@ -126,6 +126,8 @@ if SERVER then
     -- Basic
 
     function ENT:_BaseInitialize()
+        self:SetNWBool('HUDEnabled', GetConVar('fnaf_sb_new_possessionhud'):GetBool())
+
         self.WalkMultiplier = GetConVar('fnaf_sb_new_multiplier_walkspeed'):GetFloat()
         self.RunMultiplier = GetConVar('fnaf_sb_new_multiplier_runspeed'):GetFloat()
 

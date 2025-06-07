@@ -1,0 +1,11 @@
+"UnlitGeneric"
+{
+    "$basetexture" "models\whynotboi\securitybreach\shared\white"
+    "$bumpmap" "models\whynotboi\securitybreach\shared\shared_normal"
+
+    "$color2" "[0 0 0]"
+    
+    "$nodecal" "1"
+
+    "$nocull" "1"
+}

@@ -75,6 +75,8 @@ if SERVER then
         self.CanPounce = GetConVar('fnaf_sb_new_shatteredroxy_pounceattack'):GetBool()
         self.CanWeep = GetConVar('fnaf_sb_new_shatteredroxy_weep'):GetBool()
         
+        self:SetNWBool('HUDAddEnabled', GetConVar('fnaf_sb_new_shatteredroxy_hudadd'):GetBool())
+        
         self:SetBodygroup(2, GetConVar('fnaf_sb_new_hw2_jumpscares'):GetInt())
 
         self:SetSkin(GetConVar('fnaf_sb_new_shattereds_redeyes'):GetInt())

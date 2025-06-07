@@ -8,7 +8,6 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/burntrap/burntr
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = BLOOD_COLOR_RED
-ENT.CanBeStunned = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -48,12 +47,22 @@ if SERVER then
         self:SetMovement(60, 120)
         self:SetMovementRates(1, 1, 1)
 
+        self:SetRenderMode(1)
+
+        self.ExtraEffects = GetConVar('fnaf_sb_new_burntrap_fx'):GetBool()
         self.CanJumpscare = GetConVar('fnaf_sb_new_burntrap_jumpscare'):GetBool()
         self.CanHack = GetConVar('fnaf_sb_new_burntrap_hacksfreddy'):GetBool()
-        
+        self.CanBeStunned = GetConVar('fnaf_sb_new_burntrap_stun'):GetBool()
+
         if not self.CanJumpscare then
             self:SetDefaultRelationship(D_LI)
         end
+        
+        if not self.ExtraEffects then return end
+        
+        ParticleEffectAttach( 'whynotboi_burntrap_halo', 1, self, 0)
+        ParticleEffectAttach( 'whynotboi_burntrap_eyeball', 4, self, 2)
+        ParticleEffectAttach( 'whynotboi_burntrap_eyeball', 4, self, 3)
     end
 
     function ENT:AddCustomThink()
@@ -105,9 +114,46 @@ if SERVER then
     end
     
     function ENT:DoStunned()
-        if not self.Hacking then return end
+        if self.Stunned or not self.CanBeStunned then return end
 
-        self:HackInterrupted()
+        ParticleEffect( 'whynotboi_burntrap_dissapear', self:GetPos(), self:GetAngles(), nil)
+
+        if self.Hacking then
+            self:HackInterrupted()
+        end
+
+        self:SetColor(Color(255, 255, 255, 0))
+
+        self:SetAIDisabled(true)
+    
+        self.DisableControls = true
+
+        self.Stunned = true
+
+        self:DrG_Timer(2, function()   
+            self:SetColor(Color(255, 255, 255, 255))
+
+            self:SetAIDisabled(false)
+
+            self.DisableControls = false
+            self.Stunned = false
+
+            self:SetPos(self:RandomPos(5000, 12000))
+
+            if self:HasEnemy() then
+                local ent = self:GetEnemy()
+
+                self:LoseEntity(ent)
+
+                self:SetEntityRelationship(ent, D_LI)
+
+                self:DrG_Timer(1, function()
+                if not IsValid(self) then return end
+
+                    self:SetEntityRelationship(ent, D_HT)
+                end)
+            end
+        end)
     end
 
     function ENT:Hack(ent)
@@ -131,14 +177,18 @@ if SERVER then
 
         self:PlaySequenceAndMove('hackin')
 
+        if self.ExtraEffects then
+            local startpos = self:GetAttachment(4).Pos
+
+            util.ParticleTracerEx( 'whynotboi_burntrap_electricity_laser', startpos , ent:WorldSpaceCenter(), true, self:EntIndex(), 4 )
+        end
+
         self.Hacking = true
 
         self.IdleAnimation = 'hackloop'
     end
     
     function ENT:HackInterrupted()
-        self:TakeDamage(12354, self)
-
         self.HackEntity:HackInterrupted()
 
         self.HackEntity = nil
@@ -147,6 +197,15 @@ if SERVER then
     end
 
     function ENT:HackExit()
+        if IsValid(self.HackEntity) and self.ExtraEffects then
+            local startpos = self:GetAttachment(4).Pos
+            local ent = self.HackEntity
+            
+            util.ParticleTracerEx( 'whynotboi_burntrap_electricity_laser', startpos , ent:WorldSpaceCenter(), true, self:EntIndex(), 4 )
+
+            ParticleEffectAttach( 'whynotboi_flaming_purplesmoke_mist', 1, self.HackEntity, 0)
+        end
+
         self.IdleAnimation = 'idle'
 
         self.Hacking = false
@@ -160,6 +219,8 @@ if SERVER then
         self.RunAnimation = 'run'
         self:SetMovement(60, 120, 250)
 
+        if self.Stunned then return end
+        
         self.DisableControls = false
 
         self:SetAIDisabled(false)
@@ -194,7 +255,7 @@ if SERVER then
 
             self.ForceRun = false
 
-            self.RunAnimation = 'runfull'
+            self.RunAnimation = 'run'
 
             if not IsValid(tohack) then self.Luring = false return end
 
@@ -217,6 +278,8 @@ if SERVER then
 
         self.VoiceDisabled = true
         
+        ParticleEffectAttach( 'whynotboi_flaming_purplesmoke_mist', 1, self, 0)
+
         self:PlaySequenceAndMove('death')
     end
     

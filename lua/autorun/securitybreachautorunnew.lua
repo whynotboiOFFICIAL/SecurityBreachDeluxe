@@ -4,6 +4,7 @@ local useplyfov = CreateClientConVar('fnaf_sb_new_fov_camera', 0, true, false, '
 
 CreateConVar('fnaf_sb_new_voicelines', 1, FCVAR_ARCHIVE, 'Use Voice Lines', 0, 1)
 CreateConVar('fnaf_sb_new_damaging', 1, FCVAR_ARCHIVE, 'Gradual Damging', 0, 1)
+CreateConVar('fnaf_sb_new_possessionhud', 1, FCVAR_ARCHIVE, 'Possession HUDs', 0, 1)
 CreateConVar('fnaf_sb_new_sounddetect', 1, FCVAR_ARCHIVE, 'Dynamic Sound Detection', 0, 1)
 CreateConVar('fnaf_sb_new_hw2_jumpscares', 0, FCVAR_ARCHIVE, 'Help Wanted 2 Jumpscares', 0, 1)
 CreateConVar('fnaf_sb_new_betaeyes', 0, FCVAR_ARCHIVE, 'Beta Eye Glows', 0, 1)
@@ -78,13 +79,15 @@ CreateConVar('fnaf_sb_new_shatteredmonty_haslegs', 0, FCVAR_ARCHIVE, 'Shattered 
 
 CreateConVar('fnaf_sb_new_shatteredroxy_weep', 1, FCVAR_ARCHIVE, 'Shattered Roxy Weep', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredroxy_pounceattack', 1, FCVAR_ARCHIVE, 'Shattered Roxy Pounce', 0, 1)
+CreateConVar('fnaf_sb_new_shatteredroxy_hudadd', 1, FCVAR_ARCHIVE, 'Shattered Roxy HUD Effects', 0, 1)
 CreateConVar('fnaf_sb_new_shatteredroxy_haseyes', 0, FCVAR_ARCHIVE, 'Shattered Roxy Has Eyes', 0, 1)
 
 -- Glamrock Endo
 
-CreateConVar('fnaf_sb_new_endo_appearance', 1, FCVAR_ARCHIVE, 'Glamrock Endo Apperance', 1, 4)
+CreateConVar('fnaf_sb_new_endo_appearance', 1, FCVAR_ARCHIVE, 'Glamrock Endo Apperance', 1, 5)
 CreateConVar('fnaf_sb_new_endo_sleep', 1, FCVAR_ARCHIVE, 'Glamrock Endo Sleeping', 0, 1)
 CreateConVar('fnaf_sb_new_endo_chase', 0, FCVAR_ARCHIVE, 'Glamrock Endo Chase', 0, 1)
+CreateConVar('fnaf_sb_new_endo_visor', 0, FCVAR_ARCHIVE, 'Glamrock Endo Visor', 0, 1)
 
 -- Vanessa
 
@@ -125,8 +128,10 @@ CreateConVar('fnaf_sb_new_blob_proxjumpscare', 1, FCVAR_ARCHIVE, 'Blob Hostile',
 
 -- Burntrap
 
+CreateConVar('fnaf_sb_new_burntrap_fx', 1, FCVAR_ARCHIVE, 'Burntrap Effects', 0, 1)
 CreateConVar('fnaf_sb_new_burntrap_jumpscare', 1, FCVAR_ARCHIVE, 'Burntrap Jumpscare', 0, 1)
 CreateConVar('fnaf_sb_new_burntrap_hacksfreddy', 1, FCVAR_ARCHIVE, 'Burntrap Hacks Freddy', 0, 1)
+CreateConVar('fnaf_sb_new_burntrap_stun', 0, FCVAR_ARCHIVE, 'Burntrap Stun', 0, 1)
 
 -- Weapons
 
@@ -135,6 +140,7 @@ CreateConVar('fnaf_sb_new_fazerblaster_infiniteammo', 0, FCVAR_ARCHIVE, 'FazerBl
 CreateConVar('fnaf_sb_new_fazcam_infiniteammo', 0, FCVAR_ARCHIVE, 'FazCamera Infinite Ammo', 0, 1)
 
 game.AddParticles( 'particles/jummyyummy_fnafsb.pcf')
+game.AddParticles( 'particles/whynotboi_burntrap_fx_v1.pcf')
 
 function FNaF_AddNextBot(ENT, category, order)
     local classname = string.gsub(ENT.Folder, 'entities/', '')
@@ -227,6 +233,10 @@ if CLIENT then
 			panel:CheckBox('Gradual Damaging', 'fnaf_sb_new_damaging')
 			panel:ControlHelp('Characters get dirtier the more they take damage')
 			panel:ControlHelp('(This will only apply to the main 4 Glamrocks)')
+
+			panel:CheckBox('Possession HUDs', 'fnaf_sb_new_possessionhud')
+			panel:ControlHelp('Characters have individual posession overlays')
+			panel:ControlHelp('(This won\'t apply to every NPC)')
 
 			panel:CheckBox('Dynamic Sound Detecion', 'fnaf_sb_new_sounddetect')
 			panel:ControlHelp('Characters will respond to sound instead of immediately spotting you')
@@ -442,6 +452,9 @@ if CLIENT then
 			panel:CheckBox('Shattered Roxy Pounce', 'fnaf_sb_new_shatteredroxy_pounceattack')
             panel:ControlHelp('Shattered Roxy will leap through the air to try and kill you')
 
+			panel:CheckBox('Shattered Roxy HUD Effects', 'fnaf_sb_new_shatteredroxy_hudadd')
+            panel:ControlHelp('Shattered Roxy has additional possession HUD impairments')
+
 			panel:CheckBox('Shattered Roxy Has Eyes', 'fnaf_sb_new_shatteredroxy_haseyes')
             panel:ControlHelp('Shattered Roxy will be able to see again')
 			panel:ControlHelp('(This will allow her to be stunned)')
@@ -456,16 +469,21 @@ if CLIENT then
             local endoconfig = panel:ComboBox('Glamrock Endo Apperance', 'fnaf_sb_new_endo_appearance')
 
             endoconfig:AddChoice( 'Default Glamrock Endo', 1 )
-            endoconfig:AddChoice( 'Frost Glamrock Endo', 2 )
-            endoconfig:AddChoice( 'Cake Glamrock Endo', 3 )
-			endoconfig:AddChoice( 'Randomized', 4 )
+			endoconfig:AddChoice( 'Help Wanted 2 Glamrock Endo', 2 )
+            endoconfig:AddChoice( 'Frost Glamrock Endo', 3 )
+            endoconfig:AddChoice( 'Cake Glamrock Endo', 4 )
+			endoconfig:AddChoice( 'Randomized', 5 )
 
 			panel:CheckBox('Glamrock Endo Sleeping', 'fnaf_sb_new_endo_sleep')
             panel:ControlHelp('Glamrock Endo will spawn in asleep')
 
 			panel:CheckBox('Glamrock Endo Chase', 'fnaf_sb_new_endo_chase')
             panel:ControlHelp('Glamrock Endo will chase you even if you are staring')
-														
+					
+			--[[panel:CheckBox('Glamrock Endo Visor', 'fnaf_sb_new_endo_visor')
+            panel:ControlHelp('Glamrock Endo will be equipped with his visor from Help Wanted 2')
+			panel:ControlHelp('(He will be immune to the blaster and camera when enabled)')]]--
+
 			-- Vanessa
 
 			panel:Help('')
@@ -578,13 +596,19 @@ if CLIENT then
 			panel:Help('')
 			panel:Help('Burntrap')
 			panel:Help('')
-
+								
+			panel:CheckBox('Burntrap Effects', 'fnaf_sb_new_burntrap_fx')
+            panel:ControlHelp('Burntrap has additional particle effects')
+			
 			panel:CheckBox('Burntrap Hostile', 'fnaf_sb_new_burntrap_jumpscare')
             panel:ControlHelp('Burntrap will chase after players and jumpscare them')
 
 			panel:CheckBox('Burntrap Hacks Freddy', 'fnaf_sb_new_burntrap_hacksfreddy')
             panel:ControlHelp('Burntrap will attempt to hack Glamrock Freddy in an attempt to kill you')
-																			
+									
+			panel:CheckBox('Burntrap Stun', 'fnaf_sb_new_burntrap_stun')
+            panel:ControlHelp('Burntrap reacts to the blaster and camera like the other animatronics')
+									
 			-- Weapons
 
 			panel:Help('')

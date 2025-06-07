@@ -82,9 +82,19 @@ end
 
 if SERVER then
     function ENT:OnPossessed()
+        if self.Hacking then return end
+        
+        self.RunAnimation = 'runfull'
+        
+        self:SetMovement(60, 230, 250)        
     end
 
     function ENT:OnDispossessed()
+        if self.Hacking then return end
+        
+        self.RunAnimation = 'run'
+        
+        self:SetMovement(60, 120, 250)            
     end
 end
 
