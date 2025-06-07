@@ -140,6 +140,8 @@ if CLIENT then
     local hasRunOut = false
 
     function ENT:PossessionHUD() 
+        if not self:GetNWBool('HUDEnabled') then return end
+        
         local w, h = ScrW(), ScrH()
 
         local stamina = self:GetNWFloat('Stamina')

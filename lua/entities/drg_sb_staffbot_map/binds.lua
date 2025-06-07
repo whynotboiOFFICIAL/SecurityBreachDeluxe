@@ -72,7 +72,7 @@ ENT.PossessionViews = {
     }
 }
 
-if CLIENT then
+if CLIENT then   
 end
 
 if SERVER then

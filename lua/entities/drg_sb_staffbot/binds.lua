@@ -70,6 +70,8 @@ if CLIENT then
     local staffbotoverlay = Material('ui/securitybreach/staffbot/Staffbot_HUD_Frame_2k.png')
 
     function ENT:PossessionHUD() 
+        if not self:GetNWBool('HUDEnabled') then return end
+        
         local w, h = ScrW(), ScrH()
 
         surface.SetDrawColor(255, 255, 255, 255)

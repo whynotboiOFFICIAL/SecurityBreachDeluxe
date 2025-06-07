@@ -86,7 +86,21 @@ ENT.PossessionViews = {
 }
 
 if CLIENT then
+    local eyes = Material('ui/securitybreach/endo/Endo_HUD.png')
+
     function ENT:PossessionHUD() 
+        if not self:GetNWBool('HUDEnabled') then return end
+        
+        local w, h = ScrW(), ScrH()
+
+        surface.SetDrawColor(255, 255, 255, 255)
+
+        surface.SetMaterial(eyes)
+
+        local w1, h1 = ScreenScale(890), ScreenScale(290)
+        local w1 = ScrW() + 800
+
+        surface.DrawTexturedRect(-400, -180, w1, ScrH() / 1.5)
     end
 end
 

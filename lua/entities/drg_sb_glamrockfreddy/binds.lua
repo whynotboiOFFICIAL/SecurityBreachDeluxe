@@ -93,31 +93,31 @@ ENT.PossessionViews = {
 
 if CLIENT then
     local eyesfreddy = Material('ui/securitybreach/freddy/Freddy_HUD_frame_4k.png')
-    local eyesroxy = Material('ui/securitybreach/freddy/Roxy_HUD_Frame_v3_4k.png')
+    local eyesroxy = Material('ui/securitybreach/roxy/Roxy_HUD_Frame_v3_4k.png')
 
     local battery = Material('ui/securitybreach/freddy/Freddy_HUD_Battery.png')
     local batteryslot = Material('ui/securitybreach/freddy/Freddy_HUD_Battery_slot.png')
     local batterypower = Material('ui/securitybreach/freddy/Freddy_HUD_Battery_fill.png')
 
     function ENT:PossessionHUD() 
+        if not self:GetNWBool('HUDEnabled') then return end
+
         local w, h = ScrW(), ScrH()
 
         surface.SetDrawColor(255, 255, 255, 255)
 
         -- Eyes --
 
-        if self:GetNWBool('UseHeadAttach') then
-            if self:GetNWBool('RoxyEyes') then
-                surface.SetMaterial(eyesroxy)  
-            else
-                surface.SetMaterial(eyesfreddy)
-            end
-
-            local w1, h1 = ScreenScale(890), ScreenScale(290)
-            local w1 = ScrW() + 800
-
-            surface.DrawTexturedRect(-400, -180, w1, ScrH() / 1.5)
+        if self:GetNWBool('RoxyEyes') then
+            surface.SetMaterial(eyesroxy)  
+        else
+            surface.SetMaterial(eyesfreddy)
         end
+
+        local w1, h1 = ScreenScale(890), ScreenScale(290)
+        local w1 = ScrW() + 800
+
+        surface.DrawTexturedRect(-400, -180, w1, ScrH() / 1.5)
 
         -- Battery --
 

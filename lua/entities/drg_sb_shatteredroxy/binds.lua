@@ -76,7 +76,28 @@ ENT.PossessionViews = {
 }
 
 if CLIENT then
+    local eyes = Material('ui/securitybreach/roxy/Roxy_HUD_Frame_v3_4k.png')
+    local pattern = Material( "pp/texturize/lines.png" )
+
     function ENT:PossessionHUD() 
+        if not self:GetNWBool('HUDEnabled') then return end
+
+        local w, h = ScrW(), ScrH()
+
+        surface.SetDrawColor(100, 100, 100, 255)
+
+        surface.SetMaterial(eyes)
+
+        local w1, h1 = ScreenScale(890), ScreenScale(290)
+        local w1 = ScrW() + 800
+
+        surface.DrawTexturedRect(-400, -180, w1, ScrH() / 1.5)
+
+        if not self:GetNWBool('HUDAddEnabled') then return end
+        
+        DrawMotionBlur( 0.3, 0.8, 0.2 )
+    
+        DrawTexturize( 1, pattern )
     end
 end
 
