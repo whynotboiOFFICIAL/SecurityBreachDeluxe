@@ -1,4 +1,4 @@
-local addonList = { '1560118657', '1560118657', '1560118657' } -- add the other 2 required addons later
+local addonList = { '3495213752', '3495214499', '1560118657' } -- add the other 2 required addons later
 
 local function getAddonName(wsid)
     local cor = coroutine.running()
