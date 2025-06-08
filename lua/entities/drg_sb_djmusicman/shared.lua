@@ -100,6 +100,7 @@ if SERVER then
         self.MusicEnabled = GetConVar('fnaf_sb_new_djmm_music'):GetBool()
         self.CanSleep = GetConVar('fnaf_sb_new_djmm_sleep'):GetBool()
         self.AnimatedEyes = GetConVar('fnaf_sb_new_djmm_animeyes'):GetBool()
+        self.CanBeStunned = GetConVar('fnaf_sb_new_djmm_stun'):GetBool()
 
         self:SetMaxYawRate(100)
 

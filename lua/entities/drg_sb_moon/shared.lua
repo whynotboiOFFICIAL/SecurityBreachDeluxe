@@ -8,7 +8,6 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/daycareattendan
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
-ENT.CanBeStunned = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -95,7 +94,10 @@ if SERVER then
             self.HW2Jumpscare = GetConVar('fnaf_sb_new_hw2_jumpscares'):GetBool()
 
             self.MoonRun = GetConVar('fnaf_sb_new_moon_userun'):GetBool()
+
+            self.CanBeStunned = GetConVar('fnaf_sb_new_moon_stun'):GetBool()
             self.CanFlashStun = GetConVar('fnaf_sb_new_moon_flashstun'):GetBool()
+
             self.JackOMoon = GetConVar('fnaf_sb_new_moon_jackomoon'):GetBool()
 
             self.loco:SetAcceleration(3000)

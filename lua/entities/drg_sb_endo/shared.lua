@@ -226,6 +226,14 @@ if SERVER then
     function ENT:OnStunned()
         self.IsFrozen = false
         self.ForceCycle = false
+        
+        if IsValid(self.LLight) then
+            self.LLight:Fire('HideSprite')
+        end
+
+        if IsValid(self.RLight) then
+            self.RLight:Fire('HideSprite')
+        end
 
         self:SleepMode()
     end

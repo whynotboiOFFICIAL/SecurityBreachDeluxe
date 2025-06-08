@@ -60,7 +60,9 @@ CreateConVar('fnaf_sb_new_roxy_jumpattack', 0, FCVAR_ARCHIVE, 'Roxanne Wolf Jump
 -- Daycare Attendant
 
 CreateConVar('fnaf_sb_new_sun_alwayshostile', 0, FCVAR_ARCHIVE, 'Sun Always Hostile', 0, 1)
+CreateConVar('fnaf_sb_new_sun_stun', 0, FCVAR_ARCHIVE, 'Sun Stun', 0, 1)
 CreateConVar('fnaf_sb_new_moon_userun', 0, FCVAR_ARCHIVE, 'Moon Run Animation', 0, 1)
+CreateConVar('fnaf_sb_new_moon_stun', 0, FCVAR_ARCHIVE, 'Moon Stun', 0, 1)
 CreateConVar('fnaf_sb_new_moon_flashstun', 0, FCVAR_ARCHIVE, 'Moon Light Stun', 0, 1)
 CreateConVar('fnaf_sb_new_moon_jackomoon', 0, FCVAR_ARCHIVE, 'Jack O Moon', 0, 1)
 
@@ -120,6 +122,7 @@ CreateConVar('fnaf_sb_new_ldjmm_music', 1, FCVAR_ARCHIVE, 'Wind-Up Music Man Mus
 CreateConVar('fnaf_sb_new_djmm_music', 1, FCVAR_ARCHIVE, 'DJ Music Man Music', 0, 1)
 CreateConVar('fnaf_sb_new_djmm_sleep', 1, FCVAR_ARCHIVE, 'DJ Music Man Sleeping', 0, 1)
 CreateConVar('fnaf_sb_new_djmm_animeyes', 0, FCVAR_ARCHIVE, 'DJ Music Man Animated Eyes', 0, 1)
+CreateConVar('fnaf_sb_new_djmm_stun', 0, FCVAR_ARCHIVE, 'DJ Music Man Stun', 0, 1)
 
 -- The Blob
 
@@ -397,11 +400,17 @@ if CLIENT then
 
 			panel:CheckBox('Sun Always Hostile', 'fnaf_sb_new_sun_alwayshostile')
             panel:ControlHelp('Sun will chase and kill you instead of being protective')
-			
+				
+			panel:CheckBox('Sun Stun', 'fnaf_sb_new_sun_stun')
+            panel:ControlHelp('Sun can be stunned like the other animatronics')
+						
 			panel:CheckBox('Moon Run Animation', 'fnaf_sb_new_moon_userun')
             panel:ControlHelp('Moon will run when chasing you instead of walking')
 			panel:ControlHelp('(This will stop Moon from crawling when he is chasing you)')
 			
+			panel:CheckBox('Moon Stun', 'fnaf_sb_new_moon_stun')
+            panel:ControlHelp('Moon can be stunned like the other animatronics')
+						
 			panel:CheckBox('Moon Flash Stun', 'fnaf_sb_new_moon_flashstun')
             panel:ControlHelp('Moon can be stunned when light is held on him')
 			panel:ControlHelp('(This only work with player flashlights)')
@@ -576,7 +585,10 @@ if CLIENT then
 
 			panel:CheckBox('DJ Music Man Animated Eyes', 'fnaf_sb_new_djmm_animeyes')
             panel:ControlHelp('DJ Music Man plays animations on his eyes from Help Wanted 2')
-													
+					
+			panel:CheckBox('DJ Music Man Stun', 'fnaf_sb_new_djmm_stun')
+            panel:ControlHelp('DJ Music Man can be stunned like the other animatronics')
+														
 			-- The Blob
 
 			panel:Help('')

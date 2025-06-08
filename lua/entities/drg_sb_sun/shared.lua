@@ -8,7 +8,6 @@ ENT.Models = {'models/whynotboi/securitybreach/base/animatronics/daycareattendan
 ENT.ModelScale = 1
 ENT.CollisionBounds = Vector(10, 10, 75)
 ENT.BloodColor = DONT_BLEED
-ENT.CanBeStunned = true
 
 -- Stats --
 ENT.SpawnHealth = 1000
@@ -81,7 +80,8 @@ if SERVER then
             self.loco:SetDeceleration(0)
 
             self.AlwaysAngry = GetConVar('fnaf_sb_new_sun_alwayshostile'):GetBool()
-            
+            self.CanBeStunned = GetConVar('fnaf_sb_new_sun_stun'):GetBool()
+
             self.SunAnger = 0
 
             if self.AlwaysAngry then
